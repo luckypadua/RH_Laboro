@@ -822,11 +822,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GIT CORE2\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj",
+      "projectUniqueName": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj",
       "projectName": "NETCoreADO",
-      "projectPath": "D:\\GIT CORE2\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj",
+      "projectPath": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj",
       "packagesPath": "C:\\Users\\aescudero\\.nuget\\packages\\",
-      "outputPath": "D:\\GIT CORE2\\RH_Laboro\\NETCoreADO\\NETCoreADO\\obj\\",
+      "outputPath": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreADO\\NETCoreADO\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

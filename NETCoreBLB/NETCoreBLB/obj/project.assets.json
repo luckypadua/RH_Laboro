@@ -841,11 +841,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GIT CORE2\\RH_Laboro\\NETCoreBLB\\NETCoreBLB\\NETCoreBLB.vbproj",
+      "projectUniqueName": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreBLB\\NETCoreBLB\\NETCoreBLB.vbproj",
       "projectName": "NETCoreBLB",
-      "projectPath": "D:\\GIT CORE2\\RH_Laboro\\NETCoreBLB\\NETCoreBLB\\NETCoreBLB.vbproj",
+      "projectPath": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreBLB\\NETCoreBLB\\NETCoreBLB.vbproj",
       "packagesPath": "C:\\Users\\aescudero\\.nuget\\packages\\",
-      "outputPath": "D:\\GIT CORE2\\RH_Laboro\\NETCoreBLB\\NETCoreBLB\\obj\\",
+      "outputPath": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreBLB\\NETCoreBLB\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -864,8 +864,8 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "D:\\GIT CORE2\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj": {
-              "projectPath": "D:\\GIT CORE2\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj"
+            "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj": {
+              "projectPath": "D:\\GIT CORE2\\RH_Laboro\\RH_Laboro\\NETCoreADO\\NETCoreADO\\NETCoreADO.vbproj"
             }
           }
         }
