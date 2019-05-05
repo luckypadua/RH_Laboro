@@ -1,10 +1,10 @@
 D:\GIT CORE2\BIN\DEBUG\netstandard2.0\NETCoreBLB.deps.json
 D:\GIT CORE2\BIN\DEBUG\netstandard2.0\NETCoreBLB.dll
 D:\GIT CORE2\BIN\DEBUG\netstandard2.0\NETCoreBLB.pdb
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.vbprojAssemblyReference.cache
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.vbproj.CoreCompileInputs.cache
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.AssemblyInfoInputs.cache
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.AssemblyInfo.vb
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.vbproj.CopyComplete
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.dll
-D:\GIT CORE2\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.pdb
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.vbprojAssemblyReference.cache
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.vbproj.CoreCompileInputs.cache
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.AssemblyInfoInputs.cache
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.AssemblyInfo.vb
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.vbproj.CopyComplete
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.dll
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreBLB\NETCoreBLB\obj\Debug\netstandard2.0\NETCoreBLB.pdb
