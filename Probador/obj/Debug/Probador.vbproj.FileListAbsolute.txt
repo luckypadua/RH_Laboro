@@ -1,0 +1,12 @@
+D:\BIN\DEBUG\Probador.exe
+D:\BIN\DEBUG\Probador.pdb
+D:\BIN\DEBUG\Probador.xml
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.vbprojAssemblyReference.cache
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.Form1.resources
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.Resources.resources
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.vbproj.GenerateResource.cache
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.vbproj.CoreCompileInputs.cache
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.vbproj.CopyComplete
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.exe
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.xml
+D:\GIT CORE2\RH_Laboro\Probador\obj\Debug\Probador.pdb
