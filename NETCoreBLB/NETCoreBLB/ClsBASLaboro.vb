@@ -18,16 +18,13 @@ Public Class ClsBASLaboro
 
     End Sub
 
-    Public Function GetPersona(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetPersona
+    Public Function GetPersonaLegajos(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetPersonaLegajos
 
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from Portal_Personas Where IdPersona = {0}", IdPersona), "Persona")
-        Return MiAdo.Consultar.GetDataset(String.Format("Select * from Portal_Puestos Where IdPersona = {0}", IdPersona), "Puestos", Ds)
-
-    End Function
-
-    Public Function GetLegajo(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetLegajo
-
-        Return MiAdo.Consultar.GetDataset(String.Format("Select * from Portal_Legajos Where IdPersona = {0}", IdPersona), "Legajo")
+        Ds.DataSetName = "PersonaLegajos"
+        Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from Portal_Legajos Where IdPersona = {0}", IdPersona), "Legajo", Ds)
+        Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from Portal_Puestos Where IdPersona = {0}", IdPersona), "Puestos", Ds)
+        Return Ds
 
     End Function
 

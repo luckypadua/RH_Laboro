@@ -22,72 +22,84 @@ Partial Class frmProbador
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.BtnPersona = New System.Windows.Forms.Button()
+        Me.BtnPersonaLegajos = New System.Windows.Forms.Button()
         Me.WebBrowserInput = New System.Windows.Forms.WebBrowser()
-        Me.BtnLegajo = New System.Windows.Forms.Button()
         Me.BtnSalir = New System.Windows.Forms.Button()
+        Me.txtIdPersona = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
-        'BtnPersona
+        'BtnPersonaLegajos
         '
-        Me.BtnPersona.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnPersona.Location = New System.Drawing.Point(21, 22)
-        Me.BtnPersona.Name = "BtnPersona"
-        Me.BtnPersona.Size = New System.Drawing.Size(107, 41)
-        Me.BtnPersona.TabIndex = 0
-        Me.BtnPersona.Text = "&Persona"
-        Me.BtnPersona.UseVisualStyleBackColor = True
+        Me.BtnPersonaLegajos.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnPersonaLegajos.Location = New System.Drawing.Point(10, 70)
+        Me.BtnPersonaLegajos.Name = "BtnPersonaLegajos"
+        Me.BtnPersonaLegajos.Size = New System.Drawing.Size(125, 41)
+        Me.BtnPersonaLegajos.TabIndex = 1
+        Me.BtnPersonaLegajos.Text = "&PersonaLegajos"
+        Me.BtnPersonaLegajos.UseVisualStyleBackColor = True
         '
         'WebBrowserInput
         '
         Me.WebBrowserInput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.WebBrowserInput.Location = New System.Drawing.Point(163, 12)
+        Me.WebBrowserInput.Location = New System.Drawing.Point(143, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(861, 569)
-        Me.WebBrowserInput.TabIndex = 11
-        '
-        'BtnLegajo
-        '
-        Me.BtnLegajo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnLegajo.Location = New System.Drawing.Point(21, 69)
-        Me.BtnLegajo.Name = "BtnLegajo"
-        Me.BtnLegajo.Size = New System.Drawing.Size(107, 41)
-        Me.BtnLegajo.TabIndex = 12
-        Me.BtnLegajo.Text = "&Legajo"
-        Me.BtnLegajo.UseVisualStyleBackColor = True
+        Me.WebBrowserInput.Size = New System.Drawing.Size(881, 569)
+        Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
         '
         Me.BtnSalir.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnSalir.ForeColor = System.Drawing.Color.Blue
-        Me.BtnSalir.Location = New System.Drawing.Point(21, 116)
+        Me.BtnSalir.Location = New System.Drawing.Point(10, 117)
         Me.BtnSalir.Name = "BtnSalir"
-        Me.BtnSalir.Size = New System.Drawing.Size(107, 41)
-        Me.BtnSalir.TabIndex = 13
+        Me.BtnSalir.Size = New System.Drawing.Size(125, 41)
+        Me.BtnSalir.TabIndex = 2
         Me.BtnSalir.Text = "&Salir"
         Me.BtnSalir.UseVisualStyleBackColor = True
         '
-        'Form1
+        'txtIdPersona
+        '
+        Me.txtIdPersona.Location = New System.Drawing.Point(22, 35)
+        Me.txtIdPersona.Name = "txtIdPersona"
+        Me.txtIdPersona.Size = New System.Drawing.Size(100, 20)
+        Me.txtIdPersona.TabIndex = 0
+        Me.txtIdPersona.Text = "2883"
+        Me.txtIdPersona.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(20, 19)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(55, 13)
+        Me.Label1.TabIndex = 15
+        Me.Label1.Text = "IdPersona"
+        '
+        'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1036, 593)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtIdPersona)
         Me.Controls.Add(Me.BtnSalir)
-        Me.Controls.Add(Me.BtnLegajo)
         Me.Controls.Add(Me.WebBrowserInput)
-        Me.Controls.Add(Me.BtnPersona)
-        Me.Name = "Form1"
+        Me.Controls.Add(Me.BtnPersonaLegajos)
+        Me.Name = "frmProbador"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Probador"
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents BtnPersona As Button
+    Friend WithEvents BtnPersonaLegajos As Button
     Friend WithEvents WebBrowserInput As WebBrowser
-    Friend WithEvents BtnLegajo As Button
     Friend WithEvents BtnSalir As Button
+    Friend WithEvents txtIdPersona As TextBox
+    Friend WithEvents Label1 As Label
 End Class
