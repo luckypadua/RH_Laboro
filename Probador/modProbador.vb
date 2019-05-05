@@ -1,7 +1,7 @@
 ﻿Imports System.Xml
 Imports System.IO
 
-Module Module1
+Module modProbador
 
     Public Function GetStream(ByVal sXML As String) As Stream
 
