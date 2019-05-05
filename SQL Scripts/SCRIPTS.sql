@@ -4,10 +4,10 @@ GO
 
 Create View [dbo].[Portal_Puestos]
 AS
-	SELECT	CodEmp = op.CodEmp,
-			NombrePuesto = pu.Nombre,
-			IdPersona = opp.IdPersonaHijo,
-			IdLegajo = l.IdLegajo
+	SELECT	CodEmp			= op.CodEmp,
+			NombrePuesto	= pu.Nombre,
+			IdPersona		= opp.IdPersonaHijo,
+			IdLegajo		= l.IdLegajo
 	FROM ORG_PuestoPersona opp  (nolock)
 		JOIN ORG_Puestos pu		(nolock) ON opp.IdPuesto = pu.IdPuesto
 		JOIN ORG_Estructuras oe (nolock) ON oe.IdEstructura = opp.IdEstructura
@@ -61,36 +61,36 @@ Create View [dbo].[Portal_Legajos]
 AS
 SELECT DISTINCT l.IdLegajo, 
                 p.IdPersona, 
-                [Legajo] = l.Legajo, 
-                [NombreCompleto] = p.Nombre, 
-			    [C.U.I.L.] = p.CUIL, 
-				[Categoría] = Cate.Nombre, 
-				[Convenio] = c.Denominacion, 
-				[Doc.Nro.] = p.DocNro, 
-				[Empresa] = l.CodEmp, 
-				[Estado] = (Case When 
-							/*Egreso*/
-							(l.FecEgreso is Null OR l.FecEgreso=lq.MesLiq)
-							/*Ingeso*/
-							AND 	((NOT l.fecIngreso is NULL AND datepart(year,l.FecIngreso)*100+datepart(month,l.FecIngreso) <= datepart(year,lq.Mesliq)*100+datepart(month,lq.MesLiq)) 
-							OR 		(NOT l.fecingreso is NULL AND lq.MesLiq IS NULL))
-							THEN 'Activo' ELSE 'Inactivo' End), 
-				[FechaAntiguedad] = l.FecBaseAnt,
-				[FechaIngreso] = l.FecIngreso, 
-				[FechaIndemnizacion] = l.FecBaseIndem, 
-				[FechaEgreso] = l.FecEgreso, 
-				[FechaJubilacion] = l.FecJubilacion, 
-				[SIJP-ModContratacion] = mc.Descripcion , 
-				[SIJP-Regimen] = CASE l.Regimen 
-									   WHEN 0 THEN 'Capitalización' 
-									   WHEN 1 THEN 'Reparto' 
-								   END, 
-				[SIJP-ZonaGeografica] = z.Descripcion, 
-				[Tel.Directo] = l.TelDirecto, 
-				[Tel.Interno] = l.TelInterno, 
-				[LugarDeTrabajo] = lt.Descripcion, 
-				[Banco] = R.BancoPagoDesc, 
-				[ObraSocial] = R.ObraSocialDesc
+                [Legajo]			= l.Legajo, 
+                [NombreCompleto]	= p.Nombre, 
+			    [C.U.I.L.]			= p.CUIL, 
+				[Categoría]			= Cate.Nombre, 
+				[Convenio]			= c.Denominacion, 
+				[Doc.Nro.]			= p.DocNro, 
+				[Empresa]			= l.CodEmp, 
+				[Estado]			= (CASE WHEN 
+										/*Egreso*/
+										(l.FecEgreso is Null OR l.FecEgreso=lq.MesLiq)
+										/*Ingeso*/
+										AND ((NOT l.fecIngreso is NULL AND datepart(year,l.FecIngreso)*100+datepart(month,l.FecIngreso) <= datepart(year,lq.Mesliq)*100+datepart(month,lq.MesLiq)) 
+										OR	(NOT l.fecingreso is NULL AND lq.MesLiq IS NULL))
+									  THEN 'Activo' ELSE 'Inactivo' End), 
+				[FechaAntiguedad]		= l.FecBaseAnt,
+				[FechaIngreso]			= l.FecIngreso, 
+				[FechaIndemnizacion]	= l.FecBaseIndem, 
+				[FechaEgreso]			= l.FecEgreso, 
+				[FechaJubilacion]		= l.FecJubilacion, 
+				[SIJP-ModContratacion]	= mc.Descripcion , 
+				[SIJP-Regimen]			= CASE l.Regimen 
+											WHEN 0 THEN 'Capitalización' 
+											WHEN 1 THEN 'Reparto' 
+										  END, 
+				[SIJP-ZonaGeografica]	= z.Descripcion, 
+				[Tel.Directo]			= l.TelDirecto, 
+				[Tel.Interno]			= l.TelInterno, 
+				[LugarDeTrabajo]		= lt.Descripcion, 
+				[Banco]					= R.BancoPagoDesc, 
+				[ObraSocial]			= R.ObraSocialDesc
  FROM Bl_Legajos l					(nolock)
  LEFT JOIN BL_LIQUIDACIONES lq		(nolock) ON lq.idLiquidacion=(SELECT MAX(idLiquidacion) FROM BL_LIQUIDACIONES) 
  LEFT JOIN BL_PERSONAS p			(nolock) ON l.idPersona=p.IdPersona 
