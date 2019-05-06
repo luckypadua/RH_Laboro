@@ -62,10 +62,24 @@ Public Class AdoNet
         Try
 
             If _Conn Is Nothing Then
+
                 _Conn = New SqlConnection
                 _Conn.ConnectionString = _Configurar.ConnectionString
                 _Conn.Open()
+
+            Else
+
+                If _Conn.State = ConnectionState.Broken Or
+                   _Conn.State = ConnectionState.Closed Then
+
+                    _Conn.Dispose()
+                    _Conn = New SqlConnection(_Configurar.ConnectionString)
+                    _Conn.Open()
+
+                End If
+
             End If
+
             Return _Conn
 
         Catch ex As Exception
