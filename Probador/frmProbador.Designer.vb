@@ -22,22 +22,22 @@ Partial Class frmProbador
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.BtnPersonaLegajos = New System.Windows.Forms.Button()
+        Me.BtnDatosPersonales = New System.Windows.Forms.Button()
         Me.WebBrowserInput = New System.Windows.Forms.WebBrowser()
         Me.BtnSalir = New System.Windows.Forms.Button()
         Me.txtIdPersona = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
-        'BtnPersonaLegajos
+        'BtnDatosPersonales
         '
-        Me.BtnPersonaLegajos.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnPersonaLegajos.Location = New System.Drawing.Point(10, 70)
-        Me.BtnPersonaLegajos.Name = "BtnPersonaLegajos"
-        Me.BtnPersonaLegajos.Size = New System.Drawing.Size(125, 41)
-        Me.BtnPersonaLegajos.TabIndex = 1
-        Me.BtnPersonaLegajos.Text = "&PersonaLegajos"
-        Me.BtnPersonaLegajos.UseVisualStyleBackColor = True
+        Me.BtnDatosPersonales.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnDatosPersonales.Location = New System.Drawing.Point(10, 70)
+        Me.BtnDatosPersonales.Name = "BtnDatosPersonales"
+        Me.BtnDatosPersonales.Size = New System.Drawing.Size(125, 41)
+        Me.BtnDatosPersonales.TabIndex = 1
+        Me.BtnDatosPersonales.Text = "&DatosPersonales"
+        Me.BtnDatosPersonales.UseVisualStyleBackColor = True
         '
         'WebBrowserInput
         '
@@ -88,7 +88,7 @@ Partial Class frmProbador
         Me.Controls.Add(Me.txtIdPersona)
         Me.Controls.Add(Me.BtnSalir)
         Me.Controls.Add(Me.WebBrowserInput)
-        Me.Controls.Add(Me.BtnPersonaLegajos)
+        Me.Controls.Add(Me.BtnDatosPersonales)
         Me.Name = "frmProbador"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Probador"
@@ -97,7 +97,7 @@ Partial Class frmProbador
 
     End Sub
 
-    Friend WithEvents BtnPersonaLegajos As Button
+    Friend WithEvents BtnDatosPersonales As Button
     Friend WithEvents WebBrowserInput As WebBrowser
     Friend WithEvents BtnSalir As Button
     Friend WithEvents txtIdPersona As TextBox

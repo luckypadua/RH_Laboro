@@ -2,8 +2,8 @@
 
     Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("SERVIDORBLB\SQL2014", "test360_BocaOrganigrama", "sa", "sa")
 
-    Private Sub BtnPersonaLegajos_Click(sender As Object, e As EventArgs) Handles BtnPersonaLegajos.Click
-        Dim Ds As DataSet = RH.GetPersonaLegajos(txtIdPersona.Text)
+    Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
+        Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
