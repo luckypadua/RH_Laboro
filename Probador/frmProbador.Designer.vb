@@ -27,6 +27,7 @@ Partial Class frmProbador
         Me.BtnSalir = New System.Windows.Forms.Button()
         Me.txtIdPersona = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.BtnLoguinsIni = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'BtnDatosPersonales
@@ -54,7 +55,7 @@ Partial Class frmProbador
         '
         Me.BtnSalir.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnSalir.ForeColor = System.Drawing.Color.Blue
-        Me.BtnSalir.Location = New System.Drawing.Point(10, 117)
+        Me.BtnSalir.Location = New System.Drawing.Point(10, 164)
         Me.BtnSalir.Name = "BtnSalir"
         Me.BtnSalir.Size = New System.Drawing.Size(125, 41)
         Me.BtnSalir.TabIndex = 2
@@ -79,11 +80,22 @@ Partial Class frmProbador
         Me.Label1.TabIndex = 15
         Me.Label1.Text = "IdPersona"
         '
+        'BtnLoguinsIni
+        '
+        Me.BtnLoguinsIni.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnLoguinsIni.Location = New System.Drawing.Point(10, 117)
+        Me.BtnLoguinsIni.Name = "BtnLoguinsIni"
+        Me.BtnLoguinsIni.Size = New System.Drawing.Size(125, 41)
+        Me.BtnLoguinsIni.TabIndex = 16
+        Me.BtnLoguinsIni.Text = "&LoguinsIni"
+        Me.BtnLoguinsIni.UseVisualStyleBackColor = True
+        '
         'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1036, 593)
+        Me.Controls.Add(Me.BtnLoguinsIni)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtIdPersona)
         Me.Controls.Add(Me.BtnSalir)
@@ -102,4 +114,5 @@ Partial Class frmProbador
     Friend WithEvents BtnSalir As Button
     Friend WithEvents txtIdPersona As TextBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents BtnLoguinsIni As Button
 End Class

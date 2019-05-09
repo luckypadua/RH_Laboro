@@ -7,6 +7,11 @@
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
+    Private Sub BtnLoguinsIni_Click(sender As Object, e As EventArgs) Handles BtnLoguinsIni.Click
+        Dim Ds As DataSet = RH.GetLoguinsIni
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
     Protected Overrides Sub Finalize()
         RH.Dispose()
         MyBase.Finalize()

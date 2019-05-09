@@ -29,6 +29,14 @@ Public Class ClsBASLaboro
 
     End Function
 
+    Public Function GetLoguinsIni() As DataSet Implements ItzBASLaboro.GetLoguinsIni
+
+        Dim Ds As DataSet = MiAdo.Consultar.GetDataset("Select IdPersona,Usuario,Contrasenia from Portal_LoguinsIni Order By IdPersona", "LoguinsIni")
+        Ds.DataSetName = "LoguinsIni"
+        Return Ds
+
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' Para detectar llamadas redundantes
 

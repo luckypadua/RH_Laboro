@@ -100,5 +100,18 @@ SELECT			l.IdLegajo,
 
 GO
 
+If Exists (Select * From SysObjects Where id = object_id(N'[Portal_LoguinsIni]') And OBJECTPROPERTY(id, N'IsView') = 1) 
+   DROP VIEW [dbo].[Portal_LoguinsIni]
+GO
 
+Create View [dbo].[Portal_LoguinsIni]
+AS
+
+	Select p.IdPersona,
+		   Usuario = p.CUIL,
+		   Contrasenia=p.CUIL
+	From bl_personas P (nolock)
+	Where P.habilitadoPortal = 1 
+
+GO
 
