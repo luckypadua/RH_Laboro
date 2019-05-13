@@ -1,3 +1,6 @@
+
+exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit',0,1
+
 If Exists (Select * From SysObjects Where id = object_id(N'[Portal_Puestos]') And OBJECTPROPERTY(id, N'IsView') = 1) 
    DROP VIEW [dbo].[Portal_Puestos]
 GO
