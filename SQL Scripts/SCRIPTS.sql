@@ -1,5 +1,10 @@
 
-exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit',0,1
+-- Altas de columnas 
+exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'         ,0,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'PDF'             ,'varchar(100)',1
+exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)',1
+exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'    ,1
+-- Fin Alta de columnas
 
 If Exists (Select * From SysObjects Where id = object_id(N'[Portal_Puestos]') And OBJECTPROPERTY(id, N'IsView') = 1) 
    DROP VIEW [dbo].[Portal_Puestos]
