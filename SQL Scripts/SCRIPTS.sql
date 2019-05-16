@@ -1,4 +1,4 @@
--- Altas de columnas 
+-- Altas de columnas Dóricas
 exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'         ,0,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF'             ,'varchar(100)',1
 exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)',1
