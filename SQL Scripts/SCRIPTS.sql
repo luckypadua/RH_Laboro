@@ -1,9 +1,11 @@
--- Altas de columnas D¢ricas
+-- Altas de columnas J¢nicas
 exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'         ,0,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF'             ,'varchar(100)',1
 exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)',1
 exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'    ,1
 -- Fin Alta de columnas
+
+SELECT 0
 
 If Exists (Select * From SysObjects Where id = object_id(N'[vAutogestion_Puestos]') And OBJECTPROPERTY(id, N'IsView') = 1) 
    DROP VIEW [dbo].[vAutogestion_Puestos]
