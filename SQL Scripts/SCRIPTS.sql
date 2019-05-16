@@ -5,6 +5,13 @@ exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)',1
 exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'    ,1
 -- Fin Alta de columnas
 
+CREATE ViEW [dbo].[AAAA]
+AS
+    SELECT IdManager,
+	   IdLegajo AS IdEmpleado
+    FROM AAAAAA
+GO
+
 If Exists (Select * From SysObjects Where id = object_id(N'[vAutogestion_Puestos]') And OBJECTPROPERTY(id, N'IsView') = 1) 
    DROP VIEW [dbo].[vAutogestion_Puestos]
 GO
