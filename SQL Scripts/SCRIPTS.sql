@@ -1,8 +1,14 @@
 -- Altas de columnas
-exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'         ,0,1
-exec ADDCOLUMN  'BL_RECIBOS' ,'PDF'             ,'varchar(100)',1
-exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)',1
-exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'    ,1
+exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'           ,0,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_Nombre'      ,'varchar(100)'  ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaLOC'     ,'varchar(3000)' ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaFTP'     ,'varchar(3000)' ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)'  ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'      ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'Firmado'	        ,'tinyint'	     ,0,0
+exec ADDCOLUMN  'BL_RECIBOS' ,'Firmado_Fecha'   ,'datetime'		 ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'Observacion'	    ,'varchar(8000)' ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'FTPDownLoad'	    ,'datetime'		 ,1
 -- Fin Alta de columnas
 
 SELECT 0
@@ -51,7 +57,7 @@ AS
 		   Nacionalidad			= N.Denominacion,
 		   EstadoCivil			= E.Denominacion,
 		   Sexo					= p.Sexo,
-		   FecNacimiento		= p.FecNacimiento,
+		   FecNacimiento		= CONVERT(VARCHAR, p.FecNacimiento, 103),
 		   Telefono				= p.Telefono,
 		   EmailPersonal		= p.EmailPersonal
 	From bl_personas P			  (nolock) 
@@ -80,11 +86,11 @@ SELECT			l.IdLegajo,
 										AND ((NOT l.fecIngreso is NULL AND datepart(year,l.FecIngreso)*100+datepart(month,l.FecIngreso) <= datepart(year,lq.Mesliq)*100+datepart(month,lq.MesLiq)) 
 										OR	(NOT l.fecingreso is NULL AND lq.MesLiq IS NULL))
 									  THEN 'Activo' ELSE 'Inactivo' End), 
-				[FechaAntiguedad]		= l.FecBaseAnt,
-				[FechaIngreso]			= l.FecIngreso, 
-				[FechaIndemnizacion]	= l.FecBaseIndem, 
-				[FechaEgreso]			= l.FecEgreso, 
-				[FechaJubilacion]		= l.FecJubilacion, 
+				[FechaAntiguedad]		= CONVERT(VARCHAR, l.FecBaseAnt, 103),
+				[FechaIngreso]			= CONVERT(VARCHAR, l.FecIngreso, 103),
+				[FechaIndemnizacion]	= CONVERT(VARCHAR, l.FecBaseIndem, 103),
+				[FechaEgreso]			= CONVERT(VARCHAR, l.FecEgreso, 103),
+				[FechaJubilacion]		= CONVERT(VARCHAR, l.FecJubilacion, 103),
 				[ModContratacion]		= mc.Descripcion , 
 				[Regimen]				= CASE l.Regimen 
 											WHEN 0 THEN 'Capitalizaci½n' 
@@ -134,9 +140,9 @@ AS
         FAM.Secuencia,
         FAM.Nombres,
         FAM.Apellido,
-        FAM.FecNacimiento,
-        [Parentesco] = PAR.Descripcion,
-        FAM.FecACargo
+        [FecNacimiento] = CONVERT(VARCHAR, FAM.FecNacimiento, 103),
+        [Parentesco]    = PAR.Descripcion,
+        [FecACargo]     = CONVERT(VARCHAR, FAM.FecACargo, 103)
     FROM BL_FAMILIARES FAM              (NOLOCK) 
         INNER JOIN BL_PARENTESCOS PAR   (NOLOCK) ON (PAR.IdParentesco = FAM.IdParentesco)
 GO
@@ -150,4 +156,33 @@ AS
     SELECT IdManager,
 	   IdLegajo AS IdEmpleado
     FROM BL_EMPLEADOSACARGO
+GO
+
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vAutogestion_Recibos]'))
+	DROP VIEW [dbo].[vAutogestion_Recibos]
+GO
+
+Create View [dbo].[vAutogestion_Recibos]
+AS
+SELECT R.[IdLiquidacion]
+      ,R.[IdLegajo]
+      ,P.IdPersona   
+	  ,L.LegajoCodigo 
+	  ,R.[PDF_Nombre]
+      ,R.[PDF_RutaFTP]
+      ,R.[FTPUpLoad]
+      ,R.[Firmado]
+	  ,R.[Firmado_Fecha]
+      ,R.[Observacion]
+      ,R.[FTPDownLoad]
+	  ,Empresa = L.Empresa 
+	  ,Liquidacion_Mes = LIQ.MesLiq
+	  ,Liquidacion_Codigo = LT.CodLiq 
+	  ,Liquidacion_Nombre = LT.Descripcion  
+  FROM [dbo].[BL_RECIBOS] R
+  JOIN vAutogestion_Legajos   L ON L.IdLegajo = R.IdLegajo 
+  JOIN vAutogestion_Personas  P ON P.IdPersona = L.IdPersona 
+  JOIN BL_LIQUIDACIONES     LIQ ON LIQ.IdLiquidacion = R.IdLiquidacion   
+  JOIN BL_LIQUIDACIONESTIPOS LT ON LT.IdLiqTipo = LIQ.IdLiqTipo 
+  WHERE Not R.[PDF_Nombre] is null
 GO
