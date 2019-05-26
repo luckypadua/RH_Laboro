@@ -11,7 +11,12 @@ exec ADDCOLUMN  'BL_RECIBOS' ,'Observacion'	    ,'varchar(8000)' ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'FTPDownLoad'	    ,'datetime'		 ,1
 -- Fin Alta de columnas
 
-SELECT 0
+IF EXISTS (SELECT Name FROM sysindexes WHERE Name = 'IX_BL_RECIBOS_PDF_Nombre')
+	DROP INDEX [IX_BL_RECIBOS_PDF_Nombre] ON [dbo].[BL_RECIBOS]
+GO
+CREATE NONCLUSTERED INDEX [IX_BL_RECIBOS_PDF_Nombre] ON [dbo].[BL_RECIBOS]
+	([PDF_Nombre] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
 
 If Exists (Select * From SysObjects Where id = object_id(N'[vAutogestion_Puestos]') And OBJECTPROPERTY(id, N'IsView') = 1) 
    DROP VIEW [dbo].[vAutogestion_Puestos]
