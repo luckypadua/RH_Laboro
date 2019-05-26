@@ -5,10 +5,10 @@ exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaLOC'     ,'varchar(3000)' ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaFTP'     ,'varchar(3000)' ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)'  ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'      ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'FTPDownLoad'	    ,'datetime'		 ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'Firmado'	        ,'tinyint'	     ,0,0
 exec ADDCOLUMN  'BL_RECIBOS' ,'Firmado_Fecha'   ,'datetime'		 ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'Observacion'	    ,'varchar(8000)' ,1
-exec ADDCOLUMN  'BL_RECIBOS' ,'FTPDownLoad'	    ,'datetime'		 ,1
 -- Fin Alta de columnas
 
 IF EXISTS (SELECT Name FROM sysindexes WHERE Name = 'IX_BL_RECIBOS_PDF_Nombre')
