@@ -22,22 +22,26 @@
         MyBase.Finalize()
     End Sub
 
+    Private Sub BtnFirmar_Click(sender As Object, e As EventArgs) Handles BtnFirmar.Click
+
+        RH.ReciboFirmado(txtIdLiquidacion.Text, txtIdLegajo.Text, RbConforme.Checked, txtObservación.Text)
+        BtnRecibos.PerformClick()
+
+    End Sub
+
     Private Sub BtnSalir_Click(sender As Object, e As EventArgs) Handles BtnSalir.Click
         Me.Close()
     End Sub
 
-    Private Sub BtnAceptar_Click(sender As Object, e As EventArgs) Handles BtnAceptar.Click
+    Private Sub BtnReciboDescargado_Click_1(sender As Object, e As EventArgs) Handles BtnReciboDescargado.Click
 
-        RH.ReciboFirmado(117, 7856, RbConforme.Checked, txtObservación.Text)
-        BtnRecibos.PerformClick()
+        RH.ReciboDescargado(txtIdLiquidacion.Text, txtIdLegajo.Text)
 
     End Sub
 
-    Private Sub BtnDescargar_Click(sender As Object, e As EventArgs) Handles BtnDescargar.Click
-
-        RH.ReciboDescargado(117, 7856)
-        BtnRecibos.PerformClick()
-
+    Private Sub BtnReciboDescarga_Click(sender As Object, e As EventArgs) Handles BtnReciboDescarga.Click
+        Dim Ds As DataSet = RH.GetReciboDescarga(txtIdLiquidacion.Text, txtIdLegajo.Text)
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
 End Class

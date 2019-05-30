@@ -33,21 +33,32 @@ Public Class ClsBASLaboro
 
     Public Function GetRecibos(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetRecibos
 
-        Dim Dt As DataTable = GetParametros()
+
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
         Ds.DataSetName = "Recibos"
-        Ds.Merge(Dt)
 
         Return Ds
 
     End Function
 
-    Private Function GetParametros() As DataTable
+    Public Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetReciboDescarga
 
-        Dim DtRta As New DataTable("FTPParametros")
+        Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+        Dim Dt As DataTable = GetParametros(Archivo)
+        Dim Ds As New DataSet("GetReciboDescarga")
+        Ds.Merge(Dt)
+        Return Ds
+
+    End Function
+
+    Private Function GetParametros(ByVal Archivo As String) As DataTable
+
+        Dim DtRta As New DataTable("GetReciboDescarga")
         DtRta.Columns.Add("Servidor")
         DtRta.Columns.Add("Usuario")
         DtRta.Columns.Add("Contrasenia")
+        DtRta.Columns.Add("Archivo")
+
         Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT [PARAMETRO],[STRVALOR] FROM [dbo].[BL_PARAMETROS] where Parametro Like 'Autogestion\FTP%'", "Parametros")
         If Dt.Rows.Count > 0 Then
 
@@ -64,6 +75,8 @@ Public Class ClsBASLaboro
                 End Select
             Next
 
+            DrRta("Archivo") = Archivo
+
         End If
 
         Return DtRta
@@ -78,7 +91,7 @@ Public Class ClsBASLaboro
 
     End Function
 
-    Public Function ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "") As Boolean Implements ItzBASLaboro.ReciboFirmado
+    Public Sub ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "") Implements ItzBASLaboro.ReciboFirmado
 
         Try
 
@@ -87,26 +100,28 @@ Public Class ClsBASLaboro
             Else
                 MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 2, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion))
             End If
-            Return True
 
         Catch ex As Exception
-            Return False
+
+            Throw New Exception("NETCoreBLB:ReciboFirmado: " & ex.Message)
+
         End Try
 
-    End Function
+    End Sub
 
-    Public Function ReciboDescargado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As Boolean Implements ItzBASLaboro.ReciboDescargado
+    Public Sub ReciboDescargado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) Implements ItzBASLaboro.ReciboDescargado
 
         Try
 
             MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set FTPDownLoad = GetDate() Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
-            Return True
 
         Catch ex As Exception
-            Return False
+
+            Throw New Exception("NETCoreBLB:ReciboDescargado: " & ex.Message)
+
         End Try
 
-    End Function
+    End Sub
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' Para detectar llamadas redundantes

@@ -32,10 +32,19 @@ Partial Class frmProbador
         Me.RbConforme = New System.Windows.Forms.RadioButton()
         Me.RbDisconforme = New System.Windows.Forms.RadioButton()
         Me.txtObservación = New System.Windows.Forms.TextBox()
-        Me.BtnDescargar = New System.Windows.Forms.Button()
-        Me.BtnAceptar = New System.Windows.Forms.Button()
+        Me.BtnFirmar = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtIdLegajo = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtIdLiquidacion = New System.Windows.Forms.TextBox()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.BtnReciboDescargado = New System.Windows.Forms.Button()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.BtnReciboDescarga = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnDatosPersonales
@@ -43,7 +52,7 @@ Partial Class frmProbador
         Me.BtnDatosPersonales.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnDatosPersonales.Location = New System.Drawing.Point(10, 70)
         Me.BtnDatosPersonales.Name = "BtnDatosPersonales"
-        Me.BtnDatosPersonales.Size = New System.Drawing.Size(125, 41)
+        Me.BtnDatosPersonales.Size = New System.Drawing.Size(147, 41)
         Me.BtnDatosPersonales.TabIndex = 1
         Me.BtnDatosPersonales.Text = "&DatosPersonales"
         Me.BtnDatosPersonales.UseVisualStyleBackColor = True
@@ -53,19 +62,19 @@ Partial Class frmProbador
         Me.WebBrowserInput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.WebBrowserInput.Location = New System.Drawing.Point(143, 12)
+        Me.WebBrowserInput.Location = New System.Drawing.Point(161, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(881, 569)
+        Me.WebBrowserInput.Size = New System.Drawing.Size(930, 569)
         Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
         '
         Me.BtnSalir.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnSalir.ForeColor = System.Drawing.Color.Blue
-        Me.BtnSalir.Location = New System.Drawing.Point(10, 216)
+        Me.BtnSalir.Location = New System.Drawing.Point(13, 558)
         Me.BtnSalir.Name = "BtnSalir"
-        Me.BtnSalir.Size = New System.Drawing.Size(125, 41)
+        Me.BtnSalir.Size = New System.Drawing.Size(125, 23)
         Me.BtnSalir.TabIndex = 2
         Me.BtnSalir.Text = "&Salir"
         Me.BtnSalir.UseVisualStyleBackColor = True
@@ -93,7 +102,7 @@ Partial Class frmProbador
         Me.BtnLoguinsIni.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnLoguinsIni.Location = New System.Drawing.Point(10, 117)
         Me.BtnLoguinsIni.Name = "BtnLoguinsIni"
-        Me.BtnLoguinsIni.Size = New System.Drawing.Size(125, 41)
+        Me.BtnLoguinsIni.Size = New System.Drawing.Size(147, 41)
         Me.BtnLoguinsIni.TabIndex = 16
         Me.BtnLoguinsIni.Text = "&LoguinsIni"
         Me.BtnLoguinsIni.UseVisualStyleBackColor = True
@@ -103,7 +112,7 @@ Partial Class frmProbador
         Me.BtnRecibos.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnRecibos.Location = New System.Drawing.Point(10, 164)
         Me.BtnRecibos.Name = "BtnRecibos"
-        Me.BtnRecibos.Size = New System.Drawing.Size(125, 41)
+        Me.BtnRecibos.Size = New System.Drawing.Size(147, 41)
         Me.BtnRecibos.TabIndex = 17
         Me.BtnRecibos.Text = "&Recibos"
         Me.BtnRecibos.UseVisualStyleBackColor = True
@@ -112,7 +121,7 @@ Partial Class frmProbador
         '
         Me.RbConforme.AutoSize = True
         Me.RbConforme.Checked = True
-        Me.RbConforme.Location = New System.Drawing.Point(7, 19)
+        Me.RbConforme.Location = New System.Drawing.Point(6, 19)
         Me.RbConforme.Name = "RbConforme"
         Me.RbConforme.Size = New System.Drawing.Size(70, 17)
         Me.RbConforme.TabIndex = 18
@@ -123,7 +132,7 @@ Partial Class frmProbador
         'RbDisconforme
         '
         Me.RbDisconforme.AutoSize = True
-        Me.RbDisconforme.Location = New System.Drawing.Point(7, 42)
+        Me.RbDisconforme.Location = New System.Drawing.Point(6, 42)
         Me.RbDisconforme.Name = "RbDisconforme"
         Me.RbDisconforme.Size = New System.Drawing.Size(84, 17)
         Me.RbDisconforme.TabIndex = 19
@@ -132,52 +141,129 @@ Partial Class frmProbador
         '
         'txtObservación
         '
-        Me.txtObservación.Location = New System.Drawing.Point(0, 65)
+        Me.txtObservación.Location = New System.Drawing.Point(6, 65)
         Me.txtObservación.Name = "txtObservación"
-        Me.txtObservación.Size = New System.Drawing.Size(122, 20)
+        Me.txtObservación.Size = New System.Drawing.Size(138, 20)
         Me.txtObservación.TabIndex = 21
         '
-        'BtnDescargar
+        'BtnFirmar
         '
-        Me.BtnDescargar.ForeColor = System.Drawing.Color.Blue
-        Me.BtnDescargar.Location = New System.Drawing.Point(7, 348)
-        Me.BtnDescargar.Name = "BtnDescargar"
-        Me.BtnDescargar.Size = New System.Drawing.Size(128, 29)
-        Me.BtnDescargar.TabIndex = 22
-        Me.BtnDescargar.Text = "Descargar"
-        Me.BtnDescargar.UseVisualStyleBackColor = True
-        '
-        'BtnAceptar
-        '
-        Me.BtnAceptar.ForeColor = System.Drawing.Color.Blue
-        Me.BtnAceptar.Location = New System.Drawing.Point(66, 91)
-        Me.BtnAceptar.Name = "BtnAceptar"
-        Me.BtnAceptar.Size = New System.Drawing.Size(56, 29)
-        Me.BtnAceptar.TabIndex = 23
-        Me.BtnAceptar.Text = "Aceptar"
-        Me.BtnAceptar.UseVisualStyleBackColor = True
+        Me.BtnFirmar.ForeColor = System.Drawing.Color.Blue
+        Me.BtnFirmar.Location = New System.Drawing.Point(6, 91)
+        Me.BtnFirmar.Name = "BtnFirmar"
+        Me.BtnFirmar.Size = New System.Drawing.Size(135, 29)
+        Me.BtnFirmar.TabIndex = 23
+        Me.BtnFirmar.Text = "Firmar"
+        Me.BtnFirmar.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
         Me.GroupBox1.Controls.Add(Me.RbConforme)
-        Me.GroupBox1.Controls.Add(Me.BtnAceptar)
+        Me.GroupBox1.Controls.Add(Me.BtnFirmar)
         Me.GroupBox1.Controls.Add(Me.RbDisconforme)
         Me.GroupBox1.Controls.Add(Me.txtObservación)
         Me.GroupBox1.ForeColor = System.Drawing.Color.Blue
-        Me.GroupBox1.Location = New System.Drawing.Point(7, 211)
+        Me.GroupBox1.Location = New System.Drawing.Point(7, 284)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(130, 131)
+        Me.GroupBox1.Size = New System.Drawing.Size(148, 127)
         Me.GroupBox1.TabIndex = 24
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Firmar recibo"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.ForeColor = System.Drawing.Color.Blue
+        Me.Label3.Location = New System.Drawing.Point(12, 261)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(48, 13)
+        Me.Label3.TabIndex = 31
+        Me.Label3.Text = "IdLegajo"
+        '
+        'txtIdLegajo
+        '
+        Me.txtIdLegajo.ForeColor = System.Drawing.Color.Blue
+        Me.txtIdLegajo.Location = New System.Drawing.Point(88, 258)
+        Me.txtIdLegajo.Name = "txtIdLegajo"
+        Me.txtIdLegajo.Size = New System.Drawing.Size(59, 20)
+        Me.txtIdLegajo.TabIndex = 30
+        Me.txtIdLegajo.Text = "7856"
+        Me.txtIdLegajo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.ForeColor = System.Drawing.Color.Blue
+        Me.Label2.Location = New System.Drawing.Point(12, 238)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(70, 13)
+        Me.Label2.TabIndex = 29
+        Me.Label2.Text = "IdLiquidación"
+        '
+        'txtIdLiquidacion
+        '
+        Me.txtIdLiquidacion.ForeColor = System.Drawing.Color.Blue
+        Me.txtIdLiquidacion.Location = New System.Drawing.Point(88, 235)
+        Me.txtIdLiquidacion.Name = "txtIdLiquidacion"
+        Me.txtIdLiquidacion.Size = New System.Drawing.Size(59, 20)
+        Me.txtIdLiquidacion.TabIndex = 28
+        Me.txtIdLiquidacion.Text = "117"
+        Me.txtIdLiquidacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.BtnReciboDescargado)
+        Me.GroupBox2.ForeColor = System.Drawing.Color.Blue
+        Me.GroupBox2.Location = New System.Drawing.Point(3, 417)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(148, 57)
+        Me.GroupBox2.TabIndex = 25
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Recibo descargado"
+        '
+        'BtnReciboDescargado
+        '
+        Me.BtnReciboDescargado.ForeColor = System.Drawing.Color.Blue
+        Me.BtnReciboDescargado.Location = New System.Drawing.Point(9, 19)
+        Me.BtnReciboDescargado.Name = "BtnReciboDescargado"
+        Me.BtnReciboDescargado.Size = New System.Drawing.Size(133, 29)
+        Me.BtnReciboDescargado.TabIndex = 23
+        Me.BtnReciboDescargado.Text = "Recibo Descargado"
+        Me.BtnReciboDescargado.UseVisualStyleBackColor = True
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.BtnReciboDescarga)
+        Me.GroupBox3.ForeColor = System.Drawing.Color.Blue
+        Me.GroupBox3.Location = New System.Drawing.Point(7, 480)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Size = New System.Drawing.Size(148, 57)
+        Me.GroupBox3.TabIndex = 32
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Recibo para descargar"
+        '
+        'BtnReciboDescarga
+        '
+        Me.BtnReciboDescarga.ForeColor = System.Drawing.Color.Blue
+        Me.BtnReciboDescarga.Location = New System.Drawing.Point(9, 19)
+        Me.BtnReciboDescarga.Name = "BtnReciboDescarga"
+        Me.BtnReciboDescarga.Size = New System.Drawing.Size(133, 29)
+        Me.BtnReciboDescarga.TabIndex = 23
+        Me.BtnReciboDescarga.Text = "Recibo Descarga"
+        Me.BtnReciboDescarga.UseVisualStyleBackColor = True
         '
         'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1036, 593)
+        Me.ClientSize = New System.Drawing.Size(1103, 593)
+        Me.Controls.Add(Me.GroupBox3)
+        Me.Controls.Add(Me.GroupBox2)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtIdLegajo)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.txtIdLiquidacion)
         Me.Controls.Add(Me.GroupBox1)
-        Me.Controls.Add(Me.BtnDescargar)
         Me.Controls.Add(Me.BtnRecibos)
         Me.Controls.Add(Me.BtnLoguinsIni)
         Me.Controls.Add(Me.Label1)
@@ -190,6 +276,8 @@ Partial Class frmProbador
         Me.Text = "Probador"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox3.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -205,7 +293,14 @@ Partial Class frmProbador
     Friend WithEvents RbConforme As RadioButton
     Friend WithEvents RbDisconforme As RadioButton
     Friend WithEvents txtObservación As TextBox
-    Friend WithEvents BtnDescargar As Button
-    Friend WithEvents BtnAceptar As Button
+    Friend WithEvents BtnFirmar As Button
     Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents txtIdLegajo As TextBox
+    Friend WithEvents Label2 As Label
+    Friend WithEvents txtIdLiquidacion As TextBox
+    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents BtnReciboDescargado As Button
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents BtnReciboDescarga As Button
 End Class
