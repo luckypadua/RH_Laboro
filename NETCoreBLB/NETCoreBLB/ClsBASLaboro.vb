@@ -44,20 +44,22 @@ Public Class ClsBASLaboro
     Public Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetReciboDescarga
 
         Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
-        Dim Dt As DataTable = GetParametros(Archivo)
+        Dim ArchivoAlias As String = IO.Path.GetFileName(Archivo)
+        Dim Dt As DataTable = GetParametros(Archivo, ArchivoAlias)
         Dim Ds As New DataSet("GetReciboDescarga")
         Ds.Merge(Dt)
         Return Ds
 
     End Function
 
-    Private Function GetParametros(ByVal Archivo As String) As DataTable
+    Private Function GetParametros(ByVal Archivo As String, ByVal ArchivoAlias As String) As DataTable
 
         Dim DtRta As New DataTable("GetReciboDescarga")
         DtRta.Columns.Add("Servidor")
         DtRta.Columns.Add("Usuario")
         DtRta.Columns.Add("Contrasenia")
         DtRta.Columns.Add("Archivo")
+        DtRta.Columns.Add("ArchivoAlias")
 
         Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT [PARAMETRO],[STRVALOR] FROM [dbo].[BL_PARAMETROS] where Parametro Like 'Autogestion\FTP%'", "Parametros")
         If Dt.Rows.Count > 0 Then
@@ -76,6 +78,7 @@ Public Class ClsBASLaboro
             Next
 
             DrRta("Archivo") = Archivo
+            DrRta("ArchivoAlias") = ArchivoAlias
 
         End If
 

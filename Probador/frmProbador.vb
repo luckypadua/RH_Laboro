@@ -24,7 +24,7 @@
 
     Private Sub BtnFirmar_Click(sender As Object, e As EventArgs) Handles BtnFirmar.Click
 
-        RH.ReciboFirmado(txtIdLiquidacion.Text, txtIdLegajo.Text, RbConforme.Checked, txtObservación.Text)
+        RH.ReciboFirmado(txtIdLiquidacion.Text, cmbIdLegajo.Text, RbConforme.Checked, txtObservación.Text)
         BtnRecibos.PerformClick()
 
     End Sub
@@ -35,12 +35,12 @@
 
     Private Sub BtnReciboDescargado_Click_1(sender As Object, e As EventArgs) Handles BtnReciboDescargado.Click
 
-        RH.ReciboDescargado(txtIdLiquidacion.Text, txtIdLegajo.Text)
+        RH.ReciboDescargado(txtIdLiquidacion.Text, cmbIdLegajo.Text)
 
     End Sub
 
     Private Sub BtnReciboDescarga_Click(sender As Object, e As EventArgs) Handles BtnReciboDescarga.Click
-        Dim Ds As DataSet = RH.GetReciboDescarga(txtIdLiquidacion.Text, txtIdLegajo.Text)
+        Dim Ds As DataSet = RH.GetReciboDescarga(txtIdLiquidacion.Text, cmbIdLegajo.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 

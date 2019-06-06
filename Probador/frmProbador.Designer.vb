@@ -35,13 +35,13 @@ Partial Class frmProbador
         Me.BtnFirmar = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.txtIdLegajo = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtIdLiquidacion = New System.Windows.Forms.TextBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.BtnReciboDescargado = New System.Windows.Forms.Button()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.BtnReciboDescarga = New System.Windows.Forms.Button()
+        Me.cmbIdLegajo = New System.Windows.Forms.ComboBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -85,7 +85,7 @@ Partial Class frmProbador
         Me.txtIdPersona.Name = "txtIdPersona"
         Me.txtIdPersona.Size = New System.Drawing.Size(100, 20)
         Me.txtIdPersona.TabIndex = 0
-        Me.txtIdPersona.Text = "2173"
+        Me.txtIdPersona.Text = "2121"
         Me.txtIdPersona.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label1
@@ -180,16 +180,6 @@ Partial Class frmProbador
         Me.Label3.TabIndex = 31
         Me.Label3.Text = "IdLegajo"
         '
-        'txtIdLegajo
-        '
-        Me.txtIdLegajo.ForeColor = System.Drawing.Color.Blue
-        Me.txtIdLegajo.Location = New System.Drawing.Point(88, 258)
-        Me.txtIdLegajo.Name = "txtIdLegajo"
-        Me.txtIdLegajo.Size = New System.Drawing.Size(59, 20)
-        Me.txtIdLegajo.TabIndex = 30
-        Me.txtIdLegajo.Text = "7856"
-        Me.txtIdLegajo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
         'Label2
         '
         Me.Label2.AutoSize = True
@@ -207,7 +197,7 @@ Partial Class frmProbador
         Me.txtIdLiquidacion.Name = "txtIdLiquidacion"
         Me.txtIdLiquidacion.Size = New System.Drawing.Size(59, 20)
         Me.txtIdLiquidacion.TabIndex = 28
-        Me.txtIdLiquidacion.Text = "117"
+        Me.txtIdLiquidacion.Text = "1488"
         Me.txtIdLiquidacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'GroupBox2
@@ -252,15 +242,25 @@ Partial Class frmProbador
         Me.BtnReciboDescarga.Text = "Recibo Descarga"
         Me.BtnReciboDescarga.UseVisualStyleBackColor = True
         '
+        'cmbIdLegajo
+        '
+        Me.cmbIdLegajo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbIdLegajo.FormattingEnabled = True
+        Me.cmbIdLegajo.Items.AddRange(New Object() {"7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
+        Me.cmbIdLegajo.Location = New System.Drawing.Point(88, 258)
+        Me.cmbIdLegajo.Name = "cmbIdLegajo"
+        Me.cmbIdLegajo.Size = New System.Drawing.Size(59, 21)
+        Me.cmbIdLegajo.TabIndex = 33
+        '
         'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 593)
+        Me.Controls.Add(Me.cmbIdLegajo)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.txtIdLegajo)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtIdLiquidacion)
         Me.Controls.Add(Me.GroupBox1)
@@ -296,11 +296,11 @@ Partial Class frmProbador
     Friend WithEvents BtnFirmar As Button
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents Label3 As Label
-    Friend WithEvents txtIdLegajo As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents txtIdLiquidacion As TextBox
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents BtnReciboDescargado As Button
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents BtnReciboDescarga As Button
+    Friend WithEvents cmbIdLegajo As ComboBox
 End Class
