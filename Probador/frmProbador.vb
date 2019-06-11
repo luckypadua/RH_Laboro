@@ -44,4 +44,8 @@
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
+    Private Sub cmdManagersYEmpleados_Click(sender As Object, e As EventArgs) Handles cmdManagersYEmpleados.Click
+        Dim Ds As DataSet = RH.GetManagers(txtIdLegajo.Text)
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
 End Class

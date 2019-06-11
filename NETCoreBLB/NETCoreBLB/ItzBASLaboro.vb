@@ -7,6 +7,9 @@ Public Interface ItzBASLaboro
     Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet
     Sub ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "")
     Sub ReciboDescargado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long)
+    Function GetManagers(ByVal IdLegajo As Long) As DataSet
+    Function GetLicencias(ByVal IdLegajo As Long) As DataSet
+    Function GetTipoLicencias() As DataSet
     Sub Dispose()
 
 End Interface
