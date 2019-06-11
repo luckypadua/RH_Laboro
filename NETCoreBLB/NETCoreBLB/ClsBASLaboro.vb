@@ -152,7 +152,9 @@ Public Class ClsBASLaboro
 
         Try
 
-            MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 2, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion))
+            Dim Firmado As Integer = 1
+            If Not FirmaConforme Then Firmado = 2
+            MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = {3}, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion, Firmado))
 
         Catch ex As Exception
 
