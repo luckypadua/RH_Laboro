@@ -5,7 +5,7 @@ exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaLOC'     ,'varchar(3000)' ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaFTP'     ,'varchar(3000)' ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'MD5'             ,'varchar(100)'  ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'FTPUpLoad'       ,'datetime'      ,1
-exec ADDCOLUMN  'BL_RECIBOS' ,'FTPDownLoad'	    ,'datetime'		 ,1
+exec ADDCOLUMN  'BL_RECIBOS' ,'Visualizado'	    ,'datetime'		 ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'Firmado'	        ,'tinyint'	     ,0,0
 exec ADDCOLUMN  'BL_RECIBOS' ,'Firmado_Fecha'   ,'datetime'		 ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'Observacion'	    ,'varchar(8000)' ,1
@@ -179,7 +179,7 @@ SELECT R.[IdLiquidacion]
       ,R.[Firmado]
 	  ,R.[Firmado_Fecha]
       ,R.[Observacion]
-      ,R.[FTPDownLoad]
+      ,R.[Visualizado]
 	  ,Empresa = L.Empresa 
 	  ,Liquidacion_Mes = LIQ.MesLiq
 	  ,Liquidacion_Codigo = LT.CodLiq 

@@ -33,9 +33,9 @@
         Me.Close()
     End Sub
 
-    Private Sub BtnReciboDescargado_Click_1(sender As Object, e As EventArgs) Handles BtnReciboDescargado.Click
+    Private Sub BtnReciboDescargado_Click_1(sender As Object, e As EventArgs) Handles BtnReciboVisualizado.Click
 
-        RH.ReciboDescargado(txtIdLiquidacion.Text, cmbIdLegajo.Text)
+        RH.ReciboVisualizado(txtIdLiquidacion.Text, cmbIdLegajo.Text)
 
     End Sub
 
@@ -45,7 +45,8 @@
     End Sub
 
     Private Sub cmdManagersYEmpleados_Click(sender As Object, e As EventArgs) Handles cmdManagersYEmpleados.Click
-        Dim Ds As DataSet = RH.GetManagers(txtIdLegajo.Text)
+        Dim Ds As DataSet = RH.GetManagers(cmbIdLegajo.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
+
 End Class

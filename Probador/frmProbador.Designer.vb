@@ -38,14 +38,11 @@ Partial Class frmProbador
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtIdLiquidacion = New System.Windows.Forms.TextBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.BtnReciboDescargado = New System.Windows.Forms.Button()
+        Me.BtnReciboVisualizado = New System.Windows.Forms.Button()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.BtnReciboDescarga = New System.Windows.Forms.Button()
-<<<<<<< HEAD
         Me.cmbIdLegajo = New System.Windows.Forms.ComboBox()
-=======
         Me.cmdManagersYEmpleados = New System.Windows.Forms.Button()
->>>>>>> 7d1b5e8a68af38fdb35fe7eb2db015dfc1d2681d
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -69,14 +66,14 @@ Partial Class frmProbador
         Me.WebBrowserInput.Location = New System.Drawing.Point(310, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(781, 569)
+        Me.WebBrowserInput.Size = New System.Drawing.Size(781, 614)
         Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
         '
         Me.BtnSalir.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnSalir.ForeColor = System.Drawing.Color.Blue
-        Me.BtnSalir.Location = New System.Drawing.Point(13, 558)
+        Me.BtnSalir.Location = New System.Drawing.Point(13, 603)
         Me.BtnSalir.Name = "BtnSalir"
         Me.BtnSalir.Size = New System.Drawing.Size(125, 23)
         Me.BtnSalir.TabIndex = 2
@@ -206,24 +203,24 @@ Partial Class frmProbador
         '
         'GroupBox2
         '
-        Me.GroupBox2.Controls.Add(Me.BtnReciboDescargado)
+        Me.GroupBox2.Controls.Add(Me.BtnReciboVisualizado)
         Me.GroupBox2.ForeColor = System.Drawing.Color.Blue
         Me.GroupBox2.Location = New System.Drawing.Point(3, 417)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(148, 57)
         Me.GroupBox2.TabIndex = 25
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Recibo descargado"
+        Me.GroupBox2.Text = "Recibo visualizado"
         '
-        'BtnReciboDescargado
+        'BtnReciboVisualizado
         '
-        Me.BtnReciboDescargado.ForeColor = System.Drawing.Color.Blue
-        Me.BtnReciboDescargado.Location = New System.Drawing.Point(9, 19)
-        Me.BtnReciboDescargado.Name = "BtnReciboDescargado"
-        Me.BtnReciboDescargado.Size = New System.Drawing.Size(133, 29)
-        Me.BtnReciboDescargado.TabIndex = 23
-        Me.BtnReciboDescargado.Text = "Recibo Descargado"
-        Me.BtnReciboDescargado.UseVisualStyleBackColor = True
+        Me.BtnReciboVisualizado.ForeColor = System.Drawing.Color.Blue
+        Me.BtnReciboVisualizado.Location = New System.Drawing.Point(9, 19)
+        Me.BtnReciboVisualizado.Name = "BtnReciboVisualizado"
+        Me.BtnReciboVisualizado.Size = New System.Drawing.Size(133, 29)
+        Me.BtnReciboVisualizado.TabIndex = 23
+        Me.BtnReciboVisualizado.Text = "Recibo Visualizado"
+        Me.BtnReciboVisualizado.UseVisualStyleBackColor = True
         '
         'GroupBox3
         '
@@ -246,7 +243,6 @@ Partial Class frmProbador
         Me.BtnReciboDescarga.Text = "Recibo Descarga"
         Me.BtnReciboDescarga.UseVisualStyleBackColor = True
         '
-<<<<<<< HEAD
         'cmbIdLegajo
         '
         Me.cmbIdLegajo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
@@ -256,28 +252,25 @@ Partial Class frmProbador
         Me.cmbIdLegajo.Name = "cmbIdLegajo"
         Me.cmbIdLegajo.Size = New System.Drawing.Size(59, 21)
         Me.cmbIdLegajo.TabIndex = 33
-=======
+        '
         'cmdManagersYEmpleados
         '
         Me.cmdManagersYEmpleados.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdManagersYEmpleados.Location = New System.Drawing.Point(163, 70)
+        Me.cmdManagersYEmpleados.ForeColor = System.Drawing.Color.Black
+        Me.cmdManagersYEmpleados.Location = New System.Drawing.Point(15, 543)
         Me.cmdManagersYEmpleados.Name = "cmdManagersYEmpleados"
-        Me.cmdManagersYEmpleados.Size = New System.Drawing.Size(141, 67)
-        Me.cmdManagersYEmpleados.TabIndex = 33
-        Me.cmdManagersYEmpleados.Text = "Managers y Empleados a cargo"
+        Me.cmdManagersYEmpleados.Size = New System.Drawing.Size(125, 54)
+        Me.cmdManagersYEmpleados.TabIndex = 34
+        Me.cmdManagersYEmpleados.Text = "&Managers y Empleados"
         Me.cmdManagersYEmpleados.UseVisualStyleBackColor = True
->>>>>>> 7d1b5e8a68af38fdb35fe7eb2db015dfc1d2681d
         '
         'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1103, 593)
-<<<<<<< HEAD
-        Me.Controls.Add(Me.cmbIdLegajo)
-=======
+        Me.ClientSize = New System.Drawing.Size(1103, 638)
         Me.Controls.Add(Me.cmdManagersYEmpleados)
->>>>>>> 7d1b5e8a68af38fdb35fe7eb2db015dfc1d2681d
+        Me.Controls.Add(Me.cmbIdLegajo)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.Label3)
@@ -319,12 +312,10 @@ Partial Class frmProbador
     Friend WithEvents Label2 As Label
     Friend WithEvents txtIdLiquidacion As TextBox
     Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents BtnReciboDescargado As Button
+    Friend WithEvents BtnReciboVisualizado As Button
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents BtnReciboDescarga As Button
-<<<<<<< HEAD
     Friend WithEvents cmbIdLegajo As ComboBox
-=======
     Friend WithEvents cmdManagersYEmpleados As Button
->>>>>>> 7d1b5e8a68af38fdb35fe7eb2db015dfc1d2681d
+
 End Class

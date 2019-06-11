@@ -152,11 +152,7 @@ Public Class ClsBASLaboro
 
         Try
 
-            'If FirmaConforme Then
-            '    MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 1, Firmado_Fecha = GetDate(), Observacion = Null Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
-            'Else
             MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 2, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion))
-            'End If
 
         Catch ex As Exception
 
@@ -166,15 +162,15 @@ Public Class ClsBASLaboro
 
     End Sub
 
-    Public Sub ReciboDescargado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) Implements ItzBASLaboro.ReciboDescargado
+    Public Sub ReciboVisualizado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) Implements ItzBASLaboro.ReciboVisualizado
 
         Try
 
-            MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set FTPDownLoad = GetDate() Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+            MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Visualizado = GetDate() Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
 
         Catch ex As Exception
 
-            Throw New Exception("NETCoreBLB:ReciboDescargado: " & ex.Message)
+            Throw New Exception("NETCoreBLB:ReciboVisualizado: " & ex.Message)
 
         End Try
 
