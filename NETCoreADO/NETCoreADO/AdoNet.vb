@@ -1205,6 +1205,32 @@ Public Class ClsEjecutar
         End Try
 
     End Function
+    Public Function GetSQLTinyInt(ByVal Script As String) As Short
+
+        Try
+
+            Dim Valor As Integer = 0
+            Dim reader As SqlDataReader = Me.mParent.Consultar.GetDataReader(Script)
+            If reader.HasRows Then
+                Do While reader.Read()
+                    If Not reader.IsDBNull(0) Then
+                        Valor = reader.GetInt16(0)
+                    Else
+                        Valor = 0
+                    End If
+                Loop
+            End If
+            If Not reader.IsClosed Then reader.Close()
+
+            Return Valor
+
+        Catch ex As Exception
+
+            Throw New Exception("Error en Ejecutar.GetSQLInteger: " & ex.Message)
+
+        End Try
+
+    End Function
 
     Public Function GetSQLString(ByVal Script As String) As String
 

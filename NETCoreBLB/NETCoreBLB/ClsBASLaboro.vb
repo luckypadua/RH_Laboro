@@ -88,9 +88,63 @@ Public Class ClsBASLaboro
 
     Public Function GetLoguinsIni() As DataSet Implements ItzBASLaboro.GetLoguinsIni
 
-        Dim Ds As DataSet = MiAdo.Consultar.GetDataset("Select IdPersona,Usuario,Contrasenia from [vAutogestion_LoguinsIni] Order By IdPersona", "LoguinsIni")
-        Ds.DataSetName = "LoguinsIni"
-        Return Ds
+        Try
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("Select IdPersona,Usuario,Contrasenia from [vAutogestion_LoguinsIni] Order By IdPersona", "LoguinsIni")
+            Ds.DataSetName = "LoguinsIni"
+            Return Ds
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetLoguinsIni" & ex.Message)
+        End Try
+
+    End Function
+
+    Public Function GetManagers(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetManagers
+
+        Try
+            Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
+
+            With MiAdo.Ejecutar.Parametros
+                .Add("IdLegajo", IdLegajo, SqlDbType.Int)
+                .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
+                .Add("IncluirManagers", 1, SqlDbType.SmallInt)
+                .Add("IncluirEmpleadosACargo", 0, SqlDbType.SmallInt)
+                .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
+            End With
+
+            'Faltaría que el .Ejecutar.Procedimiento pueda devolver un valor distinto a un int.Por eso es rompe. Esto devuelve un Select...
+            Dim Ds As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnValue)
+
+            Return Ds
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetManagers" & ex.Message)
+        End Try
+
+    End Function
+
+    Public Function GetTipoLicencias() As DataSet Implements ItzBASLaboro.GetTipoLicencias
+
+        Try
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT CodSuceso + ' - ' + Descripcion As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1", "BL_SUCESOS")
+            Ds.DataSetName = "TipoLicencias"
+            Return Ds
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias" & ex.Message)
+        End Try
+
+    End Function
+
+    Public Function GetLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetLicencias
+
+        Try
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT  ", "BL_SUCESOS")
+            Ds.DataSetName = "HistorialLicencias"
+            Return Ds
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias" & ex.Message)
+        End Try
 
     End Function
 
@@ -98,11 +152,11 @@ Public Class ClsBASLaboro
 
         Try
 
-            If FirmaConforme Then
-                MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 1, Firmado_Fecha = GetDate(), Observacion = Null Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
-            Else
-                MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 2, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion))
-            End If
+            'If FirmaConforme Then
+            '    MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 1, Firmado_Fecha = GetDate(), Observacion = Null Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+            'Else
+            MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = 2, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion))
+            'End If
 
         Catch ex As Exception
 
