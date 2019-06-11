@@ -6,3 +6,4 @@ D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreADO\NETCoreADO\obj\Debug\netstandard2.0\
 D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreADO\NETCoreADO\obj\Debug\netstandard2.0\NETCoreADO.AssemblyInfo.vb
 D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreADO\NETCoreADO\obj\Debug\netstandard2.0\NETCoreADO.dll
 D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreADO\NETCoreADO\obj\Debug\netstandard2.0\NETCoreADO.pdb
+D:\GIT CORE2\RH_Laboro\RH_Laboro\NETCoreADO\NETCoreADO\obj\Debug\netstandard2.0\NETCoreADO.vbprojAssemblyReference.cache

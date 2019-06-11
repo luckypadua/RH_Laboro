@@ -9,6 +9,7 @@ Public Class AdoNet
         ReturnValue = 0
         ReturnScalar
         NotReturn
+        ReturnDataset
     End Enum
 
     Private mConn As SqlConnection
@@ -1115,7 +1116,14 @@ Public Class ClsEjecutar
                 .CommandText = Nombre
             End With
 
-            Procedimiento = GetRetorno(Cm, Retorno)
+            If Retorno = AdoNet.TipoDeRetornoEjecutar.ReturnDataset Then
+                Dim da As SqlDataAdapter = New SqlDataAdapter(Cm)
+                Dim Ds As New DataSet
+                da.Fill(Ds)
+                Return Ds
+            Else
+                GetRetorno(Cm, Retorno)
+            End If
 
         Catch ex As Exception
 

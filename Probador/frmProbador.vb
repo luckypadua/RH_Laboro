@@ -49,4 +49,8 @@
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
+    Private Sub frmProbador_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        cmbIdLegajo.SelectedIndex = 0
+    End Sub
+
 End Class

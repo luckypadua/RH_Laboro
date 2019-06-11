@@ -247,7 +247,7 @@ Partial Class frmProbador
         '
         Me.cmbIdLegajo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbIdLegajo.FormattingEnabled = True
-        Me.cmbIdLegajo.Items.AddRange(New Object() {"7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
+        Me.cmbIdLegajo.Items.AddRange(New Object() {"120228", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
         Me.cmbIdLegajo.Location = New System.Drawing.Point(88, 258)
         Me.cmbIdLegajo.Name = "cmbIdLegajo"
         Me.cmbIdLegajo.Size = New System.Drawing.Size(59, 21)

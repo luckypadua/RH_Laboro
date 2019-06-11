@@ -112,10 +112,7 @@ Public Class ClsBASLaboro
                 .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
-            'Faltaría que el .Ejecutar.Procedimiento pueda devolver un valor distinto a un int.Por eso es rompe. Esto devuelve un Select...
-            Dim Ds As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnValue)
-
-            Return Ds
+            Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:GetManagers" & ex.Message)
