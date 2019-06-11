@@ -104,6 +104,7 @@ Public Class ClsBASLaboro
             Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
 
             With MiAdo.Ejecutar.Parametros
+                .RemoveAll()
                 .Add("IdLegajo", IdLegajo, SqlDbType.Int)
                 .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
                 .Add("IncluirManagers", 1, SqlDbType.SmallInt)
