@@ -1117,9 +1117,9 @@ Public Class ClsEjecutar
             End With
 
             If Retorno = AdoNet.TipoDeRetornoEjecutar.ReturnDataset Then
-                Dim da As SqlDataAdapter = New SqlDataAdapter(Cm)
+                Dim Da As SqlDataAdapter = New SqlDataAdapter(Cm)
                 Dim Ds As New DataSet
-                da.Fill(Ds)
+                Da.Fill(Ds)
                 Return Ds
             Else
                 GetRetorno(Cm, Retorno)

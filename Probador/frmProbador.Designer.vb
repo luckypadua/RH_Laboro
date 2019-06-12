@@ -63,10 +63,10 @@ Partial Class frmProbador
         Me.WebBrowserInput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.WebBrowserInput.Location = New System.Drawing.Point(310, 12)
+        Me.WebBrowserInput.Location = New System.Drawing.Point(163, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(781, 614)
+        Me.WebBrowserInput.Size = New System.Drawing.Size(928, 614)
         Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
@@ -247,7 +247,7 @@ Partial Class frmProbador
         '
         Me.cmbIdLegajo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbIdLegajo.FormattingEnabled = True
-        Me.cmbIdLegajo.Items.AddRange(New Object() {"120228", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
+        Me.cmbIdLegajo.Items.AddRange(New Object() {"8286", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
         Me.cmbIdLegajo.Location = New System.Drawing.Point(88, 258)
         Me.cmbIdLegajo.Name = "cmbIdLegajo"
         Me.cmbIdLegajo.Size = New System.Drawing.Size(59, 21)
