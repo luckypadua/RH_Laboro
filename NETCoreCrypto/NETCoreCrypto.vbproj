@@ -9,4 +9,8 @@
     <OutputPath>D:\GIT CORE2\BIN\DEBUG\</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
 </Project>

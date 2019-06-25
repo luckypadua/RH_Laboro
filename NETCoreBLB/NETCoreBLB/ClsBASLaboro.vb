@@ -36,8 +36,42 @@ Public Class ClsBASLaboro
 
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
         Ds.DataSetName = "Recibos"
-
         Return Ds
+
+    End Function
+
+    Public Function GetRecibosDetalle(ByVal IdPersona As Integer) As String Implements ItzBASLaboro.GetRecibosDetalle
+
+        Dim ListaCD As New List(Of ClsCamposDetalle)
+        Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(String.Format("Select * from [vAutogestion_RecibosDetalle] Where IdPersona = {0}", IdPersona), "RecibosDetalle")
+        For Each Dr As DataRow In Dt.Rows
+            Dim ListaCampos As New List(Of ClsCampos)
+            For Each Col As DataColumn In Dt.Columns
+                If Not CampoExcluido(Col.ColumnName) Then
+                    'Or Dr(Col.ColumnName) is DBNull.Value
+                    If Dr(Col.ColumnName) Is Nothing Or Dr(Col.ColumnName) Is DBNull.Value Then
+                        ListaCampos.Add(New ClsCampos(Col.ColumnName, String.Empty))
+                    Else
+                        ListaCampos.Add(New ClsCampos(Col.ColumnName, Dr(Col.ColumnName)))
+                    End If
+
+                End If
+            Next
+            Dim CD As New ClsCamposDetalle(Dr("Clave"), ListaCampos)
+            ListaCD.Add(CD)
+        Next
+
+        Return Newtonsoft.Json.JsonConvert.SerializeObject(ListaCD)
+
+    End Function
+
+    Private Function CampoExcluido(ByVal Campo As String) As Boolean
+
+        Dim CamposExcluidos As String = "Clave,IdLiquidacion,IdLegajo,IdPersona"
+        For Each C As String In CamposExcluidos.Split(",")
+            If C.ToUpper = Campo.ToUpper Then Return True
+        Next
+        Return False
 
     End Function
 
@@ -209,5 +243,43 @@ Public Class ClsBASLaboro
         ' GC.SuppressFinalize(Me)
     End Sub
 #End Region
+
+End Class
+
+Public Class ClsCamposDetalle
+
+    Public Sub New()
+
+    End Sub
+
+    Public Sub New(ByVal Clave As String,
+                   ByVal ListaCampos As List(Of ClsCampos))
+
+        Me.Clave = Clave
+        Me.ListaCampos = ListaCampos
+
+    End Sub
+
+    Property Clave As String
+    Property ListaCampos As List(Of ClsCampos)
+
+End Class
+
+Public Class ClsCampos
+
+    Public Sub New()
+
+    End Sub
+
+    Public Sub New(ByVal Nombre As String,
+                   ByVal Valor As String)
+
+        Me.Nombre = Nombre
+        Me.Valor = Valor
+
+    End Sub
+
+    Public Property Nombre As String
+    Public Property Valor As String
 
 End Class

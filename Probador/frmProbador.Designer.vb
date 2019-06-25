@@ -43,6 +43,8 @@ Partial Class frmProbador
         Me.BtnReciboDescarga = New System.Windows.Forms.Button()
         Me.cmbIdLegajo = New System.Windows.Forms.ComboBox()
         Me.cmdManagersYEmpleados = New System.Windows.Forms.Button()
+        Me.BtnRecibosDetalle = New System.Windows.Forms.Button()
+        Me.txtJson = New System.Windows.Forms.TextBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -66,7 +68,7 @@ Partial Class frmProbador
         Me.WebBrowserInput.Location = New System.Drawing.Point(163, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(928, 614)
+        Me.WebBrowserInput.Size = New System.Drawing.Size(928, 525)
         Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
@@ -86,7 +88,7 @@ Partial Class frmProbador
         Me.txtIdPersona.Name = "txtIdPersona"
         Me.txtIdPersona.Size = New System.Drawing.Size(100, 20)
         Me.txtIdPersona.TabIndex = 0
-        Me.txtIdPersona.Text = "2121"
+        Me.txtIdPersona.Text = "118324"
         Me.txtIdPersona.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label1
@@ -113,7 +115,7 @@ Partial Class frmProbador
         Me.BtnRecibos.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnRecibos.Location = New System.Drawing.Point(10, 164)
         Me.BtnRecibos.Name = "BtnRecibos"
-        Me.BtnRecibos.Size = New System.Drawing.Size(147, 41)
+        Me.BtnRecibos.Size = New System.Drawing.Size(72, 41)
         Me.BtnRecibos.TabIndex = 17
         Me.BtnRecibos.Text = "&Recibos"
         Me.BtnRecibos.UseVisualStyleBackColor = True
@@ -264,11 +266,32 @@ Partial Class frmProbador
         Me.cmdManagersYEmpleados.Text = "&Managers y Empleados"
         Me.cmdManagersYEmpleados.UseVisualStyleBackColor = True
         '
+        'BtnRecibosDetalle
+        '
+        Me.BtnRecibosDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnRecibosDetalle.Location = New System.Drawing.Point(85, 164)
+        Me.BtnRecibosDetalle.Name = "BtnRecibosDetalle"
+        Me.BtnRecibosDetalle.Size = New System.Drawing.Size(72, 41)
+        Me.BtnRecibosDetalle.TabIndex = 35
+        Me.BtnRecibosDetalle.Text = "&Detalle"
+        Me.BtnRecibosDetalle.UseVisualStyleBackColor = True
+        '
+        'txtJson
+        '
+        Me.txtJson.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtJson.Location = New System.Drawing.Point(163, 543)
+        Me.txtJson.Multiline = True
+        Me.txtJson.Name = "txtJson"
+        Me.txtJson.Size = New System.Drawing.Size(928, 83)
+        Me.txtJson.TabIndex = 36
+        '
         'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.txtJson)
+        Me.Controls.Add(Me.BtnRecibosDetalle)
         Me.Controls.Add(Me.cmdManagersYEmpleados)
         Me.Controls.Add(Me.cmbIdLegajo)
         Me.Controls.Add(Me.GroupBox3)
@@ -317,5 +340,6 @@ Partial Class frmProbador
     Friend WithEvents BtnReciboDescarga As Button
     Friend WithEvents cmbIdLegajo As ComboBox
     Friend WithEvents cmdManagersYEmpleados As Button
-
+    Friend WithEvents BtnRecibosDetalle As Button
+    Friend WithEvents txtJson As TextBox
 End Class

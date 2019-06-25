@@ -169,7 +169,8 @@ GO
 
 Create View [dbo].[vAutogestion_Recibos]
 AS
-SELECT R.[IdLiquidacion]
+SELECT Clave = Ltrim(R.Idliquidacion) + '-' + LTrim(R.IdLegajo)
+      ,R.[IdLiquidacion]
       ,R.[IdLegajo]
       ,P.IdPersona   
 	  ,L.LegajoCodigo 
@@ -190,4 +191,28 @@ SELECT R.[IdLiquidacion]
   JOIN BL_LIQUIDACIONES     LIQ ON LIQ.IdLiquidacion = R.IdLiquidacion   
   JOIN BL_LIQUIDACIONESTIPOS LT ON LT.IdLiqTipo = LIQ.IdLiqTipo 
   WHERE Not R.[PDF_Nombre] is null
+GO
+
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vAutogestion_RecibosDetalle]'))
+	DROP VIEW [dbo].[vAutogestion_RecibosDetalle]
+GO
+
+Create View [vAutogestion_RecibosDetalle]
+AS
+Select 
+Clave = Ltrim(Idliquidacion) + '-' + LTrim(IdLegajo),
+IdLiquidacion,IdLegajo,P.IdPersona, 
+[Apellido y Nombres] = P.nombre,
+[Firmado] = case when Firmado = 0 then 'No'
+                 when Firmado = 1 then 'Conforme (' + Convert(varchar(20),Firmado_Fecha,103) + ')'
+			     when Firmado = 2 then 'Disconforme (' + Convert(varchar(20),Firmado_Fecha,103) + ')' 
+             end,
+[Visualizado] = Convert(varchar(20),Visualizado,103),
+[Observación] = case when Observacion is null 
+                     then 'No tiene'		  
+                     else Observacion
+                end,    
+[Liquidación] = Ltrim(Month(Liquidacion_Mes))+'/'+ Rtrim(year(Liquidacion_Mes)) + ' - ' + Liquidacion_codigo + ' - ' +  liquidacion_Nombre
+from [vAutogestion_Recibos] R
+Join BL_Personas P ON R.idpersona = P.IdPersona 
 GO

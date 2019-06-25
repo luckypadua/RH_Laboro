@@ -17,6 +17,10 @@
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
+    Private Sub BtnRecibosDetalle_Click(sender As Object, e As EventArgs) Handles BtnRecibosDetalle.Click
+        txtJson.Text = RH.GetRecibosDetalle(txtIdPersona.Text)
+    End Sub
+
     Protected Overrides Sub Finalize()
         RH.Dispose()
         MyBase.Finalize()
