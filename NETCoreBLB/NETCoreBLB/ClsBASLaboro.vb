@@ -33,7 +33,6 @@ Public Class ClsBASLaboro
 
     Public Function GetRecibos(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetRecibos
 
-
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
         Ds.DataSetName = "Recibos"
         Return Ds
@@ -170,7 +169,14 @@ Public Class ClsBASLaboro
     Public Function GetLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetLicencias
 
         Try
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT  ", "BL_SUCESOS")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT s.CodSuceso + ' - ' + s.Descripcion AS Tipo, FecOcurrencia As FechaDeOcurrencia, 
+		                                                           LicFecDesde As FechaDesde, LicFecHasta As FechaHasta,
+		                                                           CASE WHEN s.EsVacacion = 1 AND s.AfectaLiquidadas = 1 THEN nl.SancionDias
+                                                                        ELSE nl.DiasGozados
+		                                                           END AS Días			
+                                                            FROM Bl_Novedades n 
+                                                            JOIN Bl_NovedadesLegajos nl ON n.IdOcurrencia = nl.IdOcurrencia AND nl.IdLegajo = " & IdLegajo & "
+                                                            JOIN Bl_Sucesos s ON n.IdSuceso = s.IdSuceso AND s.HabilitadoAutogestion = 1", "HistorialLicencias")
             Ds.DataSetName = "HistorialLicencias"
             Return Ds
 
