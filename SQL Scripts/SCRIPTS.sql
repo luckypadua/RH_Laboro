@@ -81,7 +81,7 @@ AS
 SELECT			l.IdLegajo, 
                 l.IdPersona, 
                 [LegajoCodigo]		= l.Legajo, 
-				[Empresa]			= l.CodEmp, 
+				[Empresa]			= ltrim(E.CODEMP) + ' - ' +  E.NOMBRE, 
 				[Categor­a]			= Cate.Nombre, 
 				[Convenio]			= c.Denominacion, 
 				[Estado]			= (CASE WHEN 
@@ -116,7 +116,8 @@ LEFT JOIN BL_LUGARESTRABAJO lt		(nolock) ON lt.IdLugar = l.IdLugar
 LEFT JOIN BL_MODCONTRATACIONES mc	(nolock) ON mc.ModContratacion = l.modContratacion
 LEFT JOIN vReparticionesLegajos R	(nolock) ON L.IDLEGAJO = r.IdLegajo 
 LEFT JOIN vCtaBancaria			cb	(nolock) ON L.IDLEGAJO = cb.IdLegajo 	
-LEFT JOIN BL_ZONAS z				(nolock) ON l.zona = z.Zona  
+LEFT JOIN BL_ZONAS z				(nolock) ON l.zona = z.Zona
+LEFT JOIN EMPRESAS E				(nolock) ON E.CODEMP = l.CODEMP
 
 GO
 
@@ -197,22 +198,42 @@ IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vAutoge
 	DROP VIEW [dbo].[vAutogestion_RecibosDetalle]
 GO
 
-Create View [vAutogestion_RecibosDetalle]
+Create View [dbo].[vAutogestion_RecibosDetalle]
 AS
 Select 
-Clave = Ltrim(Idliquidacion) + '-' + LTrim(IdLegajo),
-IdLiquidacion,IdLegajo,P.IdPersona, 
+Clave = Ltrim(R.Idliquidacion) + '-' + LTrim(R.IdLegajo),
+R.IdLiquidacion, R.IdLegajo, P.IdPersona, 
 [Apellido y Nombres] = P.nombre,
-[Firmado] = case when Firmado = 0 then 'No'
-                 when Firmado = 1 then 'Conforme (' + Convert(varchar(20),Firmado_Fecha,103) + ')'
-			     when Firmado = 2 then 'Disconforme (' + Convert(varchar(20),Firmado_Fecha,103) + ')' 
+[Firmado] = case when R.Firmado = 0 then 'No'
+                 when R.Firmado = 1 then 'Conforme (' + Convert(varchar(20),R.Firmado_Fecha,103) + ')'
+			     when R.Firmado = 2 then 'Disconforme (' + Convert(varchar(20),R.Firmado_Fecha,103) + ')' 
              end,
-[Visualizado] = Convert(varchar(20),Visualizado,103),
-[Observación] = case when Observacion is null 
+[Visualizado] = Convert(varchar(20),R.Visualizado,103),
+[Observación] = case when R.Observacion is null 
                      then 'No tiene'		  
-                     else Observacion
+                     else R.Observacion
                 end,    
-[Liquidación] = Ltrim(Month(Liquidacion_Mes))+'/'+ Rtrim(year(Liquidacion_Mes)) + ' - ' + Liquidacion_codigo + ' - ' +  liquidacion_Nombre
+[Liquidación] = Ltrim(Month(R.Liquidacion_Mes))+'/'+ Rtrim(year(R.Liquidacion_Mes)) + ' - ' + R.Liquidacion_codigo + ' - ' +  R.Liquidacion_Nombre,
+[Fecha Ingreso] = AL.FecIngreso, 
+[Banco] = AL.BancoPagoDesc,
+[Obra Social] = AL.ObraSocialDesc,
+[Estado Civil] = EstadoCivil,
+[Modalidad Contratación] = ModContratacionDesc,
+[Situación de Revista] = DescSituacion,
+[Zona] = ZonaDescripcion,
+[Categoria] = case when C.Nombre is null 
+                   then 'No tiene'		  
+                   else C.Nombre
+              end,
+[Convenio] = case when V.Denominacion is null 
+                   then 'No tiene'		  
+                   else V.Denominacion
+              end,
+[Empresa] = R.empresa 
 from [vAutogestion_Recibos] R
-Join BL_Personas P ON R.idpersona = P.IdPersona 
+Join BL_Personas P				(nolock) ON R.idpersona = P.IdPersona 
+Join BL_ANEXO_LIQUIDACIONES AL	(nolock) ON AL.IdLiquidacion = R.IdLiquidacion And AL.IdLegajo = R.IdLegajo 
+Left Join CATEGORIAS C			(nolock) ON C.IdCategoria = AL.IdCategoria
+left Join BL_CONVENIOS V		(nolock) ON V.IdConvenio = AL.IdConvenio 
 GO
+
