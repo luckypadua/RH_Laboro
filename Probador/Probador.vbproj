@@ -156,6 +156,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NETCoreADO\NETCoreADO\NETCoreADO.vbproj">
+      <Project>{a5476370-6804-42f8-bba6-b783e5166228}</Project>
+      <Name>NETCoreADO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NETCoreBLB\NETCoreBLB\NETCoreBLB.vbproj">
       <Project>{6e69a228-902c-4104-97b8-fffc018a4a02}</Project>
       <Name>NETCoreBLB</Name>

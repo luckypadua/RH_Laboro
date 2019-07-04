@@ -45,9 +45,20 @@ Partial Class frmProbador
         Me.cmdManagersYEmpleados = New System.Windows.Forms.Button()
         Me.BtnRecibosDetalle = New System.Windows.Forms.Button()
         Me.txtJson = New System.Windows.Forms.TextBox()
+        Me.frLicencia = New System.Windows.Forms.GroupBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.cmbTipoLicencia = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.dtpFecHasta = New System.Windows.Forms.DateTimePicker()
+        Me.dtpFecDesde = New System.Windows.Forms.DateTimePicker()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.cmdSolicitarLicencia = New System.Windows.Forms.Button()
+        Me.txtCantDias = New System.Windows.Forms.TextBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        Me.frLicencia.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnDatosPersonales
@@ -65,10 +76,10 @@ Partial Class frmProbador
         Me.WebBrowserInput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.WebBrowserInput.Location = New System.Drawing.Point(163, 12)
+        Me.WebBrowserInput.Location = New System.Drawing.Point(299, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(928, 525)
+        Me.WebBrowserInput.Size = New System.Drawing.Size(792, 525)
         Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
@@ -279,17 +290,121 @@ Partial Class frmProbador
         'txtJson
         '
         Me.txtJson.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtJson.Location = New System.Drawing.Point(163, 543)
+        Me.txtJson.Location = New System.Drawing.Point(299, 543)
         Me.txtJson.Multiline = True
         Me.txtJson.Name = "txtJson"
-        Me.txtJson.Size = New System.Drawing.Size(928, 83)
+        Me.txtJson.Size = New System.Drawing.Size(792, 83)
         Me.txtJson.TabIndex = 36
+        '
+        'frLicencia
+        '
+        Me.frLicencia.Controls.Add(Me.Label7)
+        Me.frLicencia.Controls.Add(Me.cmbTipoLicencia)
+        Me.frLicencia.Controls.Add(Me.Label6)
+        Me.frLicencia.Controls.Add(Me.Label5)
+        Me.frLicencia.Controls.Add(Me.dtpFecHasta)
+        Me.frLicencia.Controls.Add(Me.dtpFecDesde)
+        Me.frLicencia.Controls.Add(Me.Label4)
+        Me.frLicencia.Controls.Add(Me.cmdSolicitarLicencia)
+        Me.frLicencia.Controls.Add(Me.txtCantDias)
+        Me.frLicencia.ForeColor = System.Drawing.Color.Blue
+        Me.frLicencia.Location = New System.Drawing.Point(163, 19)
+        Me.frLicencia.Name = "frLicencia"
+        Me.frLicencia.Size = New System.Drawing.Size(130, 151)
+        Me.frLicencia.TabIndex = 25
+        Me.frLicencia.TabStop = False
+        Me.frLicencia.Text = "Solicitar Licencia"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.ForeColor = System.Drawing.Color.Blue
+        Me.Label7.Location = New System.Drawing.Point(6, 22)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(28, 13)
+        Me.Label7.TabIndex = 38
+        Me.Label7.Text = "Tipo"
+        '
+        'cmbTipoLicencia
+        '
+        Me.cmbTipoLicencia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbTipoLicencia.FormattingEnabled = True
+        Me.cmbTipoLicencia.Location = New System.Drawing.Point(45, 19)
+        Me.cmbTipoLicencia.Name = "cmbTipoLicencia"
+        Me.cmbTipoLicencia.Size = New System.Drawing.Size(78, 21)
+        Me.cmbTipoLicencia.TabIndex = 37
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.ForeColor = System.Drawing.Color.Blue
+        Me.Label6.Location = New System.Drawing.Point(6, 47)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(38, 13)
+        Me.Label6.TabIndex = 36
+        Me.Label6.Text = "Desde"
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.ForeColor = System.Drawing.Color.Blue
+        Me.Label5.Location = New System.Drawing.Point(6, 67)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(35, 13)
+        Me.Label5.TabIndex = 35
+        Me.Label5.Text = "Hasta"
+        '
+        'dtpFecHasta
+        '
+        Me.dtpFecHasta.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpFecHasta.Location = New System.Drawing.Point(45, 67)
+        Me.dtpFecHasta.Name = "dtpFecHasta"
+        Me.dtpFecHasta.Size = New System.Drawing.Size(79, 20)
+        Me.dtpFecHasta.TabIndex = 34
+        Me.dtpFecHasta.Value = New Date(2019, 7, 2, 0, 0, 0, 0)
+        '
+        'dtpFecDesde
+        '
+        Me.dtpFecDesde.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpFecDesde.Location = New System.Drawing.Point(45, 44)
+        Me.dtpFecDesde.Name = "dtpFecDesde"
+        Me.dtpFecDesde.Size = New System.Drawing.Size(79, 20)
+        Me.dtpFecDesde.TabIndex = 33
+        Me.dtpFecDesde.Value = New Date(2019, 7, 2, 0, 0, 0, 0)
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.ForeColor = System.Drawing.Color.Blue
+        Me.Label4.Location = New System.Drawing.Point(6, 93)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(30, 13)
+        Me.Label4.TabIndex = 32
+        Me.Label4.Text = "Días"
+        '
+        'cmdSolicitarLicencia
+        '
+        Me.cmdSolicitarLicencia.ForeColor = System.Drawing.Color.Blue
+        Me.cmdSolicitarLicencia.Location = New System.Drawing.Point(7, 116)
+        Me.cmdSolicitarLicencia.Name = "cmdSolicitarLicencia"
+        Me.cmdSolicitarLicencia.Size = New System.Drawing.Size(116, 29)
+        Me.cmdSolicitarLicencia.TabIndex = 23
+        Me.cmdSolicitarLicencia.Text = "Solicitar Licencia"
+        Me.cmdSolicitarLicencia.UseVisualStyleBackColor = True
+        '
+        'txtCantDias
+        '
+        Me.txtCantDias.Location = New System.Drawing.Point(45, 90)
+        Me.txtCantDias.Name = "txtCantDias"
+        Me.txtCantDias.Size = New System.Drawing.Size(79, 20)
+        Me.txtCantDias.TabIndex = 21
         '
         'frmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.frLicencia)
         Me.Controls.Add(Me.txtJson)
         Me.Controls.Add(Me.BtnRecibosDetalle)
         Me.Controls.Add(Me.cmdManagersYEmpleados)
@@ -314,6 +429,8 @@ Partial Class frmProbador
         Me.GroupBox1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
+        Me.frLicencia.ResumeLayout(False)
+        Me.frLicencia.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -342,4 +459,14 @@ Partial Class frmProbador
     Friend WithEvents cmdManagersYEmpleados As Button
     Friend WithEvents BtnRecibosDetalle As Button
     Friend WithEvents txtJson As TextBox
+    Friend WithEvents frLicencia As GroupBox
+    Friend WithEvents Label6 As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents dtpFecHasta As DateTimePicker
+    Friend WithEvents dtpFecDesde As DateTimePicker
+    Friend WithEvents Label4 As Label
+    Friend WithEvents cmdSolicitarLicencia As Button
+    Friend WithEvents txtCantDias As TextBox
+    Friend WithEvents Label7 As Label
+    Friend WithEvents cmbTipoLicencia As ComboBox
 End Class

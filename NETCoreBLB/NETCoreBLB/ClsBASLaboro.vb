@@ -131,6 +131,45 @@ Public Class ClsBASLaboro
 
     End Function
 
+    Public Function ValidarSolicitudLicencia(ByRef PedidoLic As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
+        Try
+            If PedidoLic.Validar Then
+                PedidoLic.Grabar
+                Return True
+            Else
+                Return False
+            End If
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:ValidarSolicitudLicencia" & ex.Message)
+        End Try
+    End Function
+
+    Function EliminarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
+        Return True
+    End Function
+
+    Public Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
+
+        Try
+            Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
+
+            With MiAdo.Ejecutar.Parametros
+                .RemoveAll()
+                .Add("IdLegajo", IdLegajo, SqlDbType.Int)
+                .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
+                .Add("IncluirManagers", 0, SqlDbType.SmallInt)
+                .Add("IncluirEmpleadosACargo", 1, SqlDbType.SmallInt)
+                .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
+            End With
+
+            Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetEmpleadosACargo" & ex.Message)
+        End Try
+
+    End Function
+
     Public Function GetManagers(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetManagers
 
         Try
@@ -156,7 +195,7 @@ Public Class ClsBASLaboro
     Public Function GetTipoLicencias() As DataSet Implements ItzBASLaboro.GetTipoLicencias
 
         Try
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT CodSuceso + ' - ' + Descripcion As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1", "BL_SUCESOS")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1", "BL_SUCESOS")
             Ds.DataSetName = "TipoLicencias"
             Return Ds
 

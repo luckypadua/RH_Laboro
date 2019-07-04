@@ -9,8 +9,11 @@ Public Interface ItzBASLaboro
     Sub ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "")
     Sub ReciboVisualizado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long)
     Function GetManagers(ByVal IdLegajo As Long) As DataSet
+    Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet
     Function GetLicencias(ByVal IdLegajo As Long) As DataSet
     Function GetTipoLicencias() As DataSet
+    Function ValidarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean
+    Function EliminarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean
     Sub Dispose()
 
 End Interface
