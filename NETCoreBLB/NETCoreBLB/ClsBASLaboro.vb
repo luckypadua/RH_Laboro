@@ -133,20 +133,24 @@ Public Class ClsBASLaboro
 
     Public Function ValidarSolicitudLicencia(ByRef PedidoLic As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
         Try
-            If PedidoLic.Validar Then
-                PedidoLic.Grabar
-                Return True
-            Else
-                Return False
-            End If
+            Return PedidoLic.Validar
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:ValidarSolicitudLicencia" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:ValidarSolicitudLicencia" & ex.Message)
         End Try
     End Function
 
-    Function EliminarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
+    Public Function EliminarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
         Return True
     End Function
+
+    Public Function GrabarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudLicencia
+        Try
+            PedidoLicencia.Grabar()
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia" & ex.Message)
+        End Try
+    End Function
+
 
     Public Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
 

@@ -5,6 +5,16 @@ Public Class clsPedidoLicencia
 
     Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
 
+    Private IdPedidoLicencia As Long
+    Public Property Id() As Long
+        Get
+            Return IdPedidoLicencia
+        End Get
+        Set(ByVal value As Long)
+            IdPedidoLicencia = value
+        End Set
+    End Property
+
     Private vIdLegajo As Long
     Public Property IdLegajo() As Long
         Get
@@ -140,7 +150,7 @@ Public Class clsPedidoLicencia
     Public Function Validar() As Boolean
 
         Try
-            Return Me.ValidarSuceso & Me.ValidarFechasYDias & Me.ValidarTopes
+            Return Me.ValidarSuceso & Me.ValidarFechasYDias & Me.ValidarTopes & Me.ValidarOtrasLicenciasEnElPeriodo
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
         End Try
@@ -158,50 +168,102 @@ Public Class clsPedidoLicencia
     Private Function ValidarTopes(Optional ByRef MsjFinal As String = "") As Boolean
 
         Try
-            Dim Excede As Boolean
+            'Dim Excede As Boolean
 
-            With MiAdo.Ejecutar.Parametros
-                .RemoveAll()
-                .Add("Tratamiento", MiAdo.Ejecutar.GetSQLString("SELECT Tratamiento FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.Char)
-                .Add("CodSuceso", Me.CodSuceso, SqlDbType.VarChar)
-                .Add("CodClaseSuceso", MiAdo.Ejecutar.GetSQLString("SELECT CodClaseSuceso FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.VarChar)
-                .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
-                .Add("CodAtr", DBNull.Value, SqlDbType.Char)
-                .Add("CodAtrVal", DBNull.Value, SqlDbType.Char)
-                .Add("FechaOcurrencia", Me.FechaDeSolicitud, SqlDbType.DateTime)
-                .Add("FechaSuspDesde", DBNull.Value, SqlDbType.SmallDateTime)
-                .Add("Importe", DBNull.Value, SqlDbType.Decimal)
-                .Add("Dias", Me.CantidadDias, SqlDbType.Int)
-                .Add("VacAfectacion", Me.VacAfectacion, SqlDbType.Char)
-                .Add("IdOcurrencia", DBNull.Value, SqlDbType.Int)
-                .Add("Excede", Excede, SqlDbType.Bit)
-                .Add("MensajeFinal", MsjFinal, SqlDbType.VarChar)
-            End With
+            'With MiAdo.Ejecutar.Parametros
+            '    .RemoveAll()
+            '    .Add("Tratamiento", MiAdo.Ejecutar.GetSQLString("SELECT Tratamiento FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.Char)
+            '    .Add("CodSuceso", Me.CodSuceso, SqlDbType.VarChar)
+            '    .Add("CodClaseSuceso", MiAdo.Ejecutar.GetSQLString("SELECT CodClaseSuceso FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.VarChar)
+            '    .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+            '    .Add("CodAtr", DBNull.Value, SqlDbType.Char)
+            '    .Add("CodAtrVal", DBNull.Value, SqlDbType.Char)
+            '    .Add("FechaOcurrencia", Me.FechaDeSolicitud, SqlDbType.DateTime)
+            '    .Add("FechaSuspDesde", DBNull.Value, SqlDbType.SmallDateTime)
+            '    .Add("Importe", DBNull.Value, SqlDbType.Decimal)
+            '    .Add("Dias", Me.CantidadDias, SqlDbType.Int)
+            '    .Add("VacAfectacion", Me.VacAfectacion, SqlDbType.Char)
+            '    .Add("IdOcurrencia", DBNull.Value, SqlDbType.Int)
+            '    .Add("Excede", Excede, SqlDbType.Bit)
+            '    .Add("MensajeFinal", MsjFinal, SqlDbType.VarChar)
+            'End With
 
-            MiAdo.Ejecutar.Procedimiento("BL_NovedadesTopes", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.NotReturn)
+            'MiAdo.Ejecutar.Procedimiento("BL_NovedadesTopes", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.NotReturn)
 
-            Return Excede
+            'Return Excede
+            Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
         End Try
     End Function
 
-    Public Sub Grabar()
+    Private Function ValidarOtrasLicenciasEnElPeriodo() As Boolean
 
         Try
             With MiAdo.Ejecutar.Parametros
-                .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
-                .Add("FecSolicitud", Me.FechaDeSolicitud, SqlDbType.Int)
-                .Add("IdSuceso", Me.IdSuceso, SqlDbType.Int)
+                .RemoveAll()
                 .Add("FecDesde", Me.FechaDesde, SqlDbType.Int)
                 .Add("FecHasta", Me.FechaHasta, SqlDbType.Int)
-                .Add("Cantidad", Me.CantidadDias, SqlDbType.Int)
-                .Add("Observaciones", Me.Observaciones, SqlDbType.Int)
+                .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
             End With
 
-            MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
+            Return (MiAdo.Ejecutar.Procedimiento("SP_TraerLicenciasEnPeriodo2", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset).Tables(0).Rows.Count > 1)
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrasLicenciasEnElPeriodo" & ex.Message)
+        End Try
+
+    End Function
+
+    Public Sub Grabar()
+
+        Try
+            If Me.Validar() Then
+                With MiAdo.Ejecutar.Parametros
+                    .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+                    .Add("FecSolicitud", Me.FechaDeSolicitud, SqlDbType.DateTime)
+                    .Add("IdSuceso", Me.IdSuceso, SqlDbType.Int)
+                    .Add("FecDesde", Me.FechaDesde, SqlDbType.Date)
+                    .Add("FecHasta", Me.FechaHasta, SqlDbType.Date)
+                    .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
+                    .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
+                End With
+
+                MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
+            End If
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Grabar" & ex.Message)
+        End Try
+
+    End Sub
+
+    Public Sub Modificar()
+        Try
+            If Me.Validar() Then
+                With MiAdo.Ejecutar.Parametros
+                    .Add("IdOcurrenciaPedido", Me.Id, SqlDbType.Int)
+                    .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+                    .Add("FecSolicitud", Me.FechaDeSolicitud, SqlDbType.DateTime)
+                    .Add("IdSuceso", Me.IdSuceso, SqlDbType.Int)
+                    .Add("FecDesde", Me.FechaDesde, SqlDbType.Date)
+                    .Add("FecHasta", Me.FechaHasta, SqlDbType.Date)
+                    .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
+                    .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
+                End With
+
+                MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos")
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Public Sub Borrar()
+
+        Try
+            MiAdo.Ejecutar.Borrar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.Id)
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Borrar" & ex.Message)
         End Try
 
     End Sub
