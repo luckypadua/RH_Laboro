@@ -1105,8 +1105,9 @@ Public Class ClsEjecutar
                         With Pt
                             .ParameterName = p.Nombre
                             .Value = p.Valor
-                            .DbType = p.Tipo
+                            .SqlDbType = p.Tipo
                             .Direction = p.Direccion
+                            .Size = p.Size
                         End With
                         .Parameters.Add(Pt)
                         Pt = Nothing
@@ -1323,6 +1324,7 @@ Public Class clsParametro
     Public Valor As Object
     Public Direccion As ParameterDirection
     Public Tipo As SqlDbType
+    Public Size As Integer
 
 End Class
 
@@ -1335,13 +1337,14 @@ Public Class Parametros
     ''' <param name="Nombre">Nombre del parámetro</param>
     ''' <param name="Valor">Valor del parámetro</param>
     ''' <param name="Tipo">Tipo de dato del parámetro</param>
+    ''' <param name="Size">Tamaño del Tipo de dato del parámetro</param>
     ''' <param name="Direccion">Determina si el parámetro es de entrada y/o salida</param>
     ''' <returns>Retorna un objeto parámetro</returns>
     ''' <remarks></remarks>
     Public Function Add(ByVal Nombre As String,
                         ByVal Valor As Object,
-                        Optional ByVal Tipo As SqlDbType = Nothing,
-                        Optional ByVal Direccion As ParameterDirection = ParameterDirection.Input = Nothing) As clsParametro
+                        ByVal Tipo As SqlDbType,
+                        Optional ByVal Direccion As ParameterDirection = ParameterDirection.Input) As clsParametro
 
         Dim Obj = New clsParametro
         Obj.Nombre = Nombre
