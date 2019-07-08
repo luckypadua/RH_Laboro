@@ -7,14 +7,14 @@ Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "NETCoreBLB", "..\NETCoreBLB
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "NETCoreADO", "..\NETCoreADO\NETCoreADO\NETCoreADO.vbproj", "{A5476370-6804-42F8-BBA6-B783E5166228}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Probador", "Probador.vbproj", "{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C158C049-C507-4E88-98AC-090E06D7302E}"
 	ProjectSection(SolutionItems) = preProject
 		..\SQL Scripts\SCRIPTS.sql = ..\SQL Scripts\SCRIPTS.sql
 	EndProjectSection
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "NETCoreCrypto", "..\NETCoreCrypto\NETCoreCrypto.vbproj", "{A5028AC8-3059-4FF9-8C00-74A0AD7B2A99}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Probador", "Probador.vbproj", "{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,14 +30,14 @@ Global
 		{A5476370-6804-42F8-BBA6-B783E5166228}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5476370-6804-42F8-BBA6-B783E5166228}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5476370-6804-42F8-BBA6-B783E5166228}.Release|Any CPU.Build.0 = Release|Any CPU
-		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A5028AC8-3059-4FF9-8C00-74A0AD7B2A99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A5028AC8-3059-4FF9-8C00-74A0AD7B2A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5028AC8-3059-4FF9-8C00-74A0AD7B2A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5028AC8-3059-4FF9-8C00-74A0AD7B2A99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

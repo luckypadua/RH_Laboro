@@ -142,15 +142,16 @@ Public Class clsPedidoLicencia
         Me.IdClaseSuceso = IdClaseSuceso
         Me.FechaDeSolicitud = FecSolicitud
         Me.FechaDesde = FecDesde
-        Me.FechaHasta = FechaHasta
+        Me.FechaHasta = FecHasta
         Me.CantidadDias = CantDias
         Me.CodSuceso = CodSuceso
+        Me.Observaciones = ""
     End Sub
 
     Public Function Validar() As Boolean
 
         Try
-            Return (Me.ValidarSuceso & Me.ValidarFechasYDias & Me.ValidarTopes & Me.ValidarOtrasLicenciasEnElPeriodo)
+            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarOtrasLicenciasEnElPeriodo)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
         End Try
@@ -172,7 +173,6 @@ Public Class clsPedidoLicencia
             Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarFechasYDias" & ex.Message)
         End Try
     End Function
-
 
     Private Function ValidarTopes(Optional ByRef MsjFinal As String = "") As Boolean
 
@@ -196,7 +196,8 @@ Public Class clsPedidoLicencia
             End With
 
             MsjFinal = MiAdo.Ejecutar.Parametros("MensajeFinal").Valor
-            Return MiAdo.Ejecutar.Parametros("Excede").Valor
+
+            Return (CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) = 0)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
         End Try
@@ -206,14 +207,18 @@ Public Class clsPedidoLicencia
     Private Function ValidarOtrasLicenciasEnElPeriodo() As Boolean
 
         Try
+            Dim DS As DataSet
+
             With MiAdo.Ejecutar.Parametros
                 .RemoveAll()
-                .Add("FecDesde", Me.FechaDesde, SqlDbType.Int)
-                .Add("FecHasta", Me.FechaHasta, SqlDbType.Int)
+                .Add("FecDesde", Me.FechaDesde, SqlDbType.DateTime)
+                .Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
                 .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
             End With
 
-            Return (MiAdo.Ejecutar.Procedimiento("SP_TraerLicenciasEnPeriodo2", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset).Tables(0).Rows.Count > 1)
+            DS = MiAdo.Ejecutar.Procedimiento("SP_TraerLicenciasEnPeriodo2", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+
+            Return (DS.Tables(0).Rows.Count = 0)
 
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrasLicenciasEnElPeriodo" & ex.Message)
@@ -226,11 +231,12 @@ Public Class clsPedidoLicencia
         Try
             If Me.Validar() Then
                 With MiAdo.Ejecutar.Parametros
+                    .RemoveAll()
                     .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
                     .Add("FecSolicitud", Me.FechaDeSolicitud, SqlDbType.DateTime)
                     .Add("IdSuceso", Me.IdSuceso, SqlDbType.Int)
-                    .Add("FecDesde", Me.FechaDesde, SqlDbType.Date)
-                    .Add("FecHasta", Me.FechaHasta, SqlDbType.Date)
+                    .Add("FecDesde", Me.FechaDesde, SqlDbType.DateTime)
+                    .Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
                     .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
                     .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
                 End With
@@ -260,7 +266,7 @@ Public Class clsPedidoLicencia
                 MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos")
             End If
         Catch ex As Exception
-
+            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Modificar" & ex.Message)
         End Try
     End Sub
 

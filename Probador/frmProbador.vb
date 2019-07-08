@@ -79,6 +79,6 @@ Public Class frmProbador
                                              CInt(txtCantDias.Text),
                                              cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim)
 
-        RH.ValidarSolicitudLicencia(nPedLic)
+        If RH.ValidarSolicitudLicencia(nPedLic) Then RH.GrabarSolicitudLicencia(nPedLic)
     End Sub
 End Class
