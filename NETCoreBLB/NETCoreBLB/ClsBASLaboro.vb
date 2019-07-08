@@ -146,6 +146,7 @@ Public Class ClsBASLaboro
     Public Function GrabarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudLicencia
         Try
             PedidoLicencia.Grabar()
+            Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia" & ex.Message)
         End Try

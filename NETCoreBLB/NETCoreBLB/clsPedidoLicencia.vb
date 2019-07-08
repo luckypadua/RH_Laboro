@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports Microsoft.VisualBasic
 
-Public Class clsPedidoLicencia
+Public Class ClsPedidoLicencia
 
     Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
 

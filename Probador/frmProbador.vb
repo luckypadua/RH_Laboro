@@ -1,5 +1,5 @@
 ﻿Imports NETCoreBLB
-Public Class frmProbador
+Public Class FrmProbador
 
     Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
     Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
@@ -50,12 +50,12 @@ Public Class frmProbador
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
-    Private Sub cmdManagersYEmpleados_Click(sender As Object, e As EventArgs) Handles cmdManagersYEmpleados.Click
+    Private Sub CmdManagersYEmpleados_Click(sender As Object, e As EventArgs) Handles cmdManagersYEmpleados.Click
         Dim Ds As DataSet = RH.GetManagers(cmbIdLegajo.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
-    Private Sub frmProbador_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmProbador_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         cmbIdLegajo.SelectedIndex = 0
 
         For Each Row As DataRow In RH.GetTipoLicencias.Tables.Item(0).Rows
@@ -63,14 +63,14 @@ Public Class frmProbador
         Next
 
     End Sub
-    Private Sub cmdSolicitarLicencia_Click(sender As Object, e As EventArgs) Handles cmdSolicitarLicencia.Click
+    Private Sub CmdSolicitarLicencia_Click(sender As Object, e As EventArgs) Handles cmdSolicitarLicencia.Click
         Dim DTAux As New DataTable()
 
         DTAux = MiAdo.Consultar.GetDataTable("SELECT s.IdSuceso, sc.IdClaseSuceso FROM Bl_Sucesos s JOIN Bl_SucesosClases sc ON s.IdClaseSuceso = sc.IdClaseSuceso WHERE s.CodSuceso = '" & cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim & "'", "Suceso")
 
         Dim DTRow As DataRow = DTAux.Rows(0)
 
-        Dim nPedLic As New clsPedidoLicencia(cmbIdLegajo.SelectedItem,
+        Dim nPedLic As New ClsPedidoLicencia(cmbIdLegajo.SelectedItem,
                                              DTRow("IdSuceso"),
                                              DTRow("IdClaseSuceso"),
                                              Now,
