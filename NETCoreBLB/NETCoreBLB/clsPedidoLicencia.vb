@@ -150,7 +150,7 @@ Public Class clsPedidoLicencia
     Public Function Validar() As Boolean
 
         Try
-            Return Me.ValidarSuceso & Me.ValidarFechasYDias & Me.ValidarTopes & Me.ValidarOtrasLicenciasEnElPeriodo
+            Return (Me.ValidarSuceso & Me.ValidarFechasYDias & Me.ValidarTopes & Me.ValidarOtrasLicenciasEnElPeriodo)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
         End Try
@@ -158,43 +158,49 @@ Public Class clsPedidoLicencia
     End Function
 
     Private Function ValidarSuceso() As Boolean
-        Return (MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & CodSuceso.Trim & "'") > 0)
+        Try
+            Return (MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & CodSuceso.Trim & "'") > 0)
+        Catch ex As Exception
+            Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarSuceso" & ex.Message)
+        End Try
     End Function
 
     Private Function ValidarFechasYDias() As Boolean
-        Return (Me.CantidadDias <> 0) And (FechaDesde.CompareTo(FechaHasta) <= 0)
+        Try
+            Return (Me.CantidadDias <> 0) And (FechaDesde.CompareTo(FechaHasta) <= 0)
+        Catch ex As Exception
+            Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarFechasYDias" & ex.Message)
+        End Try
     End Function
+
 
     Private Function ValidarTopes(Optional ByRef MsjFinal As String = "") As Boolean
 
         Try
-            'Dim Excede As Boolean
+            With MiAdo.Ejecutar.Parametros
+                .RemoveAll()
+                .Add("Tratamiento", MiAdo.Ejecutar.GetSQLString("SELECT Tratamiento FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.Char)
+                .Add("CodSuceso", Me.CodSuceso, SqlDbType.VarChar)
+                .Add("CodClaseSuceso", MiAdo.Ejecutar.GetSQLString("SELECT CodClaseSuceso FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.VarChar)
+                .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+                .Add("CodAtr", DBNull.Value, SqlDbType.Char)
+                .Add("CodAtrVal", DBNull.Value, SqlDbType.Char)
+                .Add("FechaOcurrencia", Me.FechaDeSolicitud, SqlDbType.DateTime)
+                .Add("FechaSuspDesde", DBNull.Value, SqlDbType.DateTime)
+                .Add("Importe", DBNull.Value, SqlDbType.Decimal)
+                .Add("Dias", Me.CantidadDias, SqlDbType.Int)
+                .Add("VacAfectacion", Me.VacAfectacion, SqlDbType.Char)
+                .Add("IdOcurrencia", DBNull.Value, SqlDbType.Int)
+                .Add("Excede", False, SqlDbType.Bit, ParameterDirection.Output)
+                .Add("MensajeFinal", String.Empty, SqlDbType.VarChar, ParameterDirection.Output)
+            End With
 
-            'With MiAdo.Ejecutar.Parametros
-            '    .RemoveAll()
-            '    .Add("Tratamiento", MiAdo.Ejecutar.GetSQLString("SELECT Tratamiento FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.Char)
-            '    .Add("CodSuceso", Me.CodSuceso, SqlDbType.VarChar)
-            '    .Add("CodClaseSuceso", MiAdo.Ejecutar.GetSQLString("SELECT CodClaseSuceso FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.VarChar)
-            '    .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
-            '    .Add("CodAtr", DBNull.Value, SqlDbType.Char)
-            '    .Add("CodAtrVal", DBNull.Value, SqlDbType.Char)
-            '    .Add("FechaOcurrencia", Me.FechaDeSolicitud, SqlDbType.DateTime)
-            '    .Add("FechaSuspDesde", DBNull.Value, SqlDbType.SmallDateTime)
-            '    .Add("Importe", DBNull.Value, SqlDbType.Decimal)
-            '    .Add("Dias", Me.CantidadDias, SqlDbType.Int)
-            '    .Add("VacAfectacion", Me.VacAfectacion, SqlDbType.Char)
-            '    .Add("IdOcurrencia", DBNull.Value, SqlDbType.Int)
-            '    .Add("Excede", Excede, SqlDbType.Bit)
-            '    .Add("MensajeFinal", MsjFinal, SqlDbType.VarChar)
-            'End With
-
-            'MiAdo.Ejecutar.Procedimiento("BL_NovedadesTopes", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.NotReturn)
-
-            'Return Excede
-            Return True
+            MsjFinal = MiAdo.Ejecutar.Parametros("MensajeFinal").Valor
+            Return MiAdo.Ejecutar.Parametros("Excede").Valor
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
         End Try
+
     End Function
 
     Private Function ValidarOtrasLicenciasEnElPeriodo() As Boolean
