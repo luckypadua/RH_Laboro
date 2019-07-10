@@ -36,6 +36,24 @@ Public Class FrmProbador
     End Sub
 
     Private Sub BtnSalir_Click(sender As Object, e As EventArgs) Handles BtnSalir.Click
+
+
+        With MiAdo.Ejecutar.Parametros
+            .RemoveAll()
+            .Add("IdLegajo", 1000, SqlDbType.Int)
+            .Add("FecSolicitud", "20170101", SqlDbType.DateTime)
+            .Add("IdSuceso", 100, SqlDbType.Int)
+            .Add("FecDesde", "20170101", SqlDbType.DateTime)
+            .Add("FecHasta", "20170101", SqlDbType.DateTime)
+            .Add("Cantidad", 20, SqlDbType.SmallInt)
+            .Add("Observaciones", "xxxxxx", SqlDbType.VarChar)
+        End With
+
+        MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
+
+
+        MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
+
         Me.Close()
     End Sub
 

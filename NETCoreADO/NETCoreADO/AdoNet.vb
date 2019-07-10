@@ -1282,7 +1282,7 @@ Public Class ClsEjecutar
 
                         Dim p As New SqlParameter
                         p.ParameterName = "RETURN"
-                        p.DbType = SqlDbType.Int
+                        p.SqlDbType = SqlDbType.Int
                         p.Direction = ParameterDirection.ReturnValue
                         Cm.Parameters.Add(p)
                         p = Nothing
