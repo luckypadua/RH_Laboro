@@ -140,7 +140,13 @@ Public Class ClsBASLaboro
     End Function
 
     Public Function EliminarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
-        Return True
+        Try
+            PedidoLicencia.Borrar()
+            Return True
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia" & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function GrabarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudLicencia
@@ -149,6 +155,7 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia" & ex.Message)
+            Return False
         End Try
     End Function
 
