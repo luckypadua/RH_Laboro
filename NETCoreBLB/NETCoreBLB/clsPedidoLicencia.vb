@@ -2,6 +2,16 @@
 Imports Microsoft.VisualBasic
 
 Public Class clsPedidoLicencia
+    Public Enum eEstadoPedidoLic
+        Pendiente = 0
+        AceptadaManager = 1
+        RechazadaManager = 2
+        Aceptada = 3
+        Rechazada = 4
+        AceptadaConModificaciones = 5
+        Eliminada = 6
+        Otro = 7
+    End Enum
 
     Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
 
@@ -118,6 +128,16 @@ Public Class clsPedidoLicencia
         End Set
     End Property
 
+    Private mEstado As eEstadoPedidoLic
+    Public Property Estado() As eEstadoPedidoLic
+        Get
+            Return mEstado
+        End Get
+        Set(ByVal value As eEstadoPedidoLic)
+            mEstado = value
+        End Set
+    End Property
+
     Private vVacAfectacion As String
     Public ReadOnly Property VacAfectacion() As String
         Get
@@ -146,6 +166,7 @@ Public Class clsPedidoLicencia
         Me.CantidadDias = CantDias
         Me.CodSuceso = CodSuceso
         Me.Observaciones = ""
+        Me.Estado = eEstadoPedidoLic.Pendiente
     End Sub
 
     Public Function Validar() As Boolean

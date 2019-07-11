@@ -158,8 +158,17 @@ Public Class ClsBASLaboro
             Return False
         End Try
     End Function
+    Public Function GetSolicitudesLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicencias
 
+        Try
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, IdLegajo, FecSolicitud, IdSuceso, FecDesde, FecHasta, Cantidad, Estado, Observaciones FROM BL_NovedadesPedidos WHERE IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+            DS.DataSetName = "PedidosDeLicencias"
+            Return DS
 
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias" & ex.Message)
+        End Try
+    End Function
     Public Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
 
         Try
