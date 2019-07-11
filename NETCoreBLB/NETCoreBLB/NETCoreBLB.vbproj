@@ -19,12 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="NETCoreADO">
-      <HintPath>..\..\..\BIN\DEBUG\netstandard2.0\NETCoreADO.dll</HintPath>
-    </Reference>
-    <Reference Include="NETCoreCrypto">
-      <HintPath>..\..\..\BIN\DEBUG\netstandard2.0\NETCoreCrypto.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\NETCoreADO\NETCoreADO\NETCoreADO.vbproj" />
+    <ProjectReference Include="..\..\NETCoreCrypto\NETCoreCrypto.vbproj" />
   </ItemGroup>
 
 </Project>

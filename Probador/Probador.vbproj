@@ -68,14 +68,6 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NETCoreADO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BIN\DEBUG\netstandard2.0\NETCoreADO.dll</HintPath>
-    </Reference>
-    <Reference Include="NETCoreBLB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BIN\DEBUG\netstandard2.0\NETCoreBLB.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -162,6 +154,19 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NETCoreADO\NETCoreADO\NETCoreADO.vbproj">
+      <Project>{a5476370-6804-42f8-bba6-b783e5166228}</Project>
+      <Name>NETCoreADO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NETCoreBLB\NETCoreBLB\NETCoreBLB.vbproj">
+      <Project>{6e69a228-902c-4104-97b8-fffc018a4a02}</Project>
+      <Name>NETCoreBLB</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

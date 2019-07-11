@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports Microsoft.VisualBasic
-
-Public Class clsPedidoLicencia
+Public Class ClsPedidoLicencia
     Public Enum eEstadoPedidoLic
         Pendiente = 0
         AceptadaManager = 1

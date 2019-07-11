@@ -586,7 +586,7 @@ Public Class AdoNet
 
 End Class
 
-Public Class clsTransaccion
+Public Class ClsTransaccion
 
     Private mParent As AdoNet
 
@@ -644,7 +644,7 @@ Public Class clsTransaccion
 
 End Class
 
-Public Class clsConfigurar
+Public Class ClsConfigurar
 
     Private mServer As String
     Private mDatabase As String
@@ -738,7 +738,7 @@ Public Class clsConfigurar
 
 End Class
 
-Public Class clsConsultar
+Public Class ClsConsultar
 
     Private mParent As AdoNet
 
@@ -1282,7 +1282,7 @@ Public Class ClsEjecutar
 
                         Dim p As New SqlParameter
                         p.ParameterName = "RETURN"
-                        p.DbType = SqlDbType.Int
+                        p.SqlDbType = SqlDbType.Int
                         p.Direction = ParameterDirection.ReturnValue
                         Cm.Parameters.Add(p)
                         p = Nothing
@@ -1318,7 +1318,7 @@ Public Class ClsEjecutar
 
 End Class
 
-Public Class clsParametro
+Public Class ClsParametro
 
     Public Nombre As String
     Public Valor As Object
