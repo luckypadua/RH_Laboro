@@ -344,13 +344,11 @@ Public Class ClsPedidoLicencia
     End Sub
 
     Public Sub Borrar()
-
         Try
             MiAdo.Ejecutar.Borrar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.Id)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Borrar" & ex.Message)
         End Try
-
     End Sub
 
 End Class
