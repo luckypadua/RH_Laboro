@@ -361,7 +361,7 @@ Partial Class FrmProbador
         Me.dtpFecHasta.Name = "dtpFecHasta"
         Me.dtpFecHasta.Size = New System.Drawing.Size(79, 20)
         Me.dtpFecHasta.TabIndex = 34
-        Me.dtpFecHasta.Value = New Date(2019, 7, 2, 0, 0, 0, 0)
+        Me.dtpFecHasta.Value = New Date(2019, 7, 18, 0, 0, 0, 0)
         '
         'dtpFecDesde
         '
@@ -370,7 +370,7 @@ Partial Class FrmProbador
         Me.dtpFecDesde.Name = "dtpFecDesde"
         Me.dtpFecDesde.Size = New System.Drawing.Size(79, 20)
         Me.dtpFecDesde.TabIndex = 33
-        Me.dtpFecDesde.Value = New Date(2019, 7, 2, 0, 0, 0, 0)
+        Me.dtpFecDesde.Value = New Date(2019, 7, 18, 0, 0, 0, 0)
         '
         'Label4
         '
@@ -399,7 +399,7 @@ Partial Class FrmProbador
         Me.txtCantDias.Size = New System.Drawing.Size(79, 20)
         Me.txtCantDias.TabIndex = 21
         '
-        'frmProbador
+        'FrmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -422,7 +422,7 @@ Partial Class FrmProbador
         Me.Controls.Add(Me.BtnSalir)
         Me.Controls.Add(Me.WebBrowserInput)
         Me.Controls.Add(Me.BtnDatosPersonales)
-        Me.Name = "frmProbador"
+        Me.Name = "FrmProbador"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Probador"
         Me.GroupBox1.ResumeLayout(False)

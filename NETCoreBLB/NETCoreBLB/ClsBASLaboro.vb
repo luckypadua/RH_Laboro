@@ -126,7 +126,7 @@ Public Class ClsBASLaboro
             Ds.DataSetName = "LoguinsIni"
             Return Ds
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetLoguinsIni" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:GetLoguinsIni " & ex.Message)
         End Try
 
     End Function
@@ -135,16 +135,17 @@ Public Class ClsBASLaboro
         Try
             Return PedidoLic.Validar
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:ValidarSolicitudLicencia" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:ValidarSolicitudLicencia " & ex.Message)
         End Try
     End Function
 
-    Public Function EliminarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
+    Public Function EliminarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
         Try
-            PedidoLicencia.Borrar()
+            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
+            sLic.Borrar()
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
             Return False
         End Try
     End Function
@@ -154,7 +155,7 @@ Public Class ClsBASLaboro
             PedidoLicencia.Grabar()
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia " & ex.Message)
             Return False
         End Try
     End Function
@@ -166,7 +167,7 @@ Public Class ClsBASLaboro
             Return DS
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias " & ex.Message)
         End Try
     End Function
     Public Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
@@ -186,7 +187,7 @@ Public Class ClsBASLaboro
             Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetEmpleadosACargo" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:GetEmpleadosACargo " & ex.Message)
         End Try
 
     End Function
@@ -208,7 +209,7 @@ Public Class ClsBASLaboro
             Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetManagers" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:GetManagers " & ex.Message)
         End Try
 
     End Function
@@ -221,7 +222,7 @@ Public Class ClsBASLaboro
             Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias " & ex.Message)
         End Try
 
     End Function
@@ -241,7 +242,7 @@ Public Class ClsBASLaboro
             Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias " & ex.Message)
         End Try
 
     End Function

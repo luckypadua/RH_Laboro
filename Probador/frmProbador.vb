@@ -1,4 +1,5 @@
 ﻿Imports NETCoreBLB
+Imports System.Globalization
 Public Class FrmProbador
 
     Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
@@ -80,6 +81,9 @@ Public Class FrmProbador
             cmbTipoLicencia.Items.Add(Row("TipoLicencia"))
         Next
 
+        dtpFecDesde.CustomFormat = "dd/MM/yyyy"
+        dtpFecHasta.CustomFormat = "dd/MM/yyyy"
+
     End Sub
     Private Sub CmdSolicitarLicencia_Click(sender As Object, e As EventArgs) Handles cmdSolicitarLicencia.Click
         Dim DTAux As New DataTable()
@@ -92,8 +96,8 @@ Public Class FrmProbador
                                              DTRow("IdSuceso"),
                                              DTRow("IdClaseSuceso"),
                                              Now,
-                                             dtpFecDesde.Value,
-                                             dtpFecHasta.Value,
+                                             dtpFecDesde.Text,
+                                             dtpFecHasta.Text,
                                              CInt(txtCantDias.Text),
                                              cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim)
 

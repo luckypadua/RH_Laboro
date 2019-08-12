@@ -115,16 +115,14 @@ Public Class ClsPedidoLicencia
     End Property
 
     Private vCodSuceso As String
-    Public Property CodSuceso() As String
+    Public ReadOnly Property CodSuceso() As String
         Get
-            If vCodSuceso = String.Empty Then
-                vCodSuceso = vTipoLic.Split("-")(0).Trim
-            End If
+            vCodSuceso = MiAdo.Ejecutar.GetSQLString("SELECT CodSuceso FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso).Trim
             Return vCodSuceso
         End Get
-        Set(ByVal value As String)
-            vCodSuceso = value
-        End Set
+        'Set(ByVal value As String)
+        '    vCodSuceso = value
+        'End Set
     End Property
 
     Private mEstado As eEstadoPedidoLic
@@ -154,6 +152,10 @@ Public Class ClsPedidoLicencia
 
     Public Sub New()
     End Sub
+    Public Sub New(ByVal IdPedidoLicencia As Long)
+        Me.New
+        Me.Id = IdPedidoLicencia
+    End Sub
     Public Sub New(ByVal IdLegajo As Integer, ByVal IdSuceso As Integer, ByVal IdClaseSuceso As Integer, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal CodSuceso As String)
         Me.New
         Me.IdLegajo = IdLegajo
@@ -163,7 +165,7 @@ Public Class ClsPedidoLicencia
         Me.FechaDesde = FecDesde
         Me.FechaHasta = FecHasta
         Me.CantidadDias = CantDias
-        Me.CodSuceso = CodSuceso
+        vCodSuceso = CodSuceso
         Me.Observaciones = ""
         Me.Estado = eEstadoPedidoLic.Pendiente
     End Sub
@@ -171,7 +173,7 @@ Public Class ClsPedidoLicencia
     Public Function Validar() As Boolean
 
         Try
-            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarOtrasLicenciasEnElPeriodo)
+            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarOtrasLicenciasEnElPeriodo And Me.ValidarOtrosPedidosEnElPeriodo)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
         End Try
@@ -180,7 +182,13 @@ Public Class ClsPedidoLicencia
 
     Private Function ValidarSuceso() As Boolean
         Try
-            Return (MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & CodSuceso.Trim & "'") > 0)
+            'Return (MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & CodSuceso.Trim & "'") > 0)
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & Me.CodSuceso.Trim & "'") > 0 Then
+                Return True
+            Else
+                Throw New Exception("@El suceso solicitado no existe")
+                Return False
+            End If
         Catch ex As Exception
             Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarSuceso" & ex.Message)
         End Try
@@ -188,7 +196,15 @@ Public Class ClsPedidoLicencia
 
     Private Function ValidarFechasYDias() As Boolean
         Try
-            Return (Me.CantidadDias <> 0) And (FechaDesde.CompareTo(FechaHasta) <= 0)
+            'Return (Me.CantidadDias <> 0) And (FechaDesde.CompareTo(FechaHasta) <= 0)
+
+            If Me.CantidadDias <> 0 And FechaDesde.CompareTo(FechaHasta) <= 0 Then
+                Return True
+            Else
+                Throw New Exception("@La cantidad de días no puede ser 0 y/o la fecha desde debe ser mayor a la fecha hasta")
+                Return False
+            End If
+
         Catch ex As Exception
             Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarFechasYDias" & ex.Message)
         End Try
@@ -217,7 +233,14 @@ Public Class ClsPedidoLicencia
 
             MsjFinal = MiAdo.Ejecutar.Parametros("MensajeFinal").Valor
 
-            Return (CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) = 0)
+            If CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) = 0 Then
+                Return True
+            Else
+                Throw New Exception("@" & MiAdo.Ejecutar.Parametros("MensajeFinal").Valor.ToString)
+                Return False
+            End If
+
+            'Return (CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) = 0)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
         End Try
@@ -238,10 +261,40 @@ Public Class ClsPedidoLicencia
 
             DS = MiAdo.Ejecutar.Procedimiento("SP_TraerLicenciasEnPeriodo2", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
-            Return (DS.Tables(0).Rows.Count = 0)
+            If DS.Tables(0).Rows.Count = 0 Then
+                Return True
+            Else
+                Throw New Exception("@Existen otras licencias en el período solicitado")
+                Return False
+            End If
+
+            'Return (DS.Tables(0).Rows.Count = 0)
 
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrasLicenciasEnElPeriodo" & ex.Message)
+        End Try
+
+    End Function
+
+    Private Function ValidarOtrosPedidosEnElPeriodo() As Boolean
+
+        Try
+            With MiAdo.Ejecutar.Parametros
+                .RemoveAll()
+                .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+                .Add("FecDesde", Me.FechaDesde, SqlDbType.DateTime)
+                .Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
+            End With
+
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND (FecDesde BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "' OR FecHasta BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "')") > 0 Then
+                Throw New Exception("@Existen otros pedidos de licencia para el período solicitado")
+                Return False
+            Else
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrosPedidosEnElPeriodo" & ex.Message)
         End Try
 
     End Function
