@@ -237,3 +237,39 @@ Left Join CATEGORIAS C			(nolock) ON C.IdCategoria = AL.IdCategoria
 left Join BL_CONVENIOS V		(nolock) ON V.IdConvenio = AL.IdConvenio 
 GO
 
+
+IF EXISTS (SELECT * FROM sysobjects WHERE type = 'U' AND name = 'BL_RECIBOS_ACCIONESWEB')
+	DROP TABLE [dbo].[BL_RECIBOS_ACCIONESWEB]
+GO
+
+CREATE TABLE [dbo].[BL_RECIBOS_ACCIONESWEB](
+	[IdAccion] [smallint] NOT NULL,
+	[Descripcion] [varchar](200) NOT NULL,
+ CONSTRAINT [PK_BL_RECIBOS_ACCIONESWEB] PRIMARY KEY CLUSTERED 
+([IdAccion] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE type = 'U' AND name = 'BL_RECIBOS_AUDITORIAWEB')
+	DROP TABLE [dbo].[BL_RECIBOS_AUDITORIAWEB]
+GO
+
+CREATE TABLE [dbo].[BL_RECIBOS_AUDITORIAWEB](
+	[IdSecuencia] [int] IDENTITY(1,1) NOT NULL,
+	[IdLiquidacion] [int] NOT NULL,
+	[IdLegajo] [int] NOT NULL,
+	[IdAccion] [smallint] NULL,
+	[Fecha] [datetime] NOT NULL,
+	[Firmado_Fecha] [datetime] NULL,
+ CONSTRAINT [PK_BL_RECIBOS_AUDITORIAWEB] PRIMARY KEY CLUSTERED 
+([IdSecuencia] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[BL_RECIBOS_AUDITORIAWEB] ADD  CONSTRAINT [DF_BL_RECIBOS_AUDITORIAWEB_Fecha]  DEFAULT (getdate()) FOR [Fecha]
+GO
+
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (1,'Publicar recibo')
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (2,'Quitar de publicación recibo')
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (3,'Quitar de publicación recibo rechazado')
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (4,'Quitar de publicación recibo firmado conforme')
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (5,'Firmado conforme')
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (6,'Firmado desconforme')
