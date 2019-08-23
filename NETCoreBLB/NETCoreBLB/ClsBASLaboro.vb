@@ -255,6 +255,20 @@ Public Class ClsBASLaboro
             If Not FirmaConforme Then Firmado = 2
             MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Firmado = {3}, Firmado_Fecha = GetDate(), Observacion = '{2}' Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo, Observacion, Firmado))
 
+            Dim IdAccion As Integer
+            If Firmado = 1 Then
+                IdAccion = 5
+            Else
+                IdAccion = 6
+            End If
+
+            MiAdo.Ejecutar.Parametros.RemoveAll()
+            MiAdo.Ejecutar.Parametros.Add("IdLiquidacion", IdLiquidacion, SqlDbType.Int)
+            MiAdo.Ejecutar.Parametros.Add("IdLegajo", IdLegajo, SqlDbType.Int)
+            MiAdo.Ejecutar.Parametros.Add("IdAccion", IdAccion, SqlDbType.Int)
+            MiAdo.Ejecutar.Parametros.Add("Firmado_Fecha", DateTime.Now, SqlDbType.DateTime)
+            MiAdo.Ejecutar.Insertar("BL_RECIBOS_AUDITORIAWEB")
+
         Catch ex As Exception
 
             Throw New Exception("NETCoreBLB:ReciboFirmado: " & ex.Message)
