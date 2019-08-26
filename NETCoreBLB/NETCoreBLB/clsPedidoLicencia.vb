@@ -333,17 +333,17 @@ Public Class ClsPedidoLicencia
         Try
             If Me.Validar() Then
                 With MiAdo.Ejecutar.Parametros
-                    .Add("IdOcurrenciaPedido", Me.Id, SqlDbType.Int)
                     .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
                     .Add("FecSolicitud", Me.FechaDeSolicitud, SqlDbType.DateTime)
                     .Add("IdSuceso", Me.IdSuceso, SqlDbType.Int)
                     .Add("FecDesde", Me.FechaDesde, SqlDbType.Date)
                     .Add("FecHasta", Me.FechaHasta, SqlDbType.Date)
                     .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
+                    .Add("Estado", Me.Estado, SqlDbType.SmallInt)
                     .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
                 End With
 
-                MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos")
+                MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.IdPedidoLicencia)
             End If
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Modificar" & ex.Message)
