@@ -16,6 +16,9 @@ Public Interface ItzBASLaboro
     Function EliminarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean
     Function GrabarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean
     Function GetSolicitudesLicencias(ByVal IdLegajo As Long) As DataSet
+    Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean
+    Function RechazarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean
+    Function GetSolicitudesLicenciasManager(ByVal IdLegajoManager As Long) As DataSet
     Sub Dispose()
 
 End Interface

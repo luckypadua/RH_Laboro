@@ -7,7 +7,6 @@ Public Class ClsBASLaboro
 
     Private MiAdo As New NETCoreADO.AdoNet
     Const Semilla As String = "tir4n0sAuri0"
-
     Public Sub New(ByVal Server As String,
                    ByVal Database As String,
                    Optional ByVal Uid As String = "",
@@ -19,7 +18,6 @@ Public Class ClsBASLaboro
         MiAdo.Configurar.Pwd = Pwd
 
     End Sub
-
     Public Function GetDatosPersonales(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetDatosPersonales
 
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Personas] Where IdPersona = {0}", IdPersona), "Persona")
@@ -30,7 +28,6 @@ Public Class ClsBASLaboro
         Return Ds
 
     End Function
-
     Public Function GetRecibos(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetRecibos
 
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
@@ -38,7 +35,6 @@ Public Class ClsBASLaboro
         Return Ds
 
     End Function
-
     Public Function GetRecibosDetalle(ByVal IdPersona As Integer) As String Implements ItzBASLaboro.GetRecibosDetalle
 
         Dim ListaCD As New List(Of ClsCamposDetalle)
@@ -63,7 +59,6 @@ Public Class ClsBASLaboro
         Return Newtonsoft.Json.JsonConvert.SerializeObject(ListaCD)
 
     End Function
-
     Private Function CampoExcluido(ByVal Campo As String) As Boolean
 
         Dim CamposExcluidos As String = "Clave,IdLiquidacion,IdLegajo,IdPersona"
@@ -73,7 +68,6 @@ Public Class ClsBASLaboro
         Return False
 
     End Function
-
     Public Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetReciboDescarga
 
         Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
@@ -84,7 +78,6 @@ Public Class ClsBASLaboro
         Return Ds
 
     End Function
-
     Private Function GetParametros(ByVal Archivo As String, ByVal ArchivoAlias As String) As DataTable
 
         Dim DtRta As New DataTable("GetReciboDescarga")
@@ -118,7 +111,6 @@ Public Class ClsBASLaboro
         Return DtRta
 
     End Function
-
     Public Function GetLoguinsIni() As DataSet Implements ItzBASLaboro.GetLoguinsIni
 
         Try
@@ -130,7 +122,6 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
-
     Public Function ValidarSolicitudLicencia(ByRef PedidoLic As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
         Try
             Return PedidoLic.Validar
@@ -138,7 +129,6 @@ Public Class ClsBASLaboro
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:ValidarSolicitudLicencia " & ex.Message)
         End Try
     End Function
-
     Public Function EliminarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
         Try
             Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
@@ -149,7 +139,26 @@ Public Class ClsBASLaboro
             Return False
         End Try
     End Function
-
+    Public Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.AceptarSolicitudLicencia
+        Try
+            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
+            sLic.Estado = ClsPedidoLicencia.eEstadoPedidoLic.AceptadaManager
+            sLic.Grabar()
+            Return True
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
+        End Try
+    End Function
+    Public Function RechazarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.RechazarSolicitudLicencia
+        Try
+            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
+            sLic.Estado = ClsPedidoLicencia.eEstadoPedidoLic.RechazadaManager
+            sLic.Grabar()
+            Return True
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
+        End Try
+    End Function
     Public Function GrabarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudLicencia
         Try
             PedidoLicencia.Grabar()
@@ -163,6 +172,25 @@ Public Class ClsBASLaboro
 
         Try
             Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, IdLegajo, FecSolicitud, IdSuceso, FecDesde, FecHasta, Cantidad, Estado, Observaciones FROM BL_NovedadesPedidos WHERE IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+            DS.DataSetName = "PedidosDeLicencias"
+            Return DS
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias " & ex.Message)
+        End Try
+    End Function
+    Public Function GetSolicitudesLicenciasManager(ByVal IdLegajoManager As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicenciasManager
+
+        Try
+            Dim sIds As String = ""
+
+            For Each Dr As DataRow In GetEmpleadosACargo(IdLegajoManager).Tables(0).Rows
+                sIds = sIds & Dr("IdLegajo").ToString & ","
+            Next
+
+            sIds = sIds.Remove(sIds.Length - 1)
+
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, IdLegajo, FecSolicitud, IdSuceso, FecDesde, FecHasta, Cantidad, Estado, Observaciones FROM BL_NovedadesPedidos WHERE IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
             DS.DataSetName = "PedidosDeLicencias"
             Return DS
 
@@ -191,7 +219,6 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
-
     Public Function GetManagers(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetManagers
 
         Try
@@ -213,7 +240,6 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
-
     Public Function GetTipoLicencias() As DataSet Implements ItzBASLaboro.GetTipoLicencias
 
         Try
@@ -226,7 +252,6 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
-
     Public Function GetLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetLicencias
 
         Try
@@ -246,7 +271,6 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
-
     Public Sub ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "") Implements ItzBASLaboro.ReciboFirmado
 
         Try
@@ -262,7 +286,6 @@ Public Class ClsBASLaboro
         End Try
 
     End Sub
-
     Public Sub ReciboVisualizado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) Implements ItzBASLaboro.ReciboVisualizado
 
         Try

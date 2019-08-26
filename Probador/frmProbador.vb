@@ -103,4 +103,17 @@ Public Class FrmProbador
 
         If RH.ValidarSolicitudLicencia(nPedLic) Then RH.GrabarSolicitudLicencia(nPedLic)
     End Sub
+
+    Private Sub cmdAceptarLicencia_Click(sender As Object, e As EventArgs) Handles cmdAceptarLicencia.Click
+        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text)
+    End Sub
+
+    Private Sub cmdRechazarLicencia_Click(sender As Object, e As EventArgs) Handles cmdRechazarLicencia.Click
+        RH.RechazarSolicitudLicencia(txtIdSolicitudLicencia.Text)
+    End Sub
+
+    Private Sub GetLicenciasEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles GetLicenciasEmpleadosACargo.Click
+        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(txtIdPersona.Text)
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
 End Class

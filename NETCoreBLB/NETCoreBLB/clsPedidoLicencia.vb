@@ -153,8 +153,27 @@ Public Class ClsPedidoLicencia
     Public Sub New()
     End Sub
     Public Sub New(ByVal IdPedidoLicencia As Long)
-        Me.New
+
+        Me.New()
         Me.Id = IdPedidoLicencia
+
+        Try
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT * FROM BL_NovedadesPedidos WHERE IdOcurrenciaPedido = " & Me.IdPedidoLicencia, "BL_NovedadesPedidos")
+
+            Me.IdLegajo = Ds.Tables(0).Rows(0)("IdLegajo")
+            Me.IdSuceso = Ds.Tables(0).Rows(0)("IdSuceso")
+            Me.IdClaseSuceso = MiAdo.Ejecutar.GetSQLInteger("SELECT IdClaseSuceso FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso)
+            Me.FechaDeSolicitud = Ds.Tables(0).Rows(0)("FecSolicitud")
+            Me.FechaDesde = Ds.Tables(0).Rows(0)("FecDesde")
+            Me.FechaHasta = Ds.Tables(0).Rows(0)("FecHasta")
+            Me.CantidadDias = Ds.Tables(0).Rows(0)("Cantidad")
+            vCodSuceso = MiAdo.Ejecutar.GetSQLString("SELECT CodSuceso FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso)
+            Me.Observaciones = Ds.Tables(0).Rows(0)("Observaciones")
+            Me.Estado = Ds.Tables(0).Rows(0)("Estado")
+        Catch ex As Exception
+            Throw New Exception("NETCoreBLB:clsPedidoLicencia:New" & ex.Message)
+        End Try
+
     End Sub
     Public Sub New(ByVal IdLegajo As Integer, ByVal IdSuceso As Integer, ByVal IdClaseSuceso As Integer, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal CodSuceso As String)
         Me.New
@@ -182,32 +201,20 @@ Public Class ClsPedidoLicencia
 
     Private Function ValidarSuceso() As Boolean
         Try
-            'Return (MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & CodSuceso.Trim & "'") > 0)
-            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & Me.CodSuceso.Trim & "'") > 0 Then
-                Return True
-            Else
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & Me.CodSuceso.Trim & "'") = 0 Then
                 Throw New Exception("@El suceso solicitado no existe")
-                Return False
             End If
+            Return True
         Catch ex As Exception
             Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarSuceso" & ex.Message)
         End Try
     End Function
 
     Private Function ValidarFechasYDias() As Boolean
-        Try
-            'Return (Me.CantidadDias <> 0) And (FechaDesde.CompareTo(FechaHasta) <= 0)
-
-            If Me.CantidadDias <> 0 And FechaDesde.CompareTo(FechaHasta) <= 0 Then
-                Return True
-            Else
-                Throw New Exception("@La cantidad de días no puede ser 0 y/o la fecha desde debe ser mayor a la fecha hasta")
-                Return False
-            End If
-
-        Catch ex As Exception
-            Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarFechasYDias" & ex.Message)
-        End Try
+        If Me.CantidadDias = 0 Or FechaDesde.CompareTo(FechaHasta) > 0 Then
+            Throw New Exception("@La cantidad de días no puede ser 0 y/o la fecha desde debe ser mayor a la fecha hasta")
+        End If
+        Return True
     End Function
 
     Private Function ValidarTopes(Optional ByRef MsjFinal As String = "") As Boolean
@@ -233,14 +240,12 @@ Public Class ClsPedidoLicencia
 
             MsjFinal = MiAdo.Ejecutar.Parametros("MensajeFinal").Valor
 
-            If CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) = 0 Then
-                Return True
-            Else
+            If CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) <> 0 Then
                 Throw New Exception("@" & MiAdo.Ejecutar.Parametros("MensajeFinal").Valor.ToString)
-                Return False
             End If
 
-            'Return (CInt(MiAdo.Ejecutar.Parametros("Excede").Valor) = 0)
+            Return True
+
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
         End Try
@@ -261,14 +266,11 @@ Public Class ClsPedidoLicencia
 
             DS = MiAdo.Ejecutar.Procedimiento("SP_TraerLicenciasEnPeriodo2", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
-            If DS.Tables(0).Rows.Count = 0 Then
-                Return True
-            Else
+            If DS.Tables(0).Rows.Count <> 0 Then
                 Throw New Exception("@Existen otras licencias en el período solicitado")
-                Return False
             End If
 
-            'Return (DS.Tables(0).Rows.Count = 0)
+            Return True
 
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrasLicenciasEnElPeriodo" & ex.Message)
@@ -286,12 +288,11 @@ Public Class ClsPedidoLicencia
                 .Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
             End With
 
-            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND (FecDesde BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "' OR FecHasta BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "')") > 0 Then
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND (FecDesde BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "' OR FecHasta BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "') AND IdOcurrenciaPedido <> " & IdPedidoLicencia) > 0 Then
                 Throw New Exception("@Existen otros pedidos de licencia para el período solicitado")
-                Return False
-            Else
-                Return True
             End If
+
+            Return True
 
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrosPedidosEnElPeriodo" & ex.Message)
@@ -311,10 +312,16 @@ Public Class ClsPedidoLicencia
                     .Add("FecDesde", Me.FechaDesde, SqlDbType.DateTime)
                     .Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
                     .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
+                    .Add("Estado", Me.Estado, SqlDbType.SmallInt)
                     .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
                 End With
 
-                MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
+                If Me.IdPedidoLicencia <> 0 Then
+                    MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.IdPedidoLicencia)
+                Else
+                    MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
+                End If
+
             End If
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Grabar" & ex.Message)
