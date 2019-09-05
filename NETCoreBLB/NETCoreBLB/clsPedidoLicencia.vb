@@ -345,7 +345,7 @@ Public Class ClsPedidoLicencia
                         With MiAdo.Ejecutar.Parametros
                             .RemoveAll()
                             .Add("IdOcurrenciaPedido", Me.IdPedidoLicencia, SqlDbType.Int)
-                            .Add("FecOcurrencia", now, SqlDbType.DateTime)
+                            .Add("FecOcurrencia", Date.Now, SqlDbType.DateTime)
                             .Add("EstadoAnterior", mEstadoAnterior, SqlDbType.SmallInt)
                             .Add("EstadoNuevo", Me.Estado, SqlDbType.SmallInt)
                             .Add("Observaciones", Me.ObservacionesManager, SqlDbType.VarChar)
