@@ -105,11 +105,11 @@ Public Class FrmProbador
     End Sub
 
     Private Sub cmdAceptarLicencia_Click(sender As Object, e As EventArgs) Handles cmdAceptarLicencia.Click
-        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text)
+        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7746, "Nada por aqui")
     End Sub
 
     Private Sub cmdRechazarLicencia_Click(sender As Object, e As EventArgs) Handles cmdRechazarLicencia.Click
-        RH.RechazarSolicitudLicencia(txtIdSolicitudLicencia.Text)
+        RH.RechazarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7746, "No te voy a permitir este pedido desacatao")
     End Sub
 
     Private Sub GetLicenciasEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles GetLicenciasEmpleadosACargo.Click
