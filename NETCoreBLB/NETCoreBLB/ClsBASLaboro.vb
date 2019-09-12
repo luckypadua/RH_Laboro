@@ -139,21 +139,32 @@ Public Class ClsBASLaboro
             Return False
         End Try
     End Function
-    Public Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.AceptarSolicitudLicencia
+    Public Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.AceptarSolicitudLicencia
         Try
             Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
-            sLic.Estado = ClsPedidoLicencia.eEstadoPedidoLic.AceptadaManager
-            sLic.Grabar()
+            With sLic
+                .Estado = ClsPedidoLicencia.eEstadoPedidoLic.Autorizada
+                .IdAutorizadoPor = IdManager
+                .ObservacionesManager = Observaciones
+                .Grabar()
+            End With
+
             Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
         End Try
     End Function
-    Public Function RechazarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.RechazarSolicitudLicencia
+    Public Function RechazarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.RechazarSolicitudLicencia
         Try
             Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
-            sLic.Estado = ClsPedidoLicencia.eEstadoPedidoLic.RechazadaManager
-            sLic.Grabar()
+
+            With sLic
+                .Estado = ClsPedidoLicencia.eEstadoPedidoLic.NoAutorizada
+                .IdAutorizadoPor = IdManager
+                .ObservacionesManager = Observaciones
+                .Grabar()
+            End With
+
             Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)

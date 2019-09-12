@@ -3,8 +3,8 @@ Imports Microsoft.VisualBasic
 Public Class ClsPedidoLicencia
     Public Enum eEstadoPedidoLic
         Pendiente = 0
-        AceptadaManager = 1
-        RechazadaManager = 2
+        Autorizada = 1
+        NoAutorizada = 2
         Aceptada = 3
         Rechazada = 4
         AceptadaConModificaciones = 5
@@ -13,6 +13,16 @@ Public Class ClsPedidoLicencia
     End Enum
 
     Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
+
+    Private mIdAutorizadoPor As Long
+    Public Property IdAutorizadoPor() As Long
+        Get
+            Return mIdAutorizadoPor
+        End Get
+        Set(ByVal value As Long)
+            mIdAutorizadoPor = value
+        End Set
+    End Property
 
     Private IdPedidoLicencia As Long
     Public Property Id() As Long
@@ -111,6 +121,16 @@ Public Class ClsPedidoLicencia
         End Get
         Set(ByVal value As String)
             vObservaciones = value
+        End Set
+    End Property
+
+    Private vObservacionesManager As String
+    Public Property ObservacionesManager() As String
+        Get
+            Return vObservacionesManager
+        End Get
+        Set(ByVal value As String)
+            vObservacionesManager = value
         End Set
     End Property
 
@@ -304,6 +324,8 @@ Public Class ClsPedidoLicencia
 
         Try
             If Me.Validar() Then
+                Dim mEstadoAnterior As eEstadoPedidoLic = MiAdo.Ejecutar.GetSQLTinyInt("SELECT Estado FROM Bl_NovedadesPedidos WHERE IdOcurrenciaPedido = " & Me.IdPedidoLicencia)
+
                 With MiAdo.Ejecutar.Parametros
                     .RemoveAll()
                     .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
@@ -318,6 +340,21 @@ Public Class ClsPedidoLicencia
 
                 If Me.IdPedidoLicencia <> 0 Then
                     MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.IdPedidoLicencia)
+
+                    If mEstadoAnterior <> Me.Estado Then
+                        With MiAdo.Ejecutar.Parametros
+                            .RemoveAll()
+                            .Add("IdOcurrenciaPedido", Me.IdPedidoLicencia, SqlDbType.Int)
+                            .Add("FecOcurrencia", Date.Now, SqlDbType.DateTime)
+                            .Add("EstadoAnterior", mEstadoAnterior, SqlDbType.SmallInt)
+                            .Add("EstadoNuevo", Me.Estado, SqlDbType.SmallInt)
+                            .Add("Observaciones", Me.ObservacionesManager, SqlDbType.VarChar)
+                            .Add("IdLegajoCambioDeEstado", Me.IdAutorizadoPor, SqlDbType.Int)
+                        End With
+
+                        MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos_Detalle")
+                    End If
+
                 Else
                     MiAdo.Ejecutar.Insertar("BL_NovedadesPedidos")
                 End If
@@ -329,30 +366,14 @@ Public Class ClsPedidoLicencia
 
     End Sub
 
-    Public Sub Modificar()
-        Try
-            If Me.Validar() Then
-                With MiAdo.Ejecutar.Parametros
-                    .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
-                    .Add("FecSolicitud", Me.FechaDeSolicitud, SqlDbType.DateTime)
-                    .Add("IdSuceso", Me.IdSuceso, SqlDbType.Int)
-                    .Add("FecDesde", Me.FechaDesde, SqlDbType.Date)
-                    .Add("FecHasta", Me.FechaHasta, SqlDbType.Date)
-                    .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
-                    .Add("Estado", Me.Estado, SqlDbType.SmallInt)
-                    .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
-                End With
-
-                MiAdo.Ejecutar.Modificar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.IdPedidoLicencia)
-            End If
-        Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Modificar" & ex.Message)
-        End Try
-    End Sub
-
     Public Sub Borrar()
         Try
+            If Me.Estado = eEstadoPedidoLic.Pendiente Then
+                Throw New ArgumentException("@No es posible eliminar un pedido cuyo estado sea diferente de 'Pendiente'")
+            End If
+
             MiAdo.Ejecutar.Borrar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.Id)
+
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Borrar" & ex.Message)
         End Try
