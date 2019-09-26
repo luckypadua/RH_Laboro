@@ -92,7 +92,7 @@ Public Class FrmProbador
 
         Dim DTRow As DataRow = DTAux.Rows(0)
 
-        Dim nPedLic As New ClsPedidoLicencia(cmbIdLegajo.SelectedItem,
+        Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
                                              DTRow("IdSuceso"),
                                              DTRow("IdClaseSuceso"),
                                              Now,
@@ -115,5 +115,9 @@ Public Class FrmProbador
     Private Sub GetLicenciasEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles GetLicenciasEmpleadosACargo.Click
         Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(txtIdPersona.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
+    Private Sub cmdEliminarSolicitud_Click(sender As Object, e As EventArgs) Handles cmdEliminarSolicitud.Click
+        RH.EliminarSolicitudLicencia(txtIdSolicitudLicencia.Text)
     End Sub
 End Class

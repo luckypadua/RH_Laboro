@@ -136,7 +136,6 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
-            Return False
         End Try
     End Function
     Public Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.AceptarSolicitudLicencia
@@ -176,13 +175,12 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia " & ex.Message)
-            Return False
         End Try
     End Function
     Public Function GetSolicitudesLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicencias
 
         Try
-            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, IdLegajo, FecSolicitud, IdSuceso, FecDesde, FecHasta, Cantidad, Estado, Observaciones FROM BL_NovedadesPedidos WHERE IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
             DS.DataSetName = "PedidosDeLicencias"
             Return DS
 
@@ -201,7 +199,7 @@ Public Class ClsBASLaboro
 
             sIds = sIds.Remove(sIds.Length - 1)
 
-            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, IdLegajo, FecSolicitud, IdSuceso, FecDesde, FecHasta, Cantidad, Estado, Observaciones FROM BL_NovedadesPedidos WHERE IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
             DS.DataSetName = "PedidosDeLicencias"
             Return DS
 

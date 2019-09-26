@@ -232,7 +232,7 @@ Public Class ClsPedidoLicencia
 
     Private Function ValidarFechasYDias() As Boolean
         If Me.CantidadDias = 0 Or FechaDesde.CompareTo(FechaHasta) > 0 Then
-            Throw New Exception("@La cantidad de días no puede ser 0 y/o la fecha desde debe ser mayor a la fecha hasta")
+            Throw New Exception("@La cantidad de días no puede ser 0 y/o la fecha desde debe ser menor a la fecha hasta")
         End If
         Return True
     End Function
@@ -368,7 +368,7 @@ Public Class ClsPedidoLicencia
 
     Public Sub Borrar()
         Try
-            If Me.Estado = eEstadoPedidoLic.Pendiente Then
+            If Me.Estado <> eEstadoPedidoLic.Pendiente Then
                 Throw New ArgumentException("@No es posible eliminar un pedido cuyo estado sea diferente de 'Pendiente'")
             End If
 

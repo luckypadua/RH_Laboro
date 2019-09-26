@@ -46,6 +46,7 @@ Partial Class FrmProbador
         Me.BtnRecibosDetalle = New System.Windows.Forms.Button()
         Me.txtJson = New System.Windows.Forms.TextBox()
         Me.frLicencia = New System.Windows.Forms.GroupBox()
+        Me.GetLicenciasEmpleadosACargo = New System.Windows.Forms.Button()
         Me.cmdRechazarLicencia = New System.Windows.Forms.Button()
         Me.cmdAceptarLicencia = New System.Windows.Forms.Button()
         Me.Label8 = New System.Windows.Forms.Label()
@@ -59,7 +60,7 @@ Partial Class FrmProbador
         Me.Label4 = New System.Windows.Forms.Label()
         Me.cmdSolicitarLicencia = New System.Windows.Forms.Button()
         Me.txtCantDias = New System.Windows.Forms.TextBox()
-        Me.GetLicenciasEmpleadosACargo = New System.Windows.Forms.Button()
+        Me.cmdEliminarSolicitud = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -303,6 +304,7 @@ Partial Class FrmProbador
         '
         'frLicencia
         '
+        Me.frLicencia.Controls.Add(Me.cmdEliminarSolicitud)
         Me.frLicencia.Controls.Add(Me.GetLicenciasEmpleadosACargo)
         Me.frLicencia.Controls.Add(Me.cmdRechazarLicencia)
         Me.frLicencia.Controls.Add(Me.cmdAceptarLicencia)
@@ -320,10 +322,20 @@ Partial Class FrmProbador
         Me.frLicencia.ForeColor = System.Drawing.Color.Blue
         Me.frLicencia.Location = New System.Drawing.Point(163, 19)
         Me.frLicencia.Name = "frLicencia"
-        Me.frLicencia.Size = New System.Drawing.Size(130, 272)
+        Me.frLicencia.Size = New System.Drawing.Size(130, 311)
         Me.frLicencia.TabIndex = 25
         Me.frLicencia.TabStop = False
         Me.frLicencia.Text = "Licencias"
+        '
+        'GetLicenciasEmpleadosACargo
+        '
+        Me.GetLicenciasEmpleadosACargo.ForeColor = System.Drawing.Color.Blue
+        Me.GetLicenciasEmpleadosACargo.Location = New System.Drawing.Point(7, 234)
+        Me.GetLicenciasEmpleadosACargo.Name = "GetLicenciasEmpleadosACargo"
+        Me.GetLicenciasEmpleadosACargo.Size = New System.Drawing.Size(117, 35)
+        Me.GetLicenciasEmpleadosACargo.TabIndex = 43
+        Me.GetLicenciasEmpleadosACargo.Text = "Traer Licencias de Empelados A Cargo"
+        Me.GetLicenciasEmpleadosACargo.UseVisualStyleBackColor = True
         '
         'cmdRechazarLicencia
         '
@@ -446,15 +458,15 @@ Partial Class FrmProbador
         Me.txtCantDias.Size = New System.Drawing.Size(79, 20)
         Me.txtCantDias.TabIndex = 21
         '
-        'GetLicenciasEmpleadosACargo
+        'cmdEliminarSolicitud
         '
-        Me.GetLicenciasEmpleadosACargo.ForeColor = System.Drawing.Color.Blue
-        Me.GetLicenciasEmpleadosACargo.Location = New System.Drawing.Point(7, 234)
-        Me.GetLicenciasEmpleadosACargo.Name = "GetLicenciasEmpleadosACargo"
-        Me.GetLicenciasEmpleadosACargo.Size = New System.Drawing.Size(117, 35)
-        Me.GetLicenciasEmpleadosACargo.TabIndex = 43
-        Me.GetLicenciasEmpleadosACargo.Text = "Traer Licencias de Empelados A Cargo"
-        Me.GetLicenciasEmpleadosACargo.UseVisualStyleBackColor = True
+        Me.cmdEliminarSolicitud.ForeColor = System.Drawing.Color.Blue
+        Me.cmdEliminarSolicitud.Location = New System.Drawing.Point(6, 272)
+        Me.cmdEliminarSolicitud.Name = "cmdEliminarSolicitud"
+        Me.cmdEliminarSolicitud.Size = New System.Drawing.Size(117, 34)
+        Me.cmdEliminarSolicitud.TabIndex = 44
+        Me.cmdEliminarSolicitud.Text = "Eliminar Solicitud Licencia"
+        Me.cmdEliminarSolicitud.UseVisualStyleBackColor = True
         '
         'FrmProbador
         '
@@ -531,4 +543,5 @@ Partial Class FrmProbador
     Friend WithEvents cmdRechazarLicencia As Button
     Friend WithEvents cmdAceptarLicencia As Button
     Friend WithEvents GetLicenciasEmpleadosACargo As Button
+    Friend WithEvents cmdEliminarSolicitud As Button
 End Class
