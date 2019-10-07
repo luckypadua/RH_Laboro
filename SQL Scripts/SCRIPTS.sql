@@ -1,3 +1,11 @@
+Delete PERMISOS where CODPROG = 2193
+Delete dbo.[PROGRAMAS] where CODPROG = 2193
+GO
+
+Insert into dbo.[PROGRAMAS] ([CODPROG],[DESCRIPCION],[PROGRAMA],[PROGRAMAWEB]) 
+Values  (2193,'Administrador de recibos','frmLReciboAdministrador',Null)
+GO
+
 -- Altas de columnas
 exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'           ,0,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_Nombre'      ,'varchar(100)'  ,1
