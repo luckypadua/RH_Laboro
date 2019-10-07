@@ -98,7 +98,7 @@ SELECT			l.IdLegajo,
 				[FechaJubilacion]		= CONVERT(VARCHAR, l.FecJubilacion, 103),
 				[ModContratacion]		= mc.Descripcion , 
 				[Regimen]				= CASE l.Regimen 
-											WHEN 0 THEN 'Capitalizaci½n' 
+											WHEN 0 THEN 'Capitalización' 
 											WHEN 1 THEN 'Reparto' 
 										  END, 
 				[ZonaGeografica]		= z.Descripcion, 
@@ -168,7 +168,7 @@ IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vAutoge
 	DROP VIEW [dbo].[vAutogestion_Recibos]
 GO
 
-Create View [dbo].[vAutogestion_Recibos]
+CREATE View [dbo].[vAutogestion_Recibos]
 AS
 SELECT Clave = Ltrim(R.Idliquidacion) + '-' + LTrim(R.IdLegajo)
       ,R.[IdLiquidacion]
@@ -176,6 +176,7 @@ SELECT Clave = Ltrim(R.Idliquidacion) + '-' + LTrim(R.IdLegajo)
       ,P.IdPersona   
 	  ,L.LegajoCodigo 
 	  ,R.[PDF_Nombre]
+	  ,R.[PDF_RutaLOC] 
       ,R.[PDF_RutaFTP]
       ,R.[FTPUpLoad]
       ,R.[Firmado]
@@ -185,12 +186,16 @@ SELECT Clave = Ltrim(R.Idliquidacion) + '-' + LTrim(R.IdLegajo)
 	  ,Empresa = L.Empresa 
 	  ,Liquidacion_Mes = LIQ.MesLiq
 	  ,Liquidacion_Codigo = LT.CodLiq 
-	  ,Liquidacion_Nombre = LT.Descripcion  
-  FROM [dbo].[BL_RECIBOS] R
-  JOIN vAutogestion_Legajos   L ON L.IdLegajo = R.IdLegajo 
-  JOIN vAutogestion_Personas  P ON P.IdPersona = L.IdPersona 
-  JOIN BL_LIQUIDACIONES     LIQ ON LIQ.IdLiquidacion = R.IdLiquidacion   
-  JOIN BL_LIQUIDACIONESTIPOS LT ON LT.IdLiqTipo = LIQ.IdLiqTipo 
+	  ,Liquidacion_Nombre = case when LIQ.Descripcion = ''
+	                             then LT.Descripcion
+								 else LIQ.Descripcion
+                            end        
+	  ,L.LugarDeTrabajo   
+  FROM [BL_RECIBOS]			  R (nolock)
+  JOIN vAutogestion_Legajos   L (nolock) ON L.IdLegajo = R.IdLegajo 
+  JOIN vAutogestion_Personas  P (nolock) ON P.IdPersona = L.IdPersona 
+  JOIN BL_LIQUIDACIONES     LIQ (nolock) ON LIQ.IdLiquidacion = R.IdLiquidacion   
+  JOIN BL_LIQUIDACIONESTIPOS LT (nolock) ON LT.IdLiqTipo = LIQ.IdLiqTipo 
   WHERE Not R.[PDF_Nombre] is null
 GO
 
@@ -243,8 +248,8 @@ IF EXISTS (SELECT * FROM sysobjects WHERE type = 'U' AND name = 'BL_RECIBOS_ACCI
 GO
 
 CREATE TABLE [dbo].[BL_RECIBOS_ACCIONESWEB](
-	[IdAccion] [smallint] NOT NULL,
-	[Descripcion] [varchar](200) NOT NULL,
+	[IdAccion]		[smallint] NOT NULL,
+	[Descripcion]	[varchar](200) NOT NULL,
  CONSTRAINT [PK_BL_RECIBOS_ACCIONESWEB] PRIMARY KEY CLUSTERED 
 ([IdAccion] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
 GO
@@ -254,13 +259,13 @@ IF EXISTS (SELECT * FROM sysobjects WHERE type = 'U' AND name = 'BL_RECIBOS_AUDI
 GO
 
 CREATE TABLE [dbo].[BL_RECIBOS_AUDITORIAWEB](
-	[IdSecuencia] [int] IDENTITY(1,1) NOT NULL,
+	[IdSecuencia]	[int] IDENTITY(1,1) NOT NULL,
 	[IdLiquidacion] [int] NOT NULL,
-	[IdLegajo] [int] NOT NULL,
-	[IdAccion] [smallint] NULL,
-	[Fecha] [datetime] NOT NULL,
+	[IdLegajo]		[int] NOT NULL,
+	[IdAccion]		[smallint] NULL,
+	[Fecha]			[datetime] NOT NULL,
 	[Firmado_Fecha] [datetime] NULL,
-	[Observacion] [varchar](8000) NULL,
+	[Observacion]	[varchar](8000) NULL,
  CONSTRAINT [PK_BL_RECIBOS_AUDITORIAWEB] PRIMARY KEY CLUSTERED 
 ([IdSecuencia] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
 GO
@@ -274,3 +279,4 @@ Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (3,'
 Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (4,'Quitar de publicación recibo firmado conforme')
 Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (5,'Firmado conforme')
 Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (6,'Firmado desconforme')
+Insert into dbo.[BL_RECIBOS_ACCIONESWEB] ([IdAccion],[Descripcion]) Values  (7,'Generar recibo')
