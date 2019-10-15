@@ -3,7 +3,7 @@ Delete dbo.[PROGRAMAS] where CODPROG = 2193
 GO
 
 Insert into dbo.[PROGRAMAS] ([CODPROG],[DESCRIPCION],[PROGRAMA],[PROGRAMAWEB]) 
-Values  (2193,'Administrador de recibos','frmLReciboAdministrador',Null)
+Values  (2193,'Administración de recibos','frmLReciboAdministrador',Null)
 GO
 
 -- Altas de columnas
