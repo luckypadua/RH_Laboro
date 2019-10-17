@@ -8,6 +8,7 @@ GO
 
 -- Altas de columnas
 exec ADDCOLUMN  'bl_personas','habilitadoPortal','Bit'           ,0,1
+exec ADDCOLUMN  'bl_legajos' ,'PublicarRecibos'	,'Bit'           ,0,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_Nombre'      ,'varchar(100)'  ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaLOC'     ,'varchar(3000)' ,1
 exec ADDCOLUMN  'BL_RECIBOS' ,'PDF_RutaFTP'     ,'varchar(3000)' ,1
@@ -200,7 +201,8 @@ SELECT Clave = Ltrim(R.Idliquidacion) + '-' + LTrim(R.IdLegajo)
                             end        
 	  ,L.LugarDeTrabajo   
   FROM [BL_RECIBOS]			  R (nolock)
-  JOIN vAutogestion_Legajos   L (nolock) ON L.IdLegajo = R.IdLegajo 
+  JOIN vAutogestion_Legajos   L (nolock) ON L.IdLegajo = R.IdLegajo
+  JOIN BL_LEGAJOS            le (nolock) ON L.IdLegajo = le.IdLegajo AND le.PublicarRecibos=1
   JOIN vAutogestion_Personas  P (nolock) ON P.IdPersona = L.IdPersona 
   JOIN BL_LIQUIDACIONES     LIQ (nolock) ON LIQ.IdLiquidacion = R.IdLiquidacion   
   JOIN BL_LIQUIDACIONESTIPOS LT (nolock) ON LT.IdLiqTipo = LIQ.IdLiqTipo 
