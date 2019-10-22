@@ -120,4 +120,52 @@ Public Class FrmProbador
     Private Sub cmdEliminarSolicitud_Click(sender As Object, e As EventArgs) Handles cmdEliminarSolicitud.Click
         RH.EliminarSolicitudLicencia(txtIdSolicitudLicencia.Text)
     End Sub
+
+    Private Sub cmdSolicitarVacaciones_Click(sender As Object, e As EventArgs) Handles cmdSolicitarVacaciones.Click
+        Dim nPedLic As New ClsPedidoLicencia()
+
+        With nPedLic
+            .IdLegajo = MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1")
+            .FechaDesde = dtpFecDesde.Text
+            .FechaHasta = dtpFecHasta.Text
+            .CantidadDias = CInt(txtCantDias.Text)
+            .FechaDeSolicitud = Now
+            .IdSuceso = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1")
+        End With
+
+        RH.GrabarSolicitudVacaciones(nPedLic)
+
+    End Sub
+
+    Private Sub cmdGetVacaciones_Click(sender As Object, e As EventArgs) Handles cmdGetVacaciones.Click
+        Dim Ds As DataSet = RH.GetVacaciones(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+    Private Sub cmdVerSolicitudVacaciones_Click(sender As Object, e As EventArgs) Handles cmdVerSolicitudVacaciones.Click
+        Dim Ds As DataSet = RH.GetSolicitudVacaciones(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
+    Private Sub cmdVerSolicitudes_Click(sender As Object, e As EventArgs) Handles cmdVerSolicitudes.Click
+        Dim Ds As DataSet = RH.GetSolicitudesLicencias(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
+    Private Sub cmdSolicitudesEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles cmdSolicitudesEmpleadosACargo.Click
+        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
+    Private Sub cmdGetCambiosEnUsuarios_Click(sender As Object, e As EventArgs) Handles cmdGetCambiosEnUsuarios.Click
+        Dim Ds As DataSet = RH.GetCambiosEnUsuarios
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
+    Private Sub cmdOkCambios_Click(sender As Object, e As EventArgs) Handles cmdOkCambios.Click
+        RH.OkCambiosUsuarios(txtOkCambiosId.Text)
+    End Sub
+
+    Private Sub cmdBorrarCambios_Click(sender As Object, e As EventArgs) Handles cmdBorrarCambios.Click
+        RH.BorrarCambiosUsuariosPendientes(txtOkCambiosId.Text)
+    End Sub
 End Class

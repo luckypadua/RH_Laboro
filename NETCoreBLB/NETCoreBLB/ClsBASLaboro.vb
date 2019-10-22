@@ -114,9 +114,7 @@ Public Class ClsBASLaboro
     Public Function GetLoguinsIni() As DataSet Implements ItzBASLaboro.GetLoguinsIni
 
         Try
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("Select IdPersona,Usuario,Contrasenia from [vAutogestion_LoguinsIni] Order By IdPersona", "LoguinsIni")
-            Ds.DataSetName = "LoguinsIni"
-            Return Ds
+            Return Me.GetCambiosEnUsuarios(True)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:GetLoguinsIni " & ex.Message)
         End Try
@@ -177,35 +175,73 @@ Public Class ClsBASLaboro
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia " & ex.Message)
         End Try
     End Function
+
+    Public Function GrabarSolicitudVacaciones(ByRef PedidoLicencia As ClsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudVacaciones
+
+        Try
+            Dim SucesoVacaciones As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE HabilitadoAutogestion = 1 AND HabilitadoSoloManager = 0 AND EsVacacion = 1")
+
+            If SucesoVacaciones = 0 Then
+                Throw New Exception("@No existe un Suceso de Vacaciones configurado para Autogestión. No es posible solicitar vacaciones.")
+            Else
+                PedidoLicencia.IdSuceso = SucesoVacaciones
+                Return GrabarSolicitudLicencia(PedidoLicencia)
+            End If
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudVacaciones " & ex.Message)
+        End Try
+
+    End Function
     Public Function GetSolicitudesLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicencias
 
         Try
-            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
-            DS.DataSetName = "PedidosDeLicencias"
+            Dim DS As DataSet = ObtenerPedidosDeLicencias(IdLegajo, 0)
             Return DS
-
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias " & ex.Message)
         End Try
+
     End Function
+
+    Private Function ObtenerPedidosDeLicencias(ByVal IdLegajo As Long, ByVal EsVacacion As Byte) As DataSet
+        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, s.EsVacacion FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+        DS.DataSetName = "PedidosDeLicencias"
+        Return DS
+    End Function
+
+    Public Function GetSolicitudVacaciones(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetSolicitudVacaciones
+
+        Try
+            Dim DS As DataSet = ObtenerPedidosDeLicencias(IdLegajo, 1)
+            Return DS
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudVacaciones " & ex.Message)
+        End Try
+
+    End Function
+
     Public Function GetSolicitudesLicenciasManager(ByVal IdLegajoManager As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicenciasManager
 
         Try
             Dim sIds As String = ""
+            Dim DS As DataSet = New DataSet
 
             For Each Dr As DataRow In GetEmpleadosACargo(IdLegajoManager).Tables(0).Rows
                 sIds = sIds & Dr("IdLegajo").ToString & ","
             Next
 
-            sIds = sIds.Remove(sIds.Length - 1)
+            If sIds.Length > 0 Then
+                sIds = sIds.Remove(sIds.Length - 1)
 
-            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
+                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
+            End If
+
             DS.DataSetName = "PedidosDeLicencias"
             Return DS
-
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias " & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicenciasManager " & ex.Message)
         End Try
+
     End Function
     Public Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
 
@@ -249,10 +285,11 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
+
     Public Function GetTipoLicencias() As DataSet Implements ItzBASLaboro.GetTipoLicencias
 
         Try
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1", "BL_SUCESOS")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1 AND EsVacacion = 0", "BL_SUCESOS")
             Ds.DataSetName = "TipoLicencias"
             Return Ds
 
@@ -319,6 +356,105 @@ Public Class ClsBASLaboro
 
             Throw New Exception("NETCoreBLB:ReciboVisualizado: " & ex.Message)
 
+        End Try
+
+    End Sub
+
+    Public Function GetVacaciones(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetVacaciones
+
+        Try
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT Anio, Case When DiasAcr < DiasAsig Then DiasAsig Else DiasAcr End As DiasAcreditados, DiasGozados FROM BL_LEGAJOSVACS WHERE IdLegajo = " & IdLegajo & " UNION ALL SELECT 0 As Anio, SUM(Case When DiasAcr < DiasAsig Then DiasAsig Else DiasAcr End) As DiasAcreditados, SUM(DiasGozados) FROM BL_LEGAJOSVACS WHERE IdLegajo = " & IdLegajo & "GROUP BY IdLegajo ORDER BY Anio DESC", "BL_LEGAJOSVACS")
+            Ds.DataSetName = "GrillaVacaciones"
+
+            Return Ds
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetVacaciones " & ex.Message)
+        End Try
+
+    End Function
+
+    Public Function GetVacacionesDetalle(ByVal IdLegajo As Long, Optional ByVal AnioDesde As Integer = 0) As DataSet Implements ItzBASLaboro.GetVacacionesDetalle
+
+        Try
+            Dim SucesoVacaciones As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE HabilitadoAutogestion = 1 AND HabilitadoSoloManager = 0 AND EsVacacion = 1")
+
+            If AnioDesde = 0 Then AnioDesde = Date.Today.Year
+
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT CASE nl.IdLegajo, Year(LicFecDesde) As Anio, Month(LicFecDesde) As Mes, LicFecDesde, LicFecHasta, DiasGozados 
+                                    FROM Bl_Novedades n
+                                    JOIN Bl_NovedadesLegajos nl ON n.IdOcurrencia = nl.IdOcurrencia AND nl.Idlegajo = " & IdLegajo & "
+                                    WHERE n.IdSuceso = " & SucesoVacaciones & " AND Year(LicFecDesde) >= " & AnioDesde & "
+                                    ORDER BY LicFecDesde DESC", "HistorialVacaciones",)
+
+            Return DS
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetVacacionesDetalle " & ex.Message)
+        End Try
+
+    End Function
+
+    Public Function GetCambiosEnUsuarios(Optional ByVal EsConfiguracionInicial As Boolean = False) As DataSet Implements ItzBASLaboro.GetCambiosEnUsuarios
+
+        Try
+            'Si llama a la "Configuración Inicial" hay que hacer un Delete a Bl_AutogestionCambiosPer antes de hacer nada
+            If EsConfiguracionInicial Then
+                MiAdo.Ejecutar.Borrar("Bl_AutogestionCambiosPer")
+            End If
+
+            Dim ProxId As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT MAX(IdCambios)+1 FROM Bl_AutogestionCambiosPerPendientes")
+
+            'Las Altas son las que no están en la Tabla de cambios, o sea, nunca se incorporaron todavía, y además están habilitados para autogestión
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("
+                    SELECT " & ProxId & " AS IdCambios, Usuario = p.CUIL, Contrasenia = p.CUIL, IdPersona, p.EmailPersonal As Email,                                                            CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'A'
+                    FROM Bl_Personas p
+                    WHERE p.HabilitadoAutogestion = 1 And p.IdPersona Not IN (Select IdPersona FROM Bl_AutogestionCambiosPer)
+                    UNION ALL
+                    SELECT " & ProxId & " AS IdCambios, Usuario = NULL, Contrasenia = NULL, p.IdPersona, p.EmailPersonal As Email, CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'M'
+                    FROM Bl_AutogestionCambiosPer pa
+                    JOIN Bl_Personas p ON pa.IdPersona = p.IdPersona
+                    WHERE p.EmailPersonal <> pa.Email Or p.HabilitadoAutogestion <> pa.HabilitadoAutogestion", "Bl_Personas")
+
+            For Each Row As DataRow In DS.Tables(0).Rows
+                MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPerPendientes (IdCambios, IdPersona, Tipo, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & ProxId & "," & Row("IdPersona").ToString & ",'" & Row("Tipo").ToString & "','" & Date.Today & "','" & Row("Email").ToString & "'," & Row("Habilitado").ToString & ")")
+            Next
+
+            Return DS
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetCambiosEnUsuarios " & ex.Message)
+        End Try
+
+    End Function
+
+    Public Sub OkCambiosUsuarios(IdCambios As Long) Implements ItzBASLaboro.OkCambiosUsuarios
+
+        Try
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdPersona, FecOcurrencia, Email, CASE HabilitadoAutogestion WHEN 1 THEN 1 ELSE 0 END AS HabilitadoAutogestion, Tipo FROM Bl_AutogestionCambiosPerPendientes WHERE IdCambios = " & IdCambios, "Pendientes")
+
+            For Each Row As DataRow In DS.Tables(0).Rows
+                If Row("Tipo").ToString = "A" Then
+                    MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPer (IdPersona, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & Row("IdPersona").ToString & ",'" & Convert.ToDateTime(Row("FecOcurrencia").ToString) & "','" & Row("Email").ToString & "'," & Row("HabilitadoAutogestion").ToString & ")")
+                Else
+                    MiAdo.Ejecutar.Instruccion("UPDATE Bl_AutogestionCambiosPer SET Email = '" & Row("Email").ToString & "', HabilitadoAutogestion = " & Row("HabilitadoAutogestion").ToString & " WHERE IdPersona = " & Row("IdPersona").ToString)
+                End If
+            Next
+
+            MiAdo.Ejecutar.Borrar("Bl_AutogestionCambiosPerPendientes", " IdCambios = " & IdCambios)
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:OkCambiosUsuarios " & ex.Message)
+        End Try
+
+    End Sub
+
+    Public Sub BorrarCambiosUsuariosPendientes(Optional ByVal IdCambios As Long = 0) Implements ItzBASLaboro.BorrarCambiosUsuariosPendientes
+
+        Try
+            If IdCambios <> 0 Then
+                MiAdo.Ejecutar.Borrar("Bl_AutogestionCambiosPerPendientes", " IdCambios = " & IdCambios)
+            Else
+                MiAdo.Ejecutar.Borrar("Bl_AutogestionCambiosPerPendientes", "")
+            End If
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:BorrarCambiosUsuariosPendientes " & ex.Message)
         End Try
 
     End Sub

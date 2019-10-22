@@ -84,7 +84,7 @@ Public Class ClsPedidoLicencia
         End Set
     End Property
 
-    Private vTipoLic As String
+    Private vTipoLic As String = ""
     Public Property TipoLic() As String
         Get
             Return vTipoLic
@@ -107,6 +107,9 @@ Public Class ClsPedidoLicencia
     Private mIdClaseSuceso As Long
     Public Property IdClaseSuceso() As Long
         Get
+            If mIdClaseSuceso = 0 And Me.IdSuceso <> 0 Then
+                mIdClaseSuceso = MiAdo.Ejecutar.GetSQLInteger("SELECT IdClaseSuceso FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso)
+            End If
             Return mIdClaseSuceso
         End Get
         Set(ByVal value As Long)
@@ -114,7 +117,7 @@ Public Class ClsPedidoLicencia
         End Set
     End Property
 
-    Private vObservaciones As String
+    Private vObservaciones As String = ""
     Public Property Observaciones() As String
         Get
             Return vObservaciones
@@ -124,7 +127,7 @@ Public Class ClsPedidoLicencia
         End Set
     End Property
 
-    Private vObservacionesManager As String
+    Private vObservacionesManager As String = ""
     Public Property ObservacionesManager() As String
         Get
             Return vObservacionesManager
@@ -134,7 +137,7 @@ Public Class ClsPedidoLicencia
         End Set
     End Property
 
-    Private vCodSuceso As String
+    Private vCodSuceso As String = ""
     Public ReadOnly Property CodSuceso() As String
         Get
             vCodSuceso = MiAdo.Ejecutar.GetSQLString("SELECT CodSuceso FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso).Trim
@@ -206,8 +209,32 @@ Public Class ClsPedidoLicencia
         Me.CantidadDias = CantDias
         vCodSuceso = CodSuceso
         Me.Observaciones = ""
-        Me.Estado = eEstadoPedidoLic.Pendiente
+        If AutorizarAutomaticamente() Then
+            Me.Estado = eEstadoPedidoLic.Autorizada
+        Else
+            Me.Estado = eEstadoPedidoLic.Pendiente
+        End If
     End Sub
+
+    Private Function AutorizarAutomaticamente() As Boolean
+        'Esta función devuelve True en el caso de que el Legajo solicitado no posea manager. En ese caso, la licencia es autorizada automáticamente porque se asume que no requiere autorización
+
+        Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & Me.IdLegajo)
+
+        With MiAdo.Ejecutar.Parametros
+            .RemoveAll()
+            .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+            .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
+            .Add("IncluirManagers", 1, SqlDbType.SmallInt)
+            .Add("IncluirEmpleadosACargo", 0, SqlDbType.SmallInt)
+            .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
+        End With
+
+        Dim DS As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+
+        Return (DS.Tables.Count = 0)
+
+    End Function
 
     Public Function Validar() As Boolean
 
@@ -242,9 +269,9 @@ Public Class ClsPedidoLicencia
         Try
             With MiAdo.Ejecutar.Parametros
                 .RemoveAll()
-                .Add("Tratamiento", MiAdo.Ejecutar.GetSQLString("SELECT Tratamiento FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.Char)
+                .Add("Tratamiento", MiAdo.Ejecutar.GetSQLString("SELECT Tratamiento FROM Bl_SucesosClases WHERE IdClaseSuceso = " & Me.IdClaseSuceso), SqlDbType.Char)
                 .Add("CodSuceso", Me.CodSuceso, SqlDbType.VarChar)
-                .Add("CodClaseSuceso", MiAdo.Ejecutar.GetSQLString("SELECT CodClaseSuceso FROM Bl_SucesosClases WHERE IdClaseSuceso = " & mIdClaseSuceso), SqlDbType.VarChar)
+                .Add("CodClaseSuceso", MiAdo.Ejecutar.GetSQLString("SELECT CodClaseSuceso FROM Bl_SucesosClases WHERE IdClaseSuceso = " & Me.IdClaseSuceso), SqlDbType.VarChar)
                 .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
                 .Add("CodAtr", DBNull.Value, SqlDbType.Char)
                 .Add("CodAtrVal", DBNull.Value, SqlDbType.Char)
@@ -257,6 +284,8 @@ Public Class ClsPedidoLicencia
                 .Add("Excede", False, SqlDbType.Bit, ParameterDirection.Output)
                 .Add("MensajeFinal", String.Empty, SqlDbType.VarChar, ParameterDirection.Output)
             End With
+
+            MiAdo.Ejecutar.Procedimiento("BL_NovedadesTopes", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.NotReturn)
 
             MsjFinal = MiAdo.Ejecutar.Parametros("MensajeFinal").Valor
 

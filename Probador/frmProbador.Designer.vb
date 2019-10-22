@@ -46,6 +46,12 @@ Partial Class FrmProbador
         Me.BtnRecibosDetalle = New System.Windows.Forms.Button()
         Me.txtJson = New System.Windows.Forms.TextBox()
         Me.frLicencia = New System.Windows.Forms.GroupBox()
+        Me.cmdSolicitudesEmpleadosACargo = New System.Windows.Forms.Button()
+        Me.cmdVerSolicitudes = New System.Windows.Forms.Button()
+        Me.cmdVerSolicitudVacaciones = New System.Windows.Forms.Button()
+        Me.cmdGetVacaciones = New System.Windows.Forms.Button()
+        Me.cmdSolicitarVacaciones = New System.Windows.Forms.Button()
+        Me.cmdEliminarSolicitud = New System.Windows.Forms.Button()
         Me.GetLicenciasEmpleadosACargo = New System.Windows.Forms.Button()
         Me.cmdRechazarLicencia = New System.Windows.Forms.Button()
         Me.cmdAceptarLicencia = New System.Windows.Forms.Button()
@@ -60,7 +66,10 @@ Partial Class FrmProbador
         Me.Label4 = New System.Windows.Forms.Label()
         Me.cmdSolicitarLicencia = New System.Windows.Forms.Button()
         Me.txtCantDias = New System.Windows.Forms.TextBox()
-        Me.cmdEliminarSolicitud = New System.Windows.Forms.Button()
+        Me.cmdGetCambiosEnUsuarios = New System.Windows.Forms.Button()
+        Me.cmdOkCambios = New System.Windows.Forms.Button()
+        Me.txtOkCambiosId = New System.Windows.Forms.TextBox()
+        Me.cmdBorrarCambios = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -82,10 +91,10 @@ Partial Class FrmProbador
         Me.WebBrowserInput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.WebBrowserInput.Location = New System.Drawing.Point(299, 12)
+        Me.WebBrowserInput.Location = New System.Drawing.Point(419, 12)
         Me.WebBrowserInput.MinimumSize = New System.Drawing.Size(20, 20)
         Me.WebBrowserInput.Name = "WebBrowserInput"
-        Me.WebBrowserInput.Size = New System.Drawing.Size(792, 525)
+        Me.WebBrowserInput.Size = New System.Drawing.Size(672, 525)
         Me.WebBrowserInput.TabIndex = 3
         '
         'BtnSalir
@@ -296,14 +305,19 @@ Partial Class FrmProbador
         'txtJson
         '
         Me.txtJson.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtJson.Location = New System.Drawing.Point(299, 543)
+        Me.txtJson.Location = New System.Drawing.Point(419, 543)
         Me.txtJson.Multiline = True
         Me.txtJson.Name = "txtJson"
-        Me.txtJson.Size = New System.Drawing.Size(792, 83)
+        Me.txtJson.Size = New System.Drawing.Size(672, 83)
         Me.txtJson.TabIndex = 36
         '
         'frLicencia
         '
+        Me.frLicencia.Controls.Add(Me.cmdSolicitudesEmpleadosACargo)
+        Me.frLicencia.Controls.Add(Me.cmdVerSolicitudes)
+        Me.frLicencia.Controls.Add(Me.cmdVerSolicitudVacaciones)
+        Me.frLicencia.Controls.Add(Me.cmdGetVacaciones)
+        Me.frLicencia.Controls.Add(Me.cmdSolicitarVacaciones)
         Me.frLicencia.Controls.Add(Me.cmdEliminarSolicitud)
         Me.frLicencia.Controls.Add(Me.GetLicenciasEmpleadosACargo)
         Me.frLicencia.Controls.Add(Me.cmdRechazarLicencia)
@@ -322,10 +336,70 @@ Partial Class FrmProbador
         Me.frLicencia.ForeColor = System.Drawing.Color.Blue
         Me.frLicencia.Location = New System.Drawing.Point(163, 19)
         Me.frLicencia.Name = "frLicencia"
-        Me.frLicencia.Size = New System.Drawing.Size(130, 311)
+        Me.frLicencia.Size = New System.Drawing.Size(130, 518)
         Me.frLicencia.TabIndex = 25
         Me.frLicencia.TabStop = False
         Me.frLicencia.Text = "Licencias"
+        '
+        'cmdSolicitudesEmpleadosACargo
+        '
+        Me.cmdSolicitudesEmpleadosACargo.ForeColor = System.Drawing.Color.Blue
+        Me.cmdSolicitudesEmpleadosACargo.Location = New System.Drawing.Point(7, 477)
+        Me.cmdSolicitudesEmpleadosACargo.Name = "cmdSolicitudesEmpleadosACargo"
+        Me.cmdSolicitudesEmpleadosACargo.Size = New System.Drawing.Size(118, 34)
+        Me.cmdSolicitudesEmpleadosACargo.TabIndex = 49
+        Me.cmdSolicitudesEmpleadosACargo.Text = "Ver Solicitudes Empleados A Cargo"
+        Me.cmdSolicitudesEmpleadosACargo.UseVisualStyleBackColor = True
+        '
+        'cmdVerSolicitudes
+        '
+        Me.cmdVerSolicitudes.ForeColor = System.Drawing.Color.Blue
+        Me.cmdVerSolicitudes.Location = New System.Drawing.Point(7, 439)
+        Me.cmdVerSolicitudes.Name = "cmdVerSolicitudes"
+        Me.cmdVerSolicitudes.Size = New System.Drawing.Size(118, 34)
+        Me.cmdVerSolicitudes.TabIndex = 48
+        Me.cmdVerSolicitudes.Text = "Ver Solicitudes"
+        Me.cmdVerSolicitudes.UseVisualStyleBackColor = True
+        '
+        'cmdVerSolicitudVacaciones
+        '
+        Me.cmdVerSolicitudVacaciones.ForeColor = System.Drawing.Color.Blue
+        Me.cmdVerSolicitudVacaciones.Location = New System.Drawing.Point(6, 400)
+        Me.cmdVerSolicitudVacaciones.Name = "cmdVerSolicitudVacaciones"
+        Me.cmdVerSolicitudVacaciones.Size = New System.Drawing.Size(118, 34)
+        Me.cmdVerSolicitudVacaciones.TabIndex = 47
+        Me.cmdVerSolicitudVacaciones.Text = "Ver Solicitud Vacaciones"
+        Me.cmdVerSolicitudVacaciones.UseVisualStyleBackColor = True
+        '
+        'cmdGetVacaciones
+        '
+        Me.cmdGetVacaciones.ForeColor = System.Drawing.Color.Blue
+        Me.cmdGetVacaciones.Location = New System.Drawing.Point(6, 360)
+        Me.cmdGetVacaciones.Name = "cmdGetVacaciones"
+        Me.cmdGetVacaciones.Size = New System.Drawing.Size(118, 34)
+        Me.cmdGetVacaciones.TabIndex = 46
+        Me.cmdGetVacaciones.Text = "Ver Tabla Vacaciones"
+        Me.cmdGetVacaciones.UseVisualStyleBackColor = True
+        '
+        'cmdSolicitarVacaciones
+        '
+        Me.cmdSolicitarVacaciones.ForeColor = System.Drawing.Color.Blue
+        Me.cmdSolicitarVacaciones.Location = New System.Drawing.Point(7, 325)
+        Me.cmdSolicitarVacaciones.Name = "cmdSolicitarVacaciones"
+        Me.cmdSolicitarVacaciones.Size = New System.Drawing.Size(117, 29)
+        Me.cmdSolicitarVacaciones.TabIndex = 45
+        Me.cmdSolicitarVacaciones.Text = "Solicitar Vacaciones"
+        Me.cmdSolicitarVacaciones.UseVisualStyleBackColor = True
+        '
+        'cmdEliminarSolicitud
+        '
+        Me.cmdEliminarSolicitud.ForeColor = System.Drawing.Color.Blue
+        Me.cmdEliminarSolicitud.Location = New System.Drawing.Point(6, 272)
+        Me.cmdEliminarSolicitud.Name = "cmdEliminarSolicitud"
+        Me.cmdEliminarSolicitud.Size = New System.Drawing.Size(117, 34)
+        Me.cmdEliminarSolicitud.TabIndex = 44
+        Me.cmdEliminarSolicitud.Text = "Eliminar Solicitud Licencia"
+        Me.cmdEliminarSolicitud.UseVisualStyleBackColor = True
         '
         'GetLicenciasEmpleadosACargo
         '
@@ -458,21 +532,52 @@ Partial Class FrmProbador
         Me.txtCantDias.Size = New System.Drawing.Size(79, 20)
         Me.txtCantDias.TabIndex = 21
         '
-        'cmdEliminarSolicitud
+        'cmdGetCambiosEnUsuarios
         '
-        Me.cmdEliminarSolicitud.ForeColor = System.Drawing.Color.Blue
-        Me.cmdEliminarSolicitud.Location = New System.Drawing.Point(6, 272)
-        Me.cmdEliminarSolicitud.Name = "cmdEliminarSolicitud"
-        Me.cmdEliminarSolicitud.Size = New System.Drawing.Size(117, 34)
-        Me.cmdEliminarSolicitud.TabIndex = 44
-        Me.cmdEliminarSolicitud.Text = "Eliminar Solicitud Licencia"
-        Me.cmdEliminarSolicitud.UseVisualStyleBackColor = True
+        Me.cmdGetCambiosEnUsuarios.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdGetCambiosEnUsuarios.Location = New System.Drawing.Point(299, 84)
+        Me.cmdGetCambiosEnUsuarios.Name = "cmdGetCambiosEnUsuarios"
+        Me.cmdGetCambiosEnUsuarios.Size = New System.Drawing.Size(90, 59)
+        Me.cmdGetCambiosEnUsuarios.TabIndex = 37
+        Me.cmdGetCambiosEnUsuarios.Text = "Obtener Cambios en Usuarios"
+        Me.cmdGetCambiosEnUsuarios.UseVisualStyleBackColor = True
+        '
+        'cmdOkCambios
+        '
+        Me.cmdOkCambios.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdOkCambios.Location = New System.Drawing.Point(299, 55)
+        Me.cmdOkCambios.Name = "cmdOkCambios"
+        Me.cmdOkCambios.Size = New System.Drawing.Size(92, 24)
+        Me.cmdOkCambios.TabIndex = 38
+        Me.cmdOkCambios.Text = "Ok Cambios"
+        Me.cmdOkCambios.UseVisualStyleBackColor = True
+        '
+        'txtOkCambiosId
+        '
+        Me.txtOkCambiosId.Location = New System.Drawing.Point(395, 58)
+        Me.txtOkCambiosId.Name = "txtOkCambiosId"
+        Me.txtOkCambiosId.Size = New System.Drawing.Size(18, 20)
+        Me.txtOkCambiosId.TabIndex = 39
+        '
+        'cmdBorrarCambios
+        '
+        Me.cmdBorrarCambios.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdBorrarCambios.Location = New System.Drawing.Point(299, 30)
+        Me.cmdBorrarCambios.Name = "cmdBorrarCambios"
+        Me.cmdBorrarCambios.Size = New System.Drawing.Size(114, 24)
+        Me.cmdBorrarCambios.TabIndex = 40
+        Me.cmdBorrarCambios.Text = "Borrar Cambios"
+        Me.cmdBorrarCambios.UseVisualStyleBackColor = True
         '
         'FrmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.cmdBorrarCambios)
+        Me.Controls.Add(Me.txtOkCambiosId)
+        Me.Controls.Add(Me.cmdOkCambios)
+        Me.Controls.Add(Me.cmdGetCambiosEnUsuarios)
         Me.Controls.Add(Me.frLicencia)
         Me.Controls.Add(Me.txtJson)
         Me.Controls.Add(Me.BtnRecibosDetalle)
@@ -544,4 +649,13 @@ Partial Class FrmProbador
     Friend WithEvents cmdAceptarLicencia As Button
     Friend WithEvents GetLicenciasEmpleadosACargo As Button
     Friend WithEvents cmdEliminarSolicitud As Button
+    Friend WithEvents cmdSolicitarVacaciones As Button
+    Friend WithEvents cmdGetVacaciones As Button
+    Friend WithEvents cmdVerSolicitudVacaciones As Button
+    Friend WithEvents cmdVerSolicitudes As Button
+    Friend WithEvents cmdSolicitudesEmpleadosACargo As Button
+    Friend WithEvents cmdGetCambiosEnUsuarios As Button
+    Friend WithEvents cmdOkCambios As Button
+    Friend WithEvents txtOkCambiosId As TextBox
+    Friend WithEvents cmdBorrarCambios As Button
 End Class
