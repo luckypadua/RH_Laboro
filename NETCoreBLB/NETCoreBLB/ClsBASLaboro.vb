@@ -111,15 +111,6 @@ Public Class ClsBASLaboro
         Return DtRta
 
     End Function
-    Public Function GetLoguinsIni() As DataSet Implements ItzBASLaboro.GetLoguinsIni
-
-        Try
-            Return Me.GetCambiosEnUsuarios(True)
-        Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetLoguinsIni " & ex.Message)
-        End Try
-
-    End Function
     Public Function ValidarSolicitudLicencia(ByRef PedidoLic As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
         Try
             Return PedidoLic.Validar
@@ -407,12 +398,12 @@ Public Class ClsBASLaboro
             Dim DS As DataSet = MiAdo.Consultar.GetDataset("
                     SELECT " & ProxId & " AS IdCambios, Usuario = p.CUIL, Contrasenia = p.CUIL, IdPersona, p.EmailPersonal As Email,                                                            CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'A'
                     FROM Bl_Personas p
-                    WHERE p.HabilitadoAutogestion = 1 And p.IdPersona Not IN (Select IdPersona FROM Bl_AutogestionCambiosPer)
+                    WHERE p.HabilitadoAutogestion = 1 And p.IdPersona Not IN (Select IdPersona FROM Bl_AutogestionCambiosPer) AND p.EmailPersonal IS NOT NULL
                     UNION ALL
                     SELECT " & ProxId & " AS IdCambios, Usuario = NULL, Contrasenia = NULL, p.IdPersona, p.EmailPersonal As Email, CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'M'
                     FROM Bl_AutogestionCambiosPer pa
                     JOIN Bl_Personas p ON pa.IdPersona = p.IdPersona
-                    WHERE p.EmailPersonal <> pa.Email Or p.HabilitadoAutogestion <> pa.HabilitadoAutogestion", "Bl_Personas")
+                    WHERE (p.EmailPersonal <> pa.Email Or p.HabilitadoAutogestion <> pa.HabilitadoAutogestion) AND p.EmailPersonal IS NOT NULL", "Bl_Personas")
 
             For Each Row As DataRow In DS.Tables(0).Rows
                 MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPerPendientes (IdCambios, IdPersona, Tipo, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & ProxId & "," & Row("IdPersona").ToString & ",'" & Row("Tipo").ToString & "','" & Date.Today & "','" & Row("Email").ToString & "'," & Row("Habilitado").ToString & ")")
@@ -458,6 +449,16 @@ Public Class ClsBASLaboro
         End Try
 
     End Sub
+
+    Public Function GetSucesoDeVacaciones() As Long Implements ItzBASLaboro.GetSucesoDeVacaciones
+
+        Try
+            Return MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1")
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:GetSucesoDeVacaciones " & ex.Message)
+        End Try
+
+    End Function
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' Para detectar llamadas redundantes

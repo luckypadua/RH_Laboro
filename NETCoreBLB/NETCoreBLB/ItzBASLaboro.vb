@@ -2,7 +2,6 @@
 
 Public Interface ItzBASLaboro
     Function GetDatosPersonales(ByVal IdPersona As Integer) As DataSet
-    Function GetLoguinsIni() As DataSet
     Function GetRecibos(ByVal IdPersona As Integer) As DataSet
     Function GetRecibosDetalle(ByVal IdPersona As Integer) As String
     Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet
@@ -25,6 +24,7 @@ Public Interface ItzBASLaboro
     Function GetVacacionesDetalle(ByVal IdLegajo As Long, Optional ByVal AnioDesde As Integer = 0) As DataSet
     Function GetCambiosEnUsuarios(Optional ByVal EsConfiguracionInicial As Boolean = False) As DataSet
     Sub OkCambiosUsuarios(IdCambios As Long)
+    Function GetSucesoDeVacaciones() As Long
     Sub BorrarCambiosUsuariosPendientes(Optional ByVal IdCambios As Long = 0)
     Sub Dispose()
 

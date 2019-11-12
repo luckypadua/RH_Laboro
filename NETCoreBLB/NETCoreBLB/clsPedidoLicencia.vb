@@ -173,7 +173,7 @@ Public Class ClsPedidoLicencia
         End Get
     End Property
 
-    Public Sub New()
+    Private Sub New()
     End Sub
     Public Sub New(ByVal IdPedidoLicencia As Long)
 
@@ -198,8 +198,9 @@ Public Class ClsPedidoLicencia
         End Try
 
     End Sub
-    Public Sub New(ByVal IdLegajo As Integer, ByVal IdSuceso As Integer, ByVal IdClaseSuceso As Integer, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal CodSuceso As String)
+    Public Sub New(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal IdClaseSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal CodSuceso As String)
         Me.New
+
         Me.IdLegajo = IdLegajo
         Me.IdSuceso = IdSuceso
         Me.IdClaseSuceso = IdClaseSuceso
@@ -209,6 +210,25 @@ Public Class ClsPedidoLicencia
         Me.CantidadDias = CantDias
         vCodSuceso = CodSuceso
         Me.Observaciones = ""
+
+        If AutorizarAutomaticamente() Then
+            Me.Estado = eEstadoPedidoLic.Autorizada
+        Else
+            Me.Estado = eEstadoPedidoLic.Pendiente
+        End If
+    End Sub
+
+    Public Sub New(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String)
+        Me.New
+
+        Me.IdLegajo = IdLegajo
+        Me.IdSuceso = IdSuceso
+        Me.FechaDeSolicitud = FecSolicitud
+        Me.FechaDesde = FecDesde
+        Me.FechaHasta = FecHasta
+        Me.CantidadDias = CantDias
+        Me.Observaciones = Observaciones
+
         If AutorizarAutomaticamente() Then
             Me.Estado = eEstadoPedidoLic.Autorizada
         Else
@@ -332,19 +352,19 @@ Public Class ClsPedidoLicencia
         Try
             With MiAdo.Ejecutar.Parametros
                 .RemoveAll()
-                .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
-                .Add("FecDesde", Me.FechaDesde, SqlDbType.DateTime)
-                .Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
+                '.Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+                '.Add("FecDesde", Me.FechaDesde, SqlDbType.DateTime)
+                '.Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
             End With
 
-            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND (FecDesde BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "' OR FecHasta BETWEEN '" & Me.FechaDesde & "' AND '" & Me.FechaHasta & "') AND IdOcurrenciaPedido <> " & IdPedidoLicencia) > 0 Then
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND IdOcurrenciaPedido <> " & IdPedidoLicencia & " AND (FecDesde BETWEEN '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND '" & Me.FechaHasta.ToString("yyyyMMdd") & "' OR FecHasta BETWEEN '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND '" & Me.FechaHasta.ToString("yyyyMMdd") & "' OR (FecDesde <= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND FecHasta >= '" & Me.FechaHasta.ToString("yyyyMMdd") & "'))") > 0 Then
                 Throw New Exception("@Existen otros pedidos de licencia para el período solicitado")
             End If
 
             Return True
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrosPedidosEnElPeriodo" & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:ClsPedidoLicencia:ValidarOtrosPedidosEnElPeriodo" & ex.Message)
         End Try
 
     End Function

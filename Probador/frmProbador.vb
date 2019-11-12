@@ -10,11 +10,6 @@ Public Class FrmProbador
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
-    Private Sub BtnLoguinsIni_Click(sender As Object, e As EventArgs) Handles BtnLoguinsIni.Click
-        Dim Ds As DataSet = RH.GetLoguinsIni
-        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
-    End Sub
-
     Private Sub BtnRecibos_Click(sender As Object, e As EventArgs) Handles BtnRecibos.Click
         Dim Ds As DataSet = RH.GetRecibos(txtIdPersona.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
@@ -113,7 +108,7 @@ Public Class FrmProbador
     End Sub
 
     Private Sub GetLicenciasEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles GetLicenciasEmpleadosACargo.Click
-        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(txtIdPersona.Text)
+        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
@@ -122,16 +117,7 @@ Public Class FrmProbador
     End Sub
 
     Private Sub cmdSolicitarVacaciones_Click(sender As Object, e As EventArgs) Handles cmdSolicitarVacaciones.Click
-        Dim nPedLic As New ClsPedidoLicencia()
-
-        With nPedLic
-            .IdLegajo = MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1")
-            .FechaDesde = dtpFecDesde.Text
-            .FechaHasta = dtpFecHasta.Text
-            .CantidadDias = CInt(txtCantDias.Text)
-            .FechaDeSolicitud = Now
-            .IdSuceso = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1")
-        End With
+        Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
 
         RH.GrabarSolicitudVacaciones(nPedLic)
 
