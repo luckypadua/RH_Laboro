@@ -928,9 +928,9 @@ Public Class ClsEjecutar
 
             If ReturnIdentity Then
                 Script = " Set NoCount On" +
-                         " Insert into [" + Tabla + "] (" + Campos + ") values (" + Valores + ")" +
-                         " Select IsNull(@@Identity,0)" +
-                         " Set NoCount Off"
+                        " Insert into [" + Tabla + "] (" + Campos + ") values (" + Valores + ")" +
+                        " Select IsNull(IDENT_CURRENT('" & Tabla & "') ,0)" +
+                        " Set NoCount Off"
             Else
                 Script = " Insert into [" + Tabla + "] (" + Campos + ") values (" + Valores + ")"
             End If
