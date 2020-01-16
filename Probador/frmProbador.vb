@@ -2,8 +2,8 @@
 Imports System.Globalization
 Public Class FrmProbador
 
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
-    Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
+    Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -87,24 +87,32 @@ Public Class FrmProbador
 
         Dim DTRow As DataRow = DTAux.Rows(0)
 
+        'Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
+        '                                     DTRow("IdSuceso"),
+        '                                     DTRow("IdClaseSuceso"),
+        '                                     Now,
+        '                                     dtpFecDesde.Text,
+        '                                     dtpFecHasta.Text,
+        '                                     CInt(txtCantDias.Text),
+        '                                     cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim)
+
         Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
                                              DTRow("IdSuceso"),
-                                             DTRow("IdClaseSuceso"),
                                              Now,
                                              dtpFecDesde.Text,
                                              dtpFecHasta.Text,
                                              CInt(txtCantDias.Text),
-                                             cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim)
+                                             "")
 
         If RH.ValidarSolicitudLicencia(nPedLic) Then RH.GrabarSolicitudLicencia(nPedLic)
     End Sub
 
     Private Sub cmdAceptarLicencia_Click(sender As Object, e As EventArgs) Handles cmdAceptarLicencia.Click
-        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7746, "Nada por aqui")
+        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7726, "")
     End Sub
 
     Private Sub cmdRechazarLicencia_Click(sender As Object, e As EventArgs) Handles cmdRechazarLicencia.Click
-        RH.RechazarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7746, "No te voy a permitir este pedido desacatao")
+        RH.RechazarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7726, "No te voy a permitir este pedido desacatao")
     End Sub
 
     Private Sub GetLicenciasEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles GetLicenciasEmpleadosACargo.Click
@@ -153,5 +161,8 @@ Public Class FrmProbador
 
     Private Sub cmdBorrarCambios_Click(sender As Object, e As EventArgs) Handles cmdBorrarCambios.Click
         RH.BorrarCambiosUsuariosPendientes(txtOkCambiosId.Text)
+    End Sub
+    Private Sub cmdIsManager_Click(sender As Object, e As EventArgs) Handles cmdIsManager.Click
+        MsgBox("EsManaer = " & RH.IsManager(txtIdPersona.Text))
     End Sub
 End Class

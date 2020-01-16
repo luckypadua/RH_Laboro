@@ -170,7 +170,7 @@ Public Class ClsBASLaboro
     Public Function GrabarSolicitudVacaciones(ByRef PedidoLicencia As ClsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudVacaciones
 
         Try
-            Dim SucesoVacaciones As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE HabilitadoAutogestion = 1 AND HabilitadoSoloManager = 0 AND EsVacacion = 1")
+            Dim SucesoVacaciones As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE HabilitadoAutogestion = 1 AND IsNull(HabilitadoSoloManager,0) = 0 AND EsVacacion = 1")
 
             If SucesoVacaciones = 0 Then
                 Throw New Exception("@No existe un Suceso de Vacaciones configurado para Autogestión. No es posible solicitar vacaciones.")
@@ -195,7 +195,7 @@ Public Class ClsBASLaboro
     End Function
 
     Private Function ObtenerPedidosDeLicencias(ByVal IdLegajo As Long, ByVal EsVacacion As Byte) As DataSet
-        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, s.EsVacacion FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, s.EsVacacion FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
         DS.DataSetName = "PedidosDeLicencias"
         Return DS
     End Function
@@ -224,7 +224,7 @@ Public Class ClsBASLaboro
             If sIds.Length > 0 Then
                 sIds = sIds.Remove(sIds.Length - 1)
 
-                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
+                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
             End If
 
             DS.DataSetName = "PedidosDeLicencias"
@@ -253,6 +253,20 @@ Public Class ClsBASLaboro
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:GetEmpleadosACargo " & ex.Message)
         End Try
+
+    End Function
+
+    Public Function IsManager(ByVal IdPersona As Long) As Boolean Implements ItzBASLaboro.IsManager
+
+        Dim DS As DataSet = New DataSet
+        IsManager = False
+
+        For Each Dr As DataRow In MiAdo.Consultar.GetDataset("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & IdPersona, "Bl_Legajos").Tables(0).Rows
+            If GetEmpleadosACargo(Dr("IdLegajo").ToString).Tables(0).Rows.Count > 0 Then
+                IsManager = True
+                Exit Function
+            End If
+        Next
 
     End Function
     Public Function GetManagers(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetManagers
@@ -304,7 +318,7 @@ Public Class ClsBASLaboro
             Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias " & ex.Message)
+            Throw New ArgumentException("NETCoreBLB:GetLicencias " & ex.Message)
         End Try
 
     End Function
@@ -371,7 +385,7 @@ Public Class ClsBASLaboro
 
             If AnioDesde = 0 Then AnioDesde = Date.Today.Year
 
-            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT CASE nl.IdLegajo, Year(LicFecDesde) As Anio, Month(LicFecDesde) As Mes, LicFecDesde, LicFecHasta, DiasGozados 
+            Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT nl.IdLegajo, Year(LicFecDesde) As Anio, Month(LicFecDesde) As Mes, LicFecDesde, LicFecHasta, DiasGozados 
                                     FROM Bl_Novedades n
                                     JOIN Bl_NovedadesLegajos nl ON n.IdOcurrencia = nl.IdOcurrencia AND nl.Idlegajo = " & IdLegajo & "
                                     WHERE n.IdSuceso = " & SucesoVacaciones & " AND Year(LicFecDesde) >= " & AnioDesde & "
@@ -396,17 +410,17 @@ Public Class ClsBASLaboro
 
             'Las Altas son las que no están en la Tabla de cambios, o sea, nunca se incorporaron todavía, y además están habilitados para autogestión
             Dim DS As DataSet = MiAdo.Consultar.GetDataset("
-                    SELECT " & ProxId & " AS IdCambios, Usuario = p.CUIL, Contrasenia = p.CUIL, IdPersona, p.EmailPersonal As Email,                                                            CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'A'
+                    SELECT " & ProxId & " AS IdCambios, Nombre = p.Nombre, Usuario = p.EmailPersonal, Contrasenia = p.CUIL, IdPersona, p.EmailPersonal As Email,                                                            CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'A'
                     FROM Bl_Personas p
-                    WHERE p.HabilitadoAutogestion = 1 And p.IdPersona Not IN (Select IdPersona FROM Bl_AutogestionCambiosPer) AND p.EmailPersonal IS NOT NULL
+                    WHERE p.HabilitadoAutogestion = 1 And p.IdPersona Not IN (Select IdPersona FROM Bl_AutogestionCambiosPer) AND p.EmailPersonal IS NOT NULL AND RTRIM(p.EmailPersonal) <> ''
                     UNION ALL
-                    SELECT " & ProxId & " AS IdCambios, Usuario = NULL, Contrasenia = NULL, p.IdPersona, p.EmailPersonal As Email, CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'M'
+                    SELECT " & ProxId & " AS IdCambios, Nombre = p.Nombre, Usuario = p.EmailPersonal, Contrasenia = NULL, p.IdPersona, p.EmailPersonal As Email, CASE WHEN p.HabilitadoAutogestion = 1 THEN 1 ELSE 0 END As Habilitado, Tipo = 'M'
                     FROM Bl_AutogestionCambiosPer pa
                     JOIN Bl_Personas p ON pa.IdPersona = p.IdPersona
-                    WHERE (p.EmailPersonal <> pa.Email Or p.HabilitadoAutogestion <> pa.HabilitadoAutogestion) AND p.EmailPersonal IS NOT NULL", "Bl_Personas")
+                    WHERE (p.EmailPersonal <> pa.Email Or p.HabilitadoAutogestion <> pa.HabilitadoAutogestion) AND p.EmailPersonal IS NOT NULL AND RTRIM(p.EmailPersonal) <> ''", "Bl_Personas")
 
             For Each Row As DataRow In DS.Tables(0).Rows
-                MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPerPendientes (IdCambios, IdPersona, Tipo, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & ProxId & "," & Row("IdPersona").ToString & ",'" & Row("Tipo").ToString & "','" & Date.Today & "','" & Row("Email").ToString & "'," & Row("Habilitado").ToString & ")")
+                MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPerPendientes (IdCambios, IdPersona, Tipo, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & ProxId & "," & Row("IdPersona").ToString & ",'" & Row("Tipo").ToString & "','" & Date.Today.ToString("yyyyMMdd") & "','" & Row("Email").ToString & "'," & Row("Habilitado").ToString & ")")
             Next
 
             Return DS
@@ -423,7 +437,7 @@ Public Class ClsBASLaboro
 
             For Each Row As DataRow In DS.Tables(0).Rows
                 If Row("Tipo").ToString = "A" Then
-                    MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPer (IdPersona, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & Row("IdPersona").ToString & ",'" & Convert.ToDateTime(Row("FecOcurrencia").ToString) & "','" & Row("Email").ToString & "'," & Row("HabilitadoAutogestion").ToString & ")")
+                    MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPer (IdPersona, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & Row("IdPersona").ToString & ",'" & Convert.ToDateTime(Row("FecOcurrencia")).ToString("yyyyMMdd") & "','" & Row("Email").ToString & "'," & Row("HabilitadoAutogestion").ToString & ")")
                 Else
                     MiAdo.Ejecutar.Instruccion("UPDATE Bl_AutogestionCambiosPer SET Email = '" & Row("Email").ToString & "', HabilitadoAutogestion = " & Row("HabilitadoAutogestion").ToString & " WHERE IdPersona = " & Row("IdPersona").ToString)
                 End If

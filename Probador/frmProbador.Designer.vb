@@ -70,6 +70,7 @@ Partial Class FrmProbador
         Me.cmdOkCambios = New System.Windows.Forms.Button()
         Me.txtOkCambiosId = New System.Windows.Forms.TextBox()
         Me.cmdBorrarCambios = New System.Windows.Forms.Button()
+        Me.cmdIsManager = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -569,11 +570,21 @@ Partial Class FrmProbador
         Me.cmdBorrarCambios.Text = "Borrar Cambios"
         Me.cmdBorrarCambios.UseVisualStyleBackColor = True
         '
+        'cmdIsManager
+        '
+        Me.cmdIsManager.Location = New System.Drawing.Point(314, 173)
+        Me.cmdIsManager.Name = "cmdIsManager"
+        Me.cmdIsManager.Size = New System.Drawing.Size(75, 23)
+        Me.cmdIsManager.TabIndex = 41
+        Me.cmdIsManager.Text = "Is Manager"
+        Me.cmdIsManager.UseVisualStyleBackColor = True
+        '
         'FrmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.cmdIsManager)
         Me.Controls.Add(Me.cmdBorrarCambios)
         Me.Controls.Add(Me.txtOkCambiosId)
         Me.Controls.Add(Me.cmdOkCambios)
@@ -658,4 +669,5 @@ Partial Class FrmProbador
     Friend WithEvents cmdOkCambios As Button
     Friend WithEvents txtOkCambiosId As TextBox
     Friend WithEvents cmdBorrarCambios As Button
+    Friend WithEvents cmdIsManager As Button
 End Class

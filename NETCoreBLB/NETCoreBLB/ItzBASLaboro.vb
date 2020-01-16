@@ -26,6 +26,7 @@ Public Interface ItzBASLaboro
     Sub OkCambiosUsuarios(IdCambios As Long)
     Function GetSucesoDeVacaciones() As Long
     Sub BorrarCambiosUsuariosPendientes(Optional ByVal IdCambios As Long = 0)
+    Function IsManager(ByVal IdPersona As Long) As Boolean
     Sub Dispose()
 
 End Interface

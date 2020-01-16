@@ -12,7 +12,7 @@ Public Class ClsPedidoLicencia
         Otro = 7
     End Enum
 
-    Private MiAdo As New NETCoreADO.AdoNet("SERVIDORBLB\SQL2014", "400BLB_Prueba", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
 
     Private mIdAutorizadoPor As Long
     Public Property IdAutorizadoPor() As Long
@@ -137,6 +137,16 @@ Public Class ClsPedidoLicencia
         End Set
     End Property
 
+    Private vObservacionesAdmin As String = ""
+    Public Property ObservacionesAdmin() As String
+        Get
+            Return vObservacionesAdmin
+        End Get
+        Set(ByVal value As String)
+            vObservacionesAdmin = value
+        End Set
+    End Property
+
     Private vCodSuceso As String = ""
     Public ReadOnly Property CodSuceso() As String
         Get
@@ -191,7 +201,8 @@ Public Class ClsPedidoLicencia
             Me.FechaHasta = Ds.Tables(0).Rows(0)("FecHasta")
             Me.CantidadDias = Ds.Tables(0).Rows(0)("Cantidad")
             vCodSuceso = MiAdo.Ejecutar.GetSQLString("SELECT CodSuceso FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso)
-            Me.Observaciones = Ds.Tables(0).Rows(0)("Observaciones")
+            Me.Observaciones = Ds.Tables(0).Rows(0)("Observaciones").ToString
+            Me.ObservacionesManager = Ds.Tables(0).Rows(0)("ObservacionesManager").ToString
             Me.Estado = Ds.Tables(0).Rows(0)("Estado")
         Catch ex As Exception
             Throw New Exception("NETCoreBLB:clsPedidoLicencia:New" & ex.Message)
@@ -210,6 +221,7 @@ Public Class ClsPedidoLicencia
         Me.CantidadDias = CantDias
         vCodSuceso = CodSuceso
         Me.Observaciones = ""
+        Me.ObservacionesManager = ""
 
         If AutorizarAutomaticamente() Then
             Me.Estado = eEstadoPedidoLic.Autorizada
@@ -228,6 +240,7 @@ Public Class ClsPedidoLicencia
         Me.FechaHasta = FecHasta
         Me.CantidadDias = CantDias
         Me.Observaciones = Observaciones
+        Me.ObservacionesManager = ""
 
         If AutorizarAutomaticamente() Then
             Me.Estado = eEstadoPedidoLic.Autorizada
@@ -252,14 +265,14 @@ Public Class ClsPedidoLicencia
 
         Dim DS As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
-        Return (DS.Tables.Count = 0)
+        Return (DS.Tables(0).Rows.Count = 0)
 
     End Function
 
     Public Function Validar() As Boolean
 
         Try
-            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarOtrasLicenciasEnElPeriodo And Me.ValidarOtrosPedidosEnElPeriodo)
+            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarOtrasLicenciasEnElPeriodo And Me.ValidarOtrosPedidosEnElPeriodo And Me.ValidarLegajoActivo)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
         End Try
@@ -268,7 +281,7 @@ Public Class ClsPedidoLicencia
 
     Private Function ValidarSuceso() As Boolean
         Try
-            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE CodSuceso = '" & Me.CodSuceso.Trim & "'") = 0 Then
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso) = 0 Then
                 Throw New Exception("@El suceso solicitado no existe")
             End If
             Return True
@@ -336,7 +349,7 @@ Public Class ClsPedidoLicencia
             DS = MiAdo.Ejecutar.Procedimiento("SP_TraerLicenciasEnPeriodo2", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
 
             If DS.Tables(0).Rows.Count <> 0 Then
-                Throw New Exception("@Existen otras licencias en el período solicitado")
+                Throw New Exception("@Existen otras licencias y/o vacaciones en el período solicitado")
             End If
 
             Return True
@@ -357,7 +370,7 @@ Public Class ClsPedidoLicencia
                 '.Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
             End With
 
-            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND IdOcurrenciaPedido <> " & IdPedidoLicencia & " AND (FecDesde BETWEEN '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND '" & Me.FechaHasta.ToString("yyyyMMdd") & "' OR FecHasta BETWEEN '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND '" & Me.FechaHasta.ToString("yyyyMMdd") & "' OR (FecDesde <= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND FecHasta >= '" & Me.FechaHasta.ToString("yyyyMMdd") & "'))") > 0 Then
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND IdOcurrenciaPedido <> " & IdPedidoLicencia & " AND ((Convert(Date,FecDesde) >= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecDesde) <= '" & Me.FechaHasta.ToString("yyyyMMdd") & "') OR (Convert(Date,FecHasta) >= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecHasta) <= '" & Me.FechaHasta.ToString("yyyyMMdd") & "') OR (Convert(Date,FecDesde) <= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecHasta) >= '" & Me.FechaHasta.ToString("yyyyMMdd") & "'))") > 0 Then
                 Throw New Exception("@Existen otros pedidos de licencia para el período solicitado")
             End If
 
@@ -368,7 +381,19 @@ Public Class ClsPedidoLicencia
         End Try
 
     End Function
+    Private Function ValidarLegajoActivo() As Boolean
 
+        Try
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM Bl_Legajos WHERE IdLegajo = " & Me.IdLegajo & " AND (Cast(FecIngreso as Datetime) BETWEEN '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND '" & Me.FechaHasta.ToString("yyyyMMdd") & "' OR Cast(IsNull(FecEgreso,'20790101') as Datetime) BETWEEN '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND '" & Me.FechaHasta.ToString("yyyyMMdd") & "' OR (Cast(FecIngreso as Datetime) <= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Cast(IsNull(FecEgreso,'20790101') as Datetime) >= '" & Me.FechaHasta.ToString("yyyyMMdd") & "'))") = 0 Then
+                Throw New Exception("@El legajo está inactivo en el período solicitado")
+            End If
+
+            Return True
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:ClsPedidoLicencia:ValidarLegajoActivo" & ex.Message)
+        End Try
+
+    End Function
     Public Sub Grabar()
 
         Try
@@ -385,6 +410,7 @@ Public Class ClsPedidoLicencia
                     .Add("Cantidad", Me.CantidadDias, SqlDbType.SmallInt)
                     .Add("Estado", Me.Estado, SqlDbType.SmallInt)
                     .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
+                    .Add("ObservacionesManager", Me.ObservacionesManager, SqlDbType.VarChar)
                 End With
 
                 If Me.IdPedidoLicencia <> 0 Then
@@ -397,7 +423,13 @@ Public Class ClsPedidoLicencia
                             .Add("FecOcurrencia", Date.Now, SqlDbType.DateTime)
                             .Add("EstadoAnterior", mEstadoAnterior, SqlDbType.SmallInt)
                             .Add("EstadoNuevo", Me.Estado, SqlDbType.SmallInt)
-                            .Add("Observaciones", Me.ObservacionesManager, SqlDbType.VarChar)
+                            If Me.Estado = eEstadoPedidoLic.Autorizada Or Me.Estado = eEstadoPedidoLic.NoAutorizada Then
+                                .Add("Observaciones", Me.ObservacionesManager, SqlDbType.VarChar)
+                            ElseIf Me.Estado = eEstadoPedidoLic.Aceptada Or Me.Estado = eEstadoPedidoLic.AceptadaConModificaciones Or Me.Estado = eEstadoPedidoLic.Eliminada Or Me.Estado = eEstadoPedidoLic.Rechazada Then
+                                .Add("Observaciones", Me.ObservacionesAdmin, SqlDbType.VarChar)
+                            Else
+                                .Add("Observaciones", Me.Observaciones, SqlDbType.VarChar)
+                            End If
                             .Add("IdLegajoCambioDeEstado", Me.IdAutorizadoPor, SqlDbType.Int)
                         End With
 
