@@ -2,8 +2,10 @@
 Imports System.Globalization
 Public Class FrmProbador
 
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
-    Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
+    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
+    'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "400BLB_Prueba2", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "400BLB_Prueba2", "sa", "sa")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -65,7 +67,7 @@ Public Class FrmProbador
     End Sub
 
     Private Sub CmdManagersYEmpleados_Click(sender As Object, e As EventArgs) Handles cmdManagersYEmpleados.Click
-        Dim Ds As DataSet = RH.GetManagers(cmbIdLegajo.Text)
+        Dim Ds As DataSet = RH.GetManagers(txtIdPersona.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
@@ -96,13 +98,22 @@ Public Class FrmProbador
         '                                     CInt(txtCantDias.Text),
         '                                     cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim)
 
-        Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
+        Dim nPedLic As ClsPedidoLicencia
+        nPedLic = RH.GetNuevoPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
                                              DTRow("IdSuceso"),
                                              Now,
                                              dtpFecDesde.Text,
                                              dtpFecHasta.Text,
                                              CInt(txtCantDias.Text),
                                              "")
+        'Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
+        '                                     DTRow("IdSuceso"),
+        '                                     Now,
+        '                                     dtpFecDesde.Text,
+        '                                     dtpFecHasta.Text,
+        '                                     CInt(txtCantDias.Text),
+        '                                     "",
+        '                                     MiAdo)
 
         If RH.ValidarSolicitudLicencia(nPedLic) Then RH.GrabarSolicitudLicencia(nPedLic)
     End Sub
@@ -116,7 +127,7 @@ Public Class FrmProbador
     End Sub
 
     Private Sub GetLicenciasEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles GetLicenciasEmpleadosACargo.Click
-        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
+        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(txtIdPersona.Text, True)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
@@ -125,7 +136,9 @@ Public Class FrmProbador
     End Sub
 
     Private Sub cmdSolicitarVacaciones_Click(sender As Object, e As EventArgs) Handles cmdSolicitarVacaciones.Click
-        Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
+        Dim nPedLic As ClsPedidoLicencia
+        nPedLic = RH.GetNuevoPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
+        'Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
 
         RH.GrabarSolicitudVacaciones(nPedLic)
 
@@ -146,7 +159,7 @@ Public Class FrmProbador
     End Sub
 
     Private Sub cmdSolicitudesEmpleadosACargo_Click(sender As Object, e As EventArgs) Handles cmdSolicitudesEmpleadosACargo.Click
-        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"))
+        Dim Ds As DataSet = RH.GetSolicitudesLicenciasManager(Me.txtIdPersona.Text, True)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 

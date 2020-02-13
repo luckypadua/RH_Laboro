@@ -7,6 +7,12 @@ Public Class ClsBASLaboro
 
     Private MiAdo As New NETCoreADO.AdoNet
     Const Semilla As String = "tir4n0sAuri0"
+
+    Public ReadOnly Property Conexion() As NETCoreADO.AdoNet
+        Get
+            Return MiAdo
+        End Get
+    End Property
     Public Sub New(ByVal Server As String,
                    ByVal Database As String,
                    Optional ByVal Uid As String = "",
@@ -120,7 +126,7 @@ Public Class ClsBASLaboro
     End Function
     Public Function EliminarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
         Try
-            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
+            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
             sLic.Borrar()
             Return True
         Catch ex As Exception
@@ -129,7 +135,7 @@ Public Class ClsBASLaboro
     End Function
     Public Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.AceptarSolicitudLicencia
         Try
-            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
+            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
             With sLic
                 .Estado = ClsPedidoLicencia.eEstadoPedidoLic.Autorizada
                 .IdAutorizadoPor = IdManager
@@ -144,7 +150,7 @@ Public Class ClsBASLaboro
     End Function
     Public Function RechazarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.RechazarSolicitudLicencia
         Try
-            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia)
+            Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
 
             With sLic
                 .Estado = ClsPedidoLicencia.eEstadoPedidoLic.NoAutorizada
@@ -195,7 +201,7 @@ Public Class ClsBASLaboro
     End Function
 
     Private Function ObtenerPedidosDeLicencias(ByVal IdLegajo As Long, ByVal EsVacacion As Byte) As DataSet
-        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, s.EsVacacion FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT np.IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, np.ObservacionesAdmin,  s.EsVacacion, n.LicFecDesde, n.LicFecHasta FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona LEFT JOIN Bl_Novedades n ON np.IdOcurrenciaPedido = n.IdOcurrenciaPedido WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
         DS.DataSetName = "PedidosDeLicencias"
         Return DS
     End Function
@@ -211,20 +217,27 @@ Public Class ClsBASLaboro
 
     End Function
 
-    Public Function GetSolicitudesLicenciasManager(ByVal IdLegajoManager As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicenciasManager
+    Public Function GetSolicitudesLicenciasManager(ByVal IdPersonaManager As Long, ByVal TraerPendientes As Boolean) As DataSet Implements ItzBASLaboro.GetSolicitudesLicenciasManager
 
         Try
             Dim sIds As String = ""
+            Dim WhereEstado As String
             Dim DS As DataSet = New DataSet
 
-            For Each Dr As DataRow In GetEmpleadosACargo(IdLegajoManager).Tables(0).Rows
+            If TraerPendientes = True Then
+                WhereEstado = " Estado = " & ClsPedidoLicencia.eEstadoPedidoLic.Pendiente
+            Else
+                WhereEstado = " Estado <> " & ClsPedidoLicencia.eEstadoPedidoLic.Pendiente
+            End If
+
+            For Each Dr As DataRow In GetEmpleadosACargo(IdPersonaManager).Tables(0).Rows
                 sIds = sIds & Dr("IdLegajo").ToString & ","
             Next
 
             If sIds.Length > 0 Then
                 sIds = sIds.Remove(sIds.Length - 1)
 
-                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ")", "BL_NovedadesPedidos")
+                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, np.ObservacionesAdmin FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ") AND " & WhereEstado, "BL_NovedadesPedidos")
             End If
 
             DS.DataSetName = "PedidosDeLicencias"
@@ -234,18 +247,18 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
-    Public Function GetEmpleadosACargo(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
+    Public Function GetEmpleadosACargo(ByVal IdPersona As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
 
         Try
-            Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
+            'Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
 
             With MiAdo.Ejecutar.Parametros
                 .RemoveAll()
-                .Add("IdLegajo", IdLegajo, SqlDbType.Int)
+                .Add("IdPersona", IdPersona, SqlDbType.Int)
                 .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
                 .Add("IncluirManagers", 0, SqlDbType.SmallInt)
                 .Add("IncluirEmpleadosACargo", 1, SqlDbType.SmallInt)
-                .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
+                '.Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
             Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
@@ -261,26 +274,24 @@ Public Class ClsBASLaboro
         Dim DS As DataSet = New DataSet
         IsManager = False
 
-        For Each Dr As DataRow In MiAdo.Consultar.GetDataset("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & IdPersona, "Bl_Legajos").Tables(0).Rows
-            If GetEmpleadosACargo(Dr("IdLegajo").ToString).Tables(0).Rows.Count > 0 Then
-                IsManager = True
-                Exit Function
-            End If
-        Next
+        If GetEmpleadosACargo(IdPersona).Tables(0).Rows.Count > 0 Then
+            IsManager = True
+            Exit Function
+        End If
 
     End Function
-    Public Function GetManagers(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetManagers
+    Public Function GetManagers(ByVal IdPersona As Long) As DataSet Implements ItzBASLaboro.GetManagers
 
         Try
-            Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
+            'Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
 
             With MiAdo.Ejecutar.Parametros
                 .RemoveAll()
-                .Add("IdLegajo", IdLegajo, SqlDbType.Int)
+                .Add("IdPersona", IdPersona, SqlDbType.Int)
                 .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
                 .Add("IncluirManagers", 1, SqlDbType.SmallInt)
                 .Add("IncluirEmpleadosACargo", 0, SqlDbType.SmallInt)
-                .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
+                '.Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
             Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
@@ -294,7 +305,7 @@ Public Class ClsBASLaboro
     Public Function GetTipoLicencias() As DataSet Implements ItzBASLaboro.GetTipoLicencias
 
         Try
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1 AND EsVacacion = 0", "BL_SUCESOS")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IdSuceso, ISNULL(AliasAutogestion,CodSuceso + ' - ' + Descripcion) As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1 AND EsVacacion = 0", "BL_SUCESOS")
             Ds.DataSetName = "TipoLicencias"
             Return Ds
 
@@ -472,6 +483,16 @@ Public Class ClsBASLaboro
             Throw New ArgumentException("NETCoreBLB:GetSucesoDeVacaciones " & ex.Message)
         End Try
 
+    End Function
+
+    Public Function GetNuevoPedidoLicencia(ByVal IdPedidoLicencia As Long) As ClsPedidoLicencia Implements ItzBASLaboro.GetNuevoPedidoLicencia
+        Dim mNuevoPedidoLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
+        Return mNuevoPedidoLic
+    End Function
+
+    Public Function GetNuevoPedidoLicencia(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String) As ClsPedidoLicencia Implements ItzBASLaboro.GetNuevoPedidoLicencia
+        Dim mNuevoPedidoLic As New ClsPedidoLicencia(IdLegajo, IdSuceso, FecSolicitud, FecDesde, FecHasta, CantDias, Observaciones, MiAdo)
+        Return mNuevoPedidoLic
     End Function
 
 #Region "IDisposable Support"

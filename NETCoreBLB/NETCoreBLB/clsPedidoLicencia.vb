@@ -12,7 +12,8 @@ Public Class ClsPedidoLicencia
         Otro = 7
     End Enum
 
-    Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
+    'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
+    Private MiAdo As New NETCoreADO.AdoNet
 
     Private mIdAutorizadoPor As Long
     Public Property IdAutorizadoPor() As Long
@@ -185,10 +186,11 @@ Public Class ClsPedidoLicencia
 
     Private Sub New()
     End Sub
-    Public Sub New(ByVal IdPedidoLicencia As Long)
+    Friend Sub New(ByVal IdPedidoLicencia As Long, ByVal Conexion As NETCoreADO.AdoNet)
 
         Me.New()
         Me.Id = IdPedidoLicencia
+        Me.MiAdo = Conexion
 
         Try
             Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT * FROM BL_NovedadesPedidos WHERE IdOcurrenciaPedido = " & Me.IdPedidoLicencia, "BL_NovedadesPedidos")
@@ -209,30 +211,31 @@ Public Class ClsPedidoLicencia
         End Try
 
     End Sub
-    Public Sub New(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal IdClaseSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal CodSuceso As String)
+    'Public Sub New(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal IdClaseSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal CodSuceso As String)
+
+    '    Me.New
+    '    Me.IdLegajo = IdLegajo
+    '    Me.IdSuceso = IdSuceso
+    '    Me.IdClaseSuceso = IdClaseSuceso
+    '    Me.FechaDeSolicitud = FecSolicitud
+    '    Me.FechaDesde = FecDesde
+    '    Me.FechaHasta = FecHasta
+    '    Me.CantidadDias = CantDias
+    '    vCodSuceso = CodSuceso
+    '    Me.Observaciones = ""
+    '    Me.ObservacionesManager = ""
+
+    '    If AutorizarAutomaticamente() Then
+    '        Me.Estado = eEstadoPedidoLic.Autorizada
+    '    Else
+    '        Me.Estado = eEstadoPedidoLic.Pendiente
+    '    End If
+    'End Sub
+
+    Friend Sub New(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String, ByVal Conexion As NETCoreADO.AdoNet)
+
         Me.New
-
-        Me.IdLegajo = IdLegajo
-        Me.IdSuceso = IdSuceso
-        Me.IdClaseSuceso = IdClaseSuceso
-        Me.FechaDeSolicitud = FecSolicitud
-        Me.FechaDesde = FecDesde
-        Me.FechaHasta = FecHasta
-        Me.CantidadDias = CantDias
-        vCodSuceso = CodSuceso
-        Me.Observaciones = ""
-        Me.ObservacionesManager = ""
-
-        If AutorizarAutomaticamente() Then
-            Me.Estado = eEstadoPedidoLic.Autorizada
-        Else
-            Me.Estado = eEstadoPedidoLic.Pendiente
-        End If
-    End Sub
-
-    Public Sub New(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String)
-        Me.New
-
+        Me.MiAdo = Conexion
         Me.IdLegajo = IdLegajo
         Me.IdSuceso = IdSuceso
         Me.FechaDeSolicitud = FecSolicitud
@@ -370,7 +373,7 @@ Public Class ClsPedidoLicencia
                 '.Add("FecHasta", Me.FechaHasta, SqlDbType.DateTime)
             End With
 
-            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND IdOcurrenciaPedido <> " & IdPedidoLicencia & " AND ((Convert(Date,FecDesde) >= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecDesde) <= '" & Me.FechaHasta.ToString("yyyyMMdd") & "') OR (Convert(Date,FecHasta) >= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecHasta) <= '" & Me.FechaHasta.ToString("yyyyMMdd") & "') OR (Convert(Date,FecDesde) <= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecHasta) >= '" & Me.FechaHasta.ToString("yyyyMMdd") & "'))") > 0 Then
+            If MiAdo.Ejecutar.GetSQLInteger("SELECT COUNT(*) FROM BL_NovedadesPedidos WHERE IdLegajo = " & Me.IdLegajo & " AND IdOcurrenciaPedido <> " & IdPedidoLicencia & " AND Estado <> " & eEstadoPedidoLic.Rechazada & " AND Estado <> " & eEstadoPedidoLic.Eliminada & " AND Estado <> " & eEstadoPedidoLic.NoAutorizada & " AND ((Convert(Date,FecDesde) >= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecDesde) <= '" & Me.FechaHasta.ToString("yyyyMMdd") & "') OR (Convert(Date,FecHasta) >= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecHasta) <= '" & Me.FechaHasta.ToString("yyyyMMdd") & "') OR (Convert(Date,FecDesde) <= '" & Me.FechaDesde.ToString("yyyyMMdd") & "' AND Convert(Date,FecHasta) >= '" & Me.FechaHasta.ToString("yyyyMMdd") & "'))") > 0 Then
                 Throw New Exception("@Existen otros pedidos de licencia para el período solicitado")
             End If
 
