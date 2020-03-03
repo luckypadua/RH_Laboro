@@ -201,7 +201,7 @@ Public Class ClsBASLaboro
     End Function
 
     Private Function ObtenerPedidosDeLicencias(ByVal IdLegajo As Long, ByVal EsVacacion As Byte) As DataSet
-        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT np.IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, np.ObservacionesAdmin,  s.EsVacacion, n.LicFecDesde, n.LicFecHasta FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona LEFT JOIN Bl_Novedades n ON np.IdOcurrenciaPedido = n.IdOcurrenciaPedido WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
+        Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT np.IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, ISNULL(AliasAutogestion,CodSuceso + ' - ' + Descripcion) As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, np.ObservacionesAdmin,  s.EsVacacion, n.LicFecDesde, n.LicFecHasta FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona LEFT JOIN Bl_Novedades n ON np.IdOcurrenciaPedido = n.IdOcurrenciaPedido WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
         DS.DataSetName = "PedidosDeLicencias"
         Return DS
     End Function
@@ -237,7 +237,7 @@ Public Class ClsBASLaboro
             If sIds.Length > 0 Then
                 sIds = sIds.Remove(sIds.Length - 1)
 
-                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, CodSuceso + ' - ' + Descripcion As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, np.ObservacionesAdmin FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ") AND " & WhereEstado, "BL_NovedadesPedidos")
+                DS = MiAdo.Consultar.GetDataset("SELECT IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, ISNULL(AliasAutogestion,CodSuceso + ' - ' + Descripcion) As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, np.ObservacionesAdmin FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona WHERE np.IdLegajo In (" & sIds & ") AND " & WhereEstado, "BL_NovedadesPedidos")
             End If
 
             DS.DataSetName = "PedidosDeLicencias"

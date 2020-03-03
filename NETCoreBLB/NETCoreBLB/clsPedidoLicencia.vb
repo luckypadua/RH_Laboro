@@ -255,15 +255,14 @@ Public Class ClsPedidoLicencia
     Private Function AutorizarAutomaticamente() As Boolean
         'Esta función devuelve True en el caso de que el Legajo solicitado no posea manager. En ese caso, la licencia es autorizada automáticamente porque se asume que no requiere autorización
 
-        Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & Me.IdLegajo)
+        Dim IdPersona As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT IdPersona FROM Bl_Legajos WHERE IdLegajo = " & Me.IdLegajo)
 
         With MiAdo.Ejecutar.Parametros
             .RemoveAll()
-            .Add("IdLegajo", Me.IdLegajo, SqlDbType.Int)
+            .Add("IdPersona", IdPersona, SqlDbType.Int)
             .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
             .Add("IncluirManagers", 1, SqlDbType.SmallInt)
             .Add("IncluirEmpleadosACargo", 0, SqlDbType.SmallInt)
-            .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
         End With
 
         Dim DS As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
@@ -312,7 +311,7 @@ Public Class ClsPedidoLicencia
                 .Add("CodAtr", DBNull.Value, SqlDbType.Char)
                 .Add("CodAtrVal", DBNull.Value, SqlDbType.Char)
                 .Add("FechaOcurrencia", Me.FechaDeSolicitud, SqlDbType.DateTime)
-                .Add("FechaSuspDesde", DBNull.Value, SqlDbType.DateTime)
+                .Add("FechaSuspDesde", Me.FechaDeSolicitud, SqlDbType.DateTime)
                 .Add("Importe", DBNull.Value, SqlDbType.Decimal)
                 .Add("Dias", Me.CantidadDias, SqlDbType.Int)
                 .Add("VacAfectacion", Me.VacAfectacion, SqlDbType.Char)
@@ -452,8 +451,10 @@ Public Class ClsPedidoLicencia
 
     Public Sub Borrar()
         Try
-            If Me.Estado <> eEstadoPedidoLic.Pendiente Then
-                Throw New ArgumentException("@No es posible eliminar un pedido cuyo estado sea diferente de 'Pendiente'")
+            If Not (Me.Estado = eEstadoPedidoLic.Autorizada And Me.AutorizarAutomaticamente = True) Then
+                If Me.Estado <> eEstadoPedidoLic.Pendiente Then
+                    Throw New ArgumentException("@No es posible eliminar un pedido cuyo estado sea diferente de 'Pendiente'")
+                End If
             End If
 
             MiAdo.Ejecutar.Borrar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.Id)

@@ -4,8 +4,8 @@ Public Class FrmProbador
 
     'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
     'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "400BLB_Prueba2", "sa", "sa")
-    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "400BLB_Prueba2", "sa", "sa")
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "Microsules2", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "Microsules2", "sa", "sa")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -85,7 +85,7 @@ Public Class FrmProbador
     Private Sub CmdSolicitarLicencia_Click(sender As Object, e As EventArgs) Handles cmdSolicitarLicencia.Click
         Dim DTAux As New DataTable()
 
-        DTAux = MiAdo.Consultar.GetDataTable("SELECT s.IdSuceso, sc.IdClaseSuceso FROM Bl_Sucesos s JOIN Bl_SucesosClases sc ON s.IdClaseSuceso = sc.IdClaseSuceso WHERE s.CodSuceso = '" & cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim & "'", "Suceso")
+        DTAux = MiAdo.Consultar.GetDataTable("SELECT s.IdSuceso, sc.IdClaseSuceso FROM Bl_Sucesos s JOIN Bl_SucesosClases sc ON s.IdClaseSuceso = sc.IdClaseSuceso WHERE s.AliasAutogestion = '" & cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim & "'", "Suceso")
 
         Dim DTRow As DataRow = DTAux.Rows(0)
 
