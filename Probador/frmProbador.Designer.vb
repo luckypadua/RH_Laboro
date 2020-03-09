@@ -71,6 +71,7 @@ Partial Class FrmProbador
         Me.txtOkCambiosId = New System.Windows.Forms.TextBox()
         Me.cmdBorrarCambios = New System.Windows.Forms.Button()
         Me.cmdIsManager = New System.Windows.Forms.Button()
+        Me.BtnBASLaboroVersion = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -579,11 +580,21 @@ Partial Class FrmProbador
         Me.cmdIsManager.Text = "Is Manager"
         Me.cmdIsManager.UseVisualStyleBackColor = True
         '
+        'BtnBASLaboroVersion
+        '
+        Me.BtnBASLaboroVersion.Location = New System.Drawing.Point(314, 202)
+        Me.BtnBASLaboroVersion.Name = "BtnBASLaboroVersion"
+        Me.BtnBASLaboroVersion.Size = New System.Drawing.Size(75, 49)
+        Me.BtnBASLaboroVersion.TabIndex = 42
+        Me.BtnBASLaboroVersion.Text = "BASLaboro Version"
+        Me.BtnBASLaboroVersion.UseVisualStyleBackColor = True
+        '
         'FrmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.BtnBASLaboroVersion)
         Me.Controls.Add(Me.cmdIsManager)
         Me.Controls.Add(Me.cmdBorrarCambios)
         Me.Controls.Add(Me.txtOkCambiosId)
@@ -670,4 +681,5 @@ Partial Class FrmProbador
     Friend WithEvents txtOkCambiosId As TextBox
     Friend WithEvents cmdBorrarCambios As Button
     Friend WithEvents cmdIsManager As Button
+    Friend WithEvents BtnBASLaboroVersion As Button
 End Class

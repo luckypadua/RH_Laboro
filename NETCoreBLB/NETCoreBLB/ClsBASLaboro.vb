@@ -84,6 +84,13 @@ Public Class ClsBASLaboro
         Return Ds
 
     End Function
+
+    Public Function GetBASLaboroVersion() As DataSet Implements ItzBASLaboro.GetBASLaboroVersion
+
+        Return MiAdo.Consultar.GetDataset("select top 1 BASLaboroVersion = isNull(STRVALOR,'')  from BL_PARAMETROS where Parametro = 'version'", "BASLaboroVersion")
+
+    End Function
+
     Private Function GetParametros(ByVal Archivo As String, ByVal ArchivoAlias As String) As DataTable
 
         Dim DtRta As New DataTable("GetReciboDescarga")

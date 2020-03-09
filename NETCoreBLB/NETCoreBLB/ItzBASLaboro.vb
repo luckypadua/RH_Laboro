@@ -29,6 +29,7 @@ Public Interface ItzBASLaboro
     Function IsManager(ByVal IdPersona As Long) As Boolean
     Function GetNuevoPedidoLicencia(ByVal IdPedidoLicencia As Long) As ClsPedidoLicencia
     Function GetNuevoPedidoLicencia(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String) As ClsPedidoLicencia
+    Function GetBASLaboroVersion() As DataSet
     Sub Dispose()
 
 End Interface

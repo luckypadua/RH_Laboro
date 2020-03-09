@@ -178,4 +178,10 @@ Public Class FrmProbador
     Private Sub cmdIsManager_Click(sender As Object, e As EventArgs) Handles cmdIsManager.Click
         MsgBox("EsManaer = " & RH.IsManager(txtIdPersona.Text))
     End Sub
+
+    Private Sub BtnBASLaboroVersion_Click(sender As Object, e As EventArgs) Handles BtnBASLaboroVersion.Click
+        Dim Ds As DataSet = RH.GetBASLaboroVersion
+        Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
 End Class
