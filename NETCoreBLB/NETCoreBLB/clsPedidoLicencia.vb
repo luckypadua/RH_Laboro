@@ -274,7 +274,7 @@ Public Class ClsPedidoLicencia
     Public Function Validar() As Boolean
 
         Try
-            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarOtrasLicenciasEnElPeriodo And Me.ValidarOtrosPedidosEnElPeriodo And Me.ValidarLegajoActivo)
+            Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarTopesVacaciones And Me.ValidarOtrasLicenciasEnElPeriodo And Me.ValidarOtrosPedidosEnElPeriodo And Me.ValidarLegajoActivo)
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
         End Try
@@ -332,6 +332,33 @@ Public Class ClsPedidoLicencia
 
         Catch ex As Exception
             Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
+        End Try
+
+    End Function
+
+    Private Function ValidarTopesVacaciones() As Boolean
+
+        Try
+
+            If VacAfectacion <> "" Then
+                Dim DiasGoz As Integer
+                Dim DiasLiq As Integer
+
+                Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT SUM(DiasAsig) AS Asignados, SUM(DiasGozados) AS Gozados, SUM(DiasLiq) AS Liquidados FROM BL_LEGAJOSVACS WHERE IdLegajo=" & Me.IdLegajo, "DiasVacs")
+
+                DiasGoz = CInt(Ds.Tables(0).Rows(0)("Asignados")) - CInt(Ds.Tables(0).Rows(0)("Gozados"))
+                DiasLiq = CInt(Ds.Tables(0).Rows(0)("Asignados")) - CInt(Ds.Tables(0).Rows(0)("Liquidados"))
+
+                If ((Me.VacAfectacion = "G" Or Me.VacAfectacion = "2") And DiasGoz < Me.CantidadDias) Or
+                   ((Me.VacAfectacion = "L" Or Me.VacAfectacion = "2") And DiasLiq < Me.CantidadDias) Then
+                    Throw New Exception("@La cantidad de días solicitados supera la cantidad de días de vacaciones disponibles")
+                End If
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopesVacaciones" & ex.Message)
         End Try
 
     End Function

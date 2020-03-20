@@ -1,5 +1,6 @@
 Imports System.Data
 Imports NETCoreCrypto
+Imports System.Globalization
 
 Public Class ClsBASLaboro
 
@@ -13,6 +14,7 @@ Public Class ClsBASLaboro
             Return MiAdo
         End Get
     End Property
+
     Public Sub New(ByVal Server As String,
                    ByVal Database As String,
                    Optional ByVal Uid As String = "",
@@ -24,6 +26,7 @@ Public Class ClsBASLaboro
         MiAdo.Configurar.Pwd = Pwd
 
     End Sub
+
     Public Function GetDatosPersonales(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetDatosPersonales
 
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Personas] Where IdPersona = {0}", IdPersona), "Persona")
@@ -34,6 +37,7 @@ Public Class ClsBASLaboro
         Return Ds
 
     End Function
+
     Public Function GetRecibos(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetRecibos
 
         Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
@@ -41,6 +45,7 @@ Public Class ClsBASLaboro
         Return Ds
 
     End Function
+
     Public Function GetRecibosDetalle(ByVal IdPersona As Integer) As String Implements ItzBASLaboro.GetRecibosDetalle
 
         Dim ListaCD As New List(Of ClsCamposDetalle)
@@ -65,6 +70,7 @@ Public Class ClsBASLaboro
         Return Newtonsoft.Json.JsonConvert.SerializeObject(ListaCD)
 
     End Function
+
     Private Function CampoExcluido(ByVal Campo As String) As Boolean
 
         Dim CamposExcluidos As String = "Clave,IdLiquidacion,IdLegajo,IdPersona"
@@ -74,6 +80,7 @@ Public Class ClsBASLaboro
         Return False
 
     End Function
+
     Public Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetReciboDescarga
 
         Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
@@ -124,6 +131,7 @@ Public Class ClsBASLaboro
         Return DtRta
 
     End Function
+
     Public Function ValidarSolicitudLicencia(ByRef PedidoLic As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
         Try
             Return PedidoLic.Validar
@@ -287,7 +295,7 @@ Public Class ClsBASLaboro
         End If
 
     End Function
-    Public Function GetManagers(ByVal IdPersona As Long) As DataSet Implements ItzBASLaboro.GetManagers
+    Public Function GetManagers(ByVal IdPersona As Long, Optional ByVal CodEmp As Integer = -1) As DataSet Implements ItzBASLaboro.GetManagers
 
         Try
             'Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
@@ -298,7 +306,7 @@ Public Class ClsBASLaboro
                 .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
                 .Add("IncluirManagers", 1, SqlDbType.SmallInt)
                 .Add("IncluirEmpleadosACargo", 0, SqlDbType.SmallInt)
-                '.Add("CodEmp", CodEmp, SqlDbType.SmallInt)
+                If CodEmp <> -1 Then .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
             Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)

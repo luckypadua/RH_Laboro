@@ -1,11 +1,12 @@
 ﻿Imports NETCoreBLB
 Imports System.Globalization
+
 Public Class FrmProbador
 
     'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
     'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "Microsules2", "sa", "sa")
-    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "Microsules2", "sa", "sa")
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "400BLB_Demo_Doc", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "400BLB_Demo_Doc", "sa", "sa")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -137,7 +138,7 @@ Public Class FrmProbador
 
     Private Sub cmdSolicitarVacaciones_Click(sender As Object, e As EventArgs) Handles cmdSolicitarVacaciones.Click
         Dim nPedLic As ClsPedidoLicencia
-        nPedLic = RH.GetNuevoPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
+        nPedLic = RH.GetNuevoPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT MIN(IdLegajo) FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
         'Dim nPedLic As New ClsPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"), MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1"), Now, dtpFecDesde.Text, dtpFecHasta.Text, CInt(txtCantDias.Text), "")
 
         RH.GrabarSolicitudVacaciones(nPedLic)
