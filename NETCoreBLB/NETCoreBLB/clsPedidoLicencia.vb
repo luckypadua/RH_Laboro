@@ -317,7 +317,7 @@ Public Class ClsPedidoLicencia
                 .Add("VacAfectacion", Me.VacAfectacion, SqlDbType.Char)
                 .Add("IdOcurrencia", DBNull.Value, SqlDbType.Int)
                 .Add("Excede", False, SqlDbType.Bit, ParameterDirection.Output)
-                .Add("MensajeFinal", String.Empty, SqlDbType.VarChar, ParameterDirection.Output)
+                .Add("MensajeFinal", String.Empty, SqlDbType.VarChar, ParameterDirection.Output, 1000)
             End With
 
             MiAdo.Ejecutar.Procedimiento("BL_NovedadesTopes", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.NotReturn)

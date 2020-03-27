@@ -1344,13 +1344,15 @@ Public Class Parametros
     Public Function Add(ByVal Nombre As String,
                         ByVal Valor As Object,
                         ByVal Tipo As SqlDbType,
-                        Optional ByVal Direccion As ParameterDirection = ParameterDirection.Input) As clsParametro
+                        Optional ByVal Direccion As ParameterDirection = ParameterDirection.Input,
+                        Optional ByVal Size As Integer = 0) As ClsParametro
 
-        Dim Obj = New clsParametro
+        Dim Obj = New ClsParametro
         Obj.Nombre = Nombre
         Obj.Valor = Valor
         Obj.Tipo = Tipo
         Obj.Direccion = Direccion
+        If Obj.Size <> Size Then Obj.Size = Size
         lstObj.Add(Obj)
         Add = Obj
         Obj = Nothing

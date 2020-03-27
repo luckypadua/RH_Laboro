@@ -5,8 +5,12 @@ Public Class FrmProbador
 
     'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
     'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "400BLB_Demo_Doc", "sa", "sa")
-    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "400BLB_Demo_Doc", "sa", "sa")
+
+    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "400BLB_Demo_Doc", "sa", "sa")
+    'Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "400BLB_Demo_Doc", "sa", "sa")
+
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
