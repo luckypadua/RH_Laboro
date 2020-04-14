@@ -1,6 +1,7 @@
 Imports System.Data
 Imports NETCoreCrypto
 Imports System.Globalization
+Imports BASCoreLogs.Logger
 
 Public Class ClsBASLaboro
 
@@ -25,49 +26,84 @@ Public Class ClsBASLaboro
         MiAdo.Configurar.Uid = Uid
         MiAdo.Configurar.Pwd = Pwd
 
+        Dim Ds As DataSet = ClsLogger.Logueo.DatasetOneRow("SQLConexion", "Server", Server, "Database", Database)
+
+        ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.New ClsBaslaboro", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+
     End Sub
 
     Public Function GetDatosPersonales(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetDatosPersonales
 
-        Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Personas] Where IdPersona = {0}", IdPersona), "Persona")
-        Ds.DataSetName = "DatosPersonales"
-        Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Legajos] Where IdPersona = {0}", IdPersona), "Legajo", Ds)
-        Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Puestos] Where IdPersona = {0}", IdPersona), "Puestos", Ds)
-        Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Familiares] Where IdPersona = {0}", IdPersona), "Familiares", Ds)
-        Return Ds
+        Try
+
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Personas] Where IdPersona = {0}", IdPersona), "Persona")
+            Ds.DataSetName = "DatosPersonales"
+            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Legajos] Where IdPersona = {0}", IdPersona), "Legajo", Ds)
+            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Puestos] Where IdPersona = {0}", IdPersona), "Puestos", Ds)
+            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Familiares] Where IdPersona = {0}", IdPersona), "Familiares", Ds)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetDatosPersonales", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+            Return Ds
+
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetDatosPersonales", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+
+        End Try
 
     End Function
 
     Public Function GetRecibos(ByVal IdPersona As Integer) As DataSet Implements ItzBASLaboro.GetRecibos
 
-        Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
-        Ds.DataSetName = "Recibos"
-        Return Ds
+        Try
+
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
+            Ds.DataSetName = "Recibos"
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibos", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+            Return Ds
+
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibos", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+
+        End Try
 
     End Function
 
     Public Function GetRecibosDetalle(ByVal IdPersona As Integer) As String Implements ItzBASLaboro.GetRecibosDetalle
 
-        Dim ListaCD As New List(Of ClsCamposDetalle)
-        Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(String.Format("Select * from [vAutogestion_RecibosDetalle] Where IdPersona = {0}", IdPersona), "RecibosDetalle")
-        For Each Dr As DataRow In Dt.Rows
-            Dim ListaCampos As New List(Of ClsCampos)
-            For Each Col As DataColumn In Dt.Columns
-                If Not CampoExcluido(Col.ColumnName) Then
-                    'Or Dr(Col.ColumnName) is DBNull.Value
-                    If Dr(Col.ColumnName) Is Nothing Or Dr(Col.ColumnName) Is DBNull.Value Then
-                        ListaCampos.Add(New ClsCampos(Col.ColumnName, String.Empty))
-                    Else
-                        ListaCampos.Add(New ClsCampos(Col.ColumnName, Dr(Col.ColumnName)))
+        Try
+
+            Dim ListaCD As New List(Of ClsCamposDetalle)
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(String.Format("Select * from [vAutogestion_RecibosDetalle] Where IdPersona = {0}", IdPersona), "RecibosDetalle")
+            For Each Dr As DataRow In Dt.Rows
+                Dim ListaCampos As New List(Of ClsCampos)
+                For Each Col As DataColumn In Dt.Columns
+                    If Not CampoExcluido(Col.ColumnName) Then
+                        'Or Dr(Col.ColumnName) is DBNull.Value
+                        If Dr(Col.ColumnName) Is Nothing Or Dr(Col.ColumnName) Is DBNull.Value Then
+                            ListaCampos.Add(New ClsCampos(Col.ColumnName, String.Empty))
+                        Else
+                            ListaCampos.Add(New ClsCampos(Col.ColumnName, Dr(Col.ColumnName)))
+                        End If
+
                     End If
-
-                End If
+                Next
+                Dim CD As New ClsCamposDetalle(Dr("Clave"), ListaCampos)
+                ListaCD.Add(CD)
             Next
-            Dim CD As New ClsCamposDetalle(Dr("Clave"), ListaCampos)
-            ListaCD.Add(CD)
-        Next
 
-        Return Newtonsoft.Json.JsonConvert.SerializeObject(ListaCD)
+            Dim s As String = Newtonsoft.Json.JsonConvert.SerializeObject(ListaCD)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibosDetalle", ClsLogger.TiposDeLog.LogDetalleNormal, s)
+            Return s
+
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibosDetalle", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+
+        End Try
 
     End Function
 
@@ -83,71 +119,107 @@ Public Class ClsBASLaboro
 
     Public Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetReciboDescarga
 
-        Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
-        Dim ArchivoAlias As String = IO.Path.GetFileName(Archivo)
-        Dim Dt As DataTable = GetParametros(Archivo, ArchivoAlias)
-        Dim Ds As New DataSet("GetReciboDescarga")
-        Ds.Merge(Dt)
-        Return Ds
+        Try
+
+            Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+            Dim ArchivoAlias As String = IO.Path.GetFileName(Archivo)
+            Dim Dt As DataTable = GetParametros(Archivo, ArchivoAlias)
+            Dim Ds As New DataSet("GetReciboDescarga")
+            Ds.Merge(Dt)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetReciboDescarga", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+            Return Ds
+
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetReciboDescarga", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+
+        End Try
 
     End Function
 
     Public Function GetBASLaboroVersion() As DataSet Implements ItzBASLaboro.GetBASLaboroVersion
 
-        Return MiAdo.Consultar.GetDataset("select top 1 BASLaboroVersion = isNull(STRVALOR,'')  from BL_PARAMETROS where Parametro = 'version'", "BASLaboroVersion")
+        Try
+
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset("select top 1 BASLaboroVersion = isNull(STRVALOR,'')  from BL_PARAMETROS where Parametro = 'version'", "BASLaboroVersion")
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetBASLaboroVersion", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+            Return Ds
+
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetBASLaboroVersion", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+
+        End Try
 
     End Function
 
     Private Function GetParametros(ByVal Archivo As String, ByVal ArchivoAlias As String) As DataTable
 
-        Dim DtRta As New DataTable("GetReciboDescarga")
-        DtRta.Columns.Add("Servidor")
-        DtRta.Columns.Add("Usuario")
-        DtRta.Columns.Add("Contrasenia")
-        DtRta.Columns.Add("Archivo")
-        DtRta.Columns.Add("ArchivoAlias")
+        Try
 
-        Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT [PARAMETRO],[STRVALOR] FROM [dbo].[BL_PARAMETROS] where Parametro Like 'Autogestion\FTP%'", "Parametros")
-        If Dt.Rows.Count > 0 Then
+            Dim DtRta As New DataTable("GetReciboDescarga")
+            DtRta.Columns.Add("Servidor")
+            DtRta.Columns.Add("Usuario")
+            DtRta.Columns.Add("Contrasenia")
+            DtRta.Columns.Add("Archivo")
+            DtRta.Columns.Add("ArchivoAlias")
 
-            Dim DrRta As DataRow = DtRta.Rows.Add
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT [PARAMETRO],[STRVALOR] FROM [dbo].[BL_PARAMETROS] where Parametro Like 'Autogestion\FTP%'", "Parametros")
+            If Dt.Rows.Count > 0 Then
 
-            For Each Dr As DataRow In Dt.Rows
-                Select Case Dr("Parametro").ToString
-                    Case "Autogestion\FTP_Servidor"
-                        DrRta("Servidor") = ClsCrypto.AES_Encrypt(Dr("STRVALOR").ToString, Semilla)
-                    Case "Autogestion\FTP_Usuario"
-                        DrRta("Usuario") = ClsCrypto.AES_Encrypt(Dr("STRVALOR").ToString, Semilla)
-                    Case "Autogestion\FTP_Contrasenia"
-                        DrRta("Contrasenia") = ClsCrypto.AES_Encrypt(Dr("STRVALOR").ToString, Semilla)
-                End Select
-            Next
+                Dim DrRta As DataRow = DtRta.Rows.Add
 
-            DrRta("Archivo") = Archivo
-            DrRta("ArchivoAlias") = ArchivoAlias
+                For Each Dr As DataRow In Dt.Rows
+                    Select Case Dr("Parametro").ToString
+                        Case "Autogestion\FTP_Servidor"
+                            DrRta("Servidor") = ClsCrypto.AES_Encrypt(Dr("STRVALOR").ToString, Semilla)
+                        Case "Autogestion\FTP_Usuario"
+                            DrRta("Usuario") = ClsCrypto.AES_Encrypt(Dr("STRVALOR").ToString, Semilla)
+                        Case "Autogestion\FTP_Contrasenia"
+                            DrRta("Contrasenia") = ClsCrypto.AES_Encrypt(Dr("STRVALOR").ToString, Semilla)
+                    End Select
+                Next
 
-        End If
+                DrRta("Archivo") = Archivo
+                DrRta("ArchivoAlias") = ArchivoAlias
 
-        Return DtRta
+            End If
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros.", ClsLogger.TiposDeLog.LogDetalleNormal, DtRta.DataSet)
+            Return DtRta
+
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+
+        End Try
 
     End Function
 
-    Public Function ValidarSolicitudLicencia(ByRef PedidoLic As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
+    Public Function ValidarSolicitudLicencia(ByRef PedidoLic As ClsPedidoLicencia) As Boolean Implements ItzBASLaboro.ValidarSolicitudLicencia
         Try
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ValidarSolicitudLicencia.")
             Return PedidoLic.Validar
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:ValidarSolicitudLicencia " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ValidarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
     End Function
+
     Public Function EliminarSolicitudLicencia(ByVal IdPedidoLicencia As Long) As Boolean Implements ItzBASLaboro.EliminarSolicitudLicencia
         Try
             Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
             sLic.Borrar()
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.EliminarSolicitudLicencia.  IdPedidoLicencia = {0}", IdPedidoLicencia))
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EliminarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
     End Function
+
     Public Function AceptarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.AceptarSolicitudLicencia
         Try
             Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
@@ -157,34 +229,39 @@ Public Class ClsBASLaboro
                 .ObservacionesManager = Observaciones
                 .Grabar()
             End With
-
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.AceptarSolicitudLicencia.  IdPedidoLicencia = {0}  IdManager = {1}", IdPedidoLicencia, IdManager))
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.AceptarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
     End Function
+
     Public Function RechazarSolicitudLicencia(ByVal IdPedidoLicencia As Long, ByVal IdManager As Long, ByVal Observaciones As String) As Boolean Implements ItzBASLaboro.RechazarSolicitudLicencia
         Try
             Dim sLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
-
             With sLic
                 .Estado = ClsPedidoLicencia.eEstadoPedidoLic.NoAutorizada
                 .IdAutorizadoPor = IdManager
                 .ObservacionesManager = Observaciones
                 .Grabar()
             End With
-
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.RechazarSolicitudLicencia.  IdPedidoLicencia = {0}  IdManager = {1}", IdPedidoLicencia, IdManager))
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:EliminarSolicitudLicencia " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RechazarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
     End Function
-    Public Function GrabarSolicitudLicencia(ByRef PedidoLicencia As clsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudLicencia
+
+    Public Function GrabarSolicitudLicencia(ByRef PedidoLicencia As ClsPedidoLicencia) As Boolean Implements ItzBASLaboro.GrabarSolicitudLicencia
         Try
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GrabarSolicitudLicencia.   PedidoLicencia = {0}", PedidoLicencia))
             PedidoLicencia.Grabar()
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudLicencia " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GrabarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
     End Function
 
@@ -192,7 +269,7 @@ Public Class ClsBASLaboro
 
         Try
             Dim SucesoVacaciones As Long = MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE HabilitadoAutogestion = 1 AND IsNull(HabilitadoSoloManager,0) = 0 AND EsVacacion = 1")
-
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GrabarSolicitudVacaciones")
             If SucesoVacaciones = 0 Then
                 Throw New Exception("@No existe un Suceso de Vacaciones configurado para Autogestión. No es posible solicitar vacaciones.")
             Else
@@ -200,7 +277,8 @@ Public Class ClsBASLaboro
                 Return GrabarSolicitudLicencia(PedidoLicencia)
             End If
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GrabarSolicitudVacaciones " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GrabarSolicitudVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -208,9 +286,11 @@ Public Class ClsBASLaboro
 
         Try
             Dim DS As DataSet = ObtenerPedidosDeLicencias(IdLegajo, 0)
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GetSolicitudesLicencias   IdLegajo = {0}", IdLegajo), ClsLogger.TiposDeLog.LogDetalleNormal, DS)
             Return DS
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicencias " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudesLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -218,6 +298,7 @@ Public Class ClsBASLaboro
     Private Function ObtenerPedidosDeLicencias(ByVal IdLegajo As Long, ByVal EsVacacion As Byte) As DataSet
         Dim DS As DataSet = MiAdo.Consultar.GetDataset("SELECT np.IdOcurrenciaPedido, np.IdLegajo, l.Legajo, p.Nombre, FecSolicitud, np.IdSuceso, ISNULL(AliasAutogestion,CodSuceso + ' - ' + Descripcion) As TipoLicencia, FecDesde, FecHasta, Cantidad, Estado, np.Observaciones, np.ObservacionesManager, IsNull(np.ObservacionesAdmin, IsNull(n.Observaciones,'')) AS ObservacionesAdmin,  s.EsVacacion, n.LicFecDesde, n.LicFecHasta, Convert(Int,IsNull(nl.SancionDias, nl.DiasGozados)) AS CantidadNovedad FROM BL_NovedadesPedidos np JOIN Bl_Sucesos s ON np.IdSuceso = s.IdSuceso JOIN Bl_Legajos l ON np.IdLegajo = l.IdLegajo JOIN Bl_Personas p ON l.IdPersona = p.IdPersona LEFT JOIN Bl_Novedades n ON np.IdOcurrenciaPedido = n.IdOcurrenciaPedido LEFT JOIN Bl_NovedadesLegajos nl ON n.IdOcurrencia = nl.IdOcurrencia WHERE s.EsVacacion = " & EsVacacion & " AND np.IdLegajo = " & IdLegajo, "BL_NovedadesPedidos")
         DS.DataSetName = "PedidosDeLicencias"
+        ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.ObtenerPedidosDeLicencias  IdLegajo = {0}", IdLegajo), ClsLogger.TiposDeLog.LogDetalleNormal, DS)
         Return DS
     End Function
 
@@ -225,9 +306,11 @@ Public Class ClsBASLaboro
 
         Try
             Dim DS As DataSet = ObtenerPedidosDeLicencias(IdLegajo, 1)
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GetSolicitudVacaciones  IdLegajo = {0}", IdLegajo), ClsLogger.TiposDeLog.LogDetalleNormal, DS)
             Return DS
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudVacaciones " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -256,12 +339,15 @@ Public Class ClsBASLaboro
             End If
 
             DS.DataSetName = "PedidosDeLicencias"
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudesLicenciasManager", ClsLogger.TiposDeLog.LogDetalleNormal, DS)
             Return DS
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsBASLaboro:GetSolicitudesLicenciasManager " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudesLicenciasManager", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
+
     Public Function GetEmpleadosACargo(ByVal IdPersona As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
 
         Try
@@ -276,23 +362,34 @@ Public Class ClsBASLaboro
                 '.Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
-            Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+            Dim Ds As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetEmpleadosACargo", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+            Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetEmpleadosACargo " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetEmpleadosACargo", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
 
     Public Function IsManager(ByVal IdPersona As Long) As Boolean Implements ItzBASLaboro.IsManager
 
-        Dim DS As DataSet = New DataSet
-        IsManager = False
+        Try
 
-        If GetEmpleadosACargo(IdPersona).Tables(0).Rows.Count > 0 Then
-            IsManager = True
-            Exit Function
-        End If
+            IsManager = False
+
+            If GetEmpleadosACargo(IdPersona).Tables(0).Rows.Count > 0 Then
+                ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.IsManager = True  IdPersona = {0}", IdPersona), ClsLogger.TiposDeLog.LogDetalleNormal)
+                IsManager = True
+                Exit Function
+            End If
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.IsManager = False  IdPersona = {0}", IdPersona), ClsLogger.TiposDeLog.LogDetalleNormal)
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.IsManager", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
+        End Try
 
     End Function
     Public Function GetManagers(ByVal IdPersona As Long, Optional ByVal CodEmp As Integer = -1) As DataSet Implements ItzBASLaboro.GetManagers
@@ -309,10 +406,13 @@ Public Class ClsBASLaboro
                 If CodEmp <> -1 Then .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
-            Return MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+            Dim Ds As DataSet = MiAdo.Ejecutar.Procedimiento("SP_GetManagersYEmpleados", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.ReturnDataset)
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GetManagers  IdPersona = {0}", IdPersona), ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+            Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetManagers " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetManagers", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -322,10 +422,12 @@ Public Class ClsBASLaboro
         Try
             Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IdSuceso, ISNULL(AliasAutogestion,CodSuceso + ' - ' + Descripcion) As TipoLicencia, IsNull(HabilitadoSoloManager,0) As HabilitadoSoloManager FROM BL_SUCESOS WHERE HabilitadoAutogestion = 1 AND EsVacacion = 0", "BL_SUCESOS")
             Ds.DataSetName = "TipoLicencias"
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetTipoLicencias " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -341,13 +443,16 @@ Public Class ClsBASLaboro
                                                             JOIN Bl_NovedadesLegajos nl ON n.IdOcurrencia = nl.IdOcurrencia AND nl.IdLegajo = " & IdLegajo & "
                                                             JOIN Bl_Sucesos s ON n.IdSuceso = s.IdSuceso AND s.HabilitadoAutogestion = 1", "HistorialLicencias")
             Ds.DataSetName = "HistorialLicencias"
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetLicencias", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetLicencias " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
+
     Public Sub ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "") Implements ItzBASLaboro.ReciboFirmado
 
         Try
@@ -370,10 +475,10 @@ Public Class ClsBASLaboro
             MiAdo.Ejecutar.Parametros.Add("Firmado_Fecha", DateTime.Now, SqlDbType.DateTime)
             MiAdo.Ejecutar.Insertar("BL_RECIBOS_AUDITORIAWEB")
 
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.ReciboFirmado. IdLegajo = {0}  IdLiquidacion = {1}", IdLegajo, IdLiquidacion))
+
         Catch ex As Exception
-
-            Throw New Exception("NETCoreBLB:ReciboFirmado: " & ex.Message)
-
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ReciboFirmado", ClsLogger.TiposDeLog.LogDeError, ex.Message)
         End Try
 
     End Sub
@@ -382,11 +487,10 @@ Public Class ClsBASLaboro
         Try
 
             MiAdo.Ejecutar.Instruccion(String.Format("Update BL_RECIBOS Set Visualizado = GetDate() Where IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.ReciboVisualizado.  IdLegajo = {0}  IdLiquidacion = {1}", IdLegajo, IdLiquidacion))
 
         Catch ex As Exception
-
-            Throw New Exception("NETCoreBLB:ReciboVisualizado: " & ex.Message)
-
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ReciboVisualizado", ClsLogger.TiposDeLog.LogDeError, ex.Message)
         End Try
 
     End Sub
@@ -396,10 +500,11 @@ Public Class ClsBASLaboro
         Try
             Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT Anio, Case When DiasAcr < DiasAsig Then DiasAsig Else DiasAcr End As DiasAcreditados, DiasGozados FROM BL_LEGAJOSVACS WHERE IdLegajo = " & IdLegajo & " UNION ALL SELECT 0 As Anio, SUM(Case When DiasAcr < DiasAsig Then DiasAsig Else DiasAcr End) As DiasAcreditados, SUM(DiasGozados) FROM BL_LEGAJOSVACS WHERE IdLegajo = " & IdLegajo & "GROUP BY IdLegajo ORDER BY Anio DESC", "BL_LEGAJOSVACS")
             Ds.DataSetName = "GrillaVacaciones"
-
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetVacaciones", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetVacaciones " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -417,9 +522,11 @@ Public Class ClsBASLaboro
                                     WHERE n.IdSuceso = " & SucesoVacaciones & " AND Year(LicFecDesde) >= " & AnioDesde & "
                                     ORDER BY LicFecDesde DESC", "HistorialVacaciones",)
 
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetVacacionesDetalle", ClsLogger.TiposDeLog.LogDetalleNormal, DS)
             Return DS
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetVacacionesDetalle " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetVacacionesDetalle", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -448,10 +555,11 @@ Public Class ClsBASLaboro
             For Each Row As DataRow In DS.Tables(0).Rows
                 MiAdo.Ejecutar.Instruccion("INSERT INTO Bl_AutogestionCambiosPerPendientes (IdCambios, IdPersona, Tipo, FecOcurrencia, Email, HabilitadoAutogestion) VALUES (" & ProxId & "," & Row("IdPersona").ToString & ",'" & Row("Tipo").ToString & "','" & Date.Today.ToString("yyyyMMdd") & "','" & Row("Email").ToString & "'," & Row("Habilitado").ToString & ")")
             Next
-
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetCambiosEnUsuarios", ClsLogger.TiposDeLog.LogDetalleNormal, DS)
             Return DS
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetCambiosEnUsuarios " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetCambiosEnUsuarios", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
         End Try
 
     End Function
@@ -470,8 +578,10 @@ Public Class ClsBASLaboro
             Next
 
             MiAdo.Ejecutar.Borrar("Bl_AutogestionCambiosPerPendientes", " IdCambios = " & IdCambios)
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.OkCambiosUsuarios   IdCambios = {0}", IdCambios))
+
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:OkCambiosUsuarios " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.OkCambiosUsuarios", ClsLogger.TiposDeLog.LogDeError, ex.Message)
         End Try
 
     End Sub
@@ -484,8 +594,9 @@ Public Class ClsBASLaboro
             Else
                 MiAdo.Ejecutar.Borrar("Bl_AutogestionCambiosPerPendientes", "")
             End If
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.BorrarCambiosUsuariosPendientes   IdCambios = {0}", IdCambios))
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:BorrarCambiosUsuariosPendientes " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.BorrarCambiosUsuariosPendientes", ClsLogger.TiposDeLog.LogDeError, ex.Message)
         End Try
 
     End Sub
@@ -493,21 +604,35 @@ Public Class ClsBASLaboro
     Public Function GetSucesoDeVacaciones() As Long Implements ItzBASLaboro.GetSucesoDeVacaciones
 
         Try
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSucesoDeVacaciones")
             Return MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1")
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:GetSucesoDeVacaciones " & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSucesoDeVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
         End Try
 
     End Function
 
     Public Function GetNuevoPedidoLicencia(ByVal IdPedidoLicencia As Long) As ClsPedidoLicencia Implements ItzBASLaboro.GetNuevoPedidoLicencia
-        Dim mNuevoPedidoLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
-        Return mNuevoPedidoLic
+        Try
+            Dim mNuevoPedidoLic As New ClsPedidoLicencia(IdPedidoLicencia, MiAdo)
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GetNuevoPedidoLicencia   IdPedidoLicencia = {0}", IdPedidoLicencia))
+            Return mNuevoPedidoLic
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetNuevoPedidoLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetNuevoPedidoLicencia(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String) As ClsPedidoLicencia Implements ItzBASLaboro.GetNuevoPedidoLicencia
-        Dim mNuevoPedidoLic As New ClsPedidoLicencia(IdLegajo, IdSuceso, FecSolicitud, FecDesde, FecHasta, CantDias, Observaciones, MiAdo)
-        Return mNuevoPedidoLic
+        Try
+
+            Dim mNuevoPedidoLic As New ClsPedidoLicencia(IdLegajo, IdSuceso, FecSolicitud, FecDesde, FecHasta, CantDias, Observaciones, MiAdo)
+            ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GetNuevoPedidoLicencia   IdLegajo = {0}   IdSuceso = {1}   FecDesde = {2}   FecHasta = {3}   CantDias = {4}", IdLegajo, IdSuceso, FecDesde, FecHasta, CantDias))
+            Return mNuevoPedidoLic
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetNuevoPedidoLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return Nothing
+        End Try
     End Function
 
 #Region "IDisposable Support"

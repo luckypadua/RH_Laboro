@@ -116,7 +116,7 @@ Partial Class FrmProbador
         Me.txtIdPersona.Name = "txtIdPersona"
         Me.txtIdPersona.Size = New System.Drawing.Size(100, 20)
         Me.txtIdPersona.TabIndex = 0
-        Me.txtIdPersona.Text = "118324"
+        Me.txtIdPersona.Text = "3230"
         Me.txtIdPersona.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label1
