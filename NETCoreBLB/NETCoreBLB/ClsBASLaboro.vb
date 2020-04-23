@@ -282,6 +282,7 @@ Public Class ClsBASLaboro
         End Try
 
     End Function
+
     Public Function GetSolicitudesLicencias(ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetSolicitudesLicencias
 
         Try

@@ -288,7 +288,8 @@ Public Class ClsPedidoLicencia
             End If
             Return True
         Catch ex As Exception
-            Throw New Exception("NETCoreBLB:clsPedidoLicencia:ValidarSuceso" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.ValidarSuceso", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
     End Function
 
@@ -331,7 +332,8 @@ Public Class ClsPedidoLicencia
             Return True
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopes" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.ValidarTopes", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -358,7 +360,8 @@ Public Class ClsPedidoLicencia
             Return True
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarTopesVacaciones" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.ValidarTopesVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -384,7 +387,8 @@ Public Class ClsPedidoLicencia
             Return True
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:ValidarOtrasLicenciasEnElPeriodo" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.ValidarOtrasLicenciasEnElPeriodo", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -406,7 +410,8 @@ Public Class ClsPedidoLicencia
             Return True
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:ClsPedidoLicencia:ValidarOtrosPedidosEnElPeriodo" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.ValidarOtrosPedidosEnElPeriodo", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -419,7 +424,8 @@ Public Class ClsPedidoLicencia
 
             Return True
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:ClsPedidoLicencia:ValidarLegajoActivo" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.ValidarLegajoActivo", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -487,7 +493,8 @@ Public Class ClsPedidoLicencia
             MiAdo.Ejecutar.Borrar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.Id)
 
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Borrar" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.Borrar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
     End Sub
 
