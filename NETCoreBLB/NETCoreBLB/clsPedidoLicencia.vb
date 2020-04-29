@@ -1,5 +1,6 @@
 ﻿Imports System.Data
-Imports Microsoft.VisualBasic
+Imports NETCoreLOG
+
 Public Class ClsPedidoLicencia
     Public Enum eEstadoPedidoLic
         Pendiente = 0

@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\NETCoreADO\NETCoreADO\NETCoreADO.vbproj" />
     <ProjectReference Include="..\..\NETCoreCrypto\NETCoreCrypto.vbproj" />
+    <ProjectReference Include="..\..\NETCoreLog\NETCoreLog.vbproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 Imports System.Data
 Imports NETCoreCrypto
-Imports System.Globalization
-Imports BASCoreLogs.Logger
+Imports NETCoreLOG
 
 Public Class ClsBASLaboro
 

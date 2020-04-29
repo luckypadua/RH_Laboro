@@ -117,9 +117,9 @@ Public Class Logueo
 
     End Function
 
-    Friend Property Configurar() As ClsLogger.ConfigurarLog
+    Public Property Configurar() As ClsLogger.ConfigurarLog
 
-    Friend Function Loguear(ByVal Descripcion As String) As Boolean
+    Public Function Loguear(ByVal Descripcion As String) As Boolean
 
         Try
 
@@ -134,7 +134,7 @@ Public Class Logueo
 
     End Function
 
-    Friend Function Loguear(ByVal Descripcion As String,
+    Public Function Loguear(ByVal Descripcion As String,
                             ByVal Tipo As ClsLogger.TiposDeLog) As Boolean
 
         Try
@@ -150,7 +150,7 @@ Public Class Logueo
 
     End Function
 
-    Friend Function Loguear(ByVal Descripcion As String,
+    Public Function Loguear(ByVal Descripcion As String,
                             ByVal Tipo As ClsLogger.TiposDeLog,
                             ByVal Ds As DataSet) As Boolean
 
@@ -167,7 +167,7 @@ Public Class Logueo
 
     End Function
 
-    Friend Function Loguear(ByVal Descripcion As String,
+    Public Function Loguear(ByVal Descripcion As String,
                             ByVal Tipo As ClsLogger.TiposDeLog,
                             ByVal Str As String) As Boolean
 
