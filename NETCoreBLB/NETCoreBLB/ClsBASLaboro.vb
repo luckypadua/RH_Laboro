@@ -120,7 +120,7 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+            Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP = IsNull(PDF_RutaFTP,PDF_RutaLOC) FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
             Dim ArchivoAlias As String = IO.Path.GetFileName(Archivo)
             Dim Dt As DataTable = GetParametros(Archivo, ArchivoAlias)
             Dim Ds As New DataSet("GetReciboDescarga")
@@ -164,6 +164,19 @@ Public Class ClsBASLaboro
             DtRta.Columns.Add("Contrasenia")
             DtRta.Columns.Add("Archivo")
             DtRta.Columns.Add("ArchivoAlias")
+
+            If MiAdo.Ejecutar.GetSQLInteger("Select IsNull(INTVALOR,0) FROM [dbo].[BL_PARAMETROS] where Parametro = 'Autogestion\OpcionFTP' And CodEmp is null") = 0 Then
+
+                Dim DrRta As DataRow = DtRta.Rows.Add
+                DrRta("Servidor") = String.Empty
+                DrRta("Usuario") = String.Empty
+                DrRta("Contrasenia") = String.Empty
+                DrRta("Archivo") = Archivo
+                DrRta("ArchivoAlias") = ArchivoAlias
+                ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros.", ClsLogger.TiposDeLog.LogDetalleNormal, DtRta.DataSet)
+                Return DtRta
+
+            End If
 
             Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT [PARAMETRO],[STRVALOR] FROM [dbo].[BL_PARAMETROS] where Parametro Like 'Autogestion\FTP%'", "Parametros")
             If Dt.Rows.Count > 0 Then
