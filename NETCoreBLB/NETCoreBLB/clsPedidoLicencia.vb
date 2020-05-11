@@ -1,5 +1,6 @@
 ﻿Imports System.Data
-Imports Microsoft.VisualBasic
+Imports NETCoreLOG
+
 Public Class ClsPedidoLicencia
     Public Enum eEstadoPedidoLic
         Pendiente = 0
@@ -206,8 +207,10 @@ Public Class ClsPedidoLicencia
             Me.Observaciones = Ds.Tables(0).Rows(0)("Observaciones").ToString
             Me.ObservacionesManager = Ds.Tables(0).Rows(0)("ObservacionesManager").ToString
             Me.Estado = Ds.Tables(0).Rows(0)("Estado")
+
         Catch ex As Exception
-            Throw New Exception("NETCoreBLB:clsPedidoLicencia:New" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.New", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Sub
@@ -276,7 +279,8 @@ Public Class ClsPedidoLicencia
         Try
             Return (Me.ValidarSuceso And Me.ValidarFechasYDias And Me.ValidarTopes And Me.ValidarTopesVacaciones And Me.ValidarOtrasLicenciasEnElPeriodo And Me.ValidarOtrosPedidosEnElPeriodo And Me.ValidarLegajoActivo)
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Validar" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsPedidoLicencia.Validar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -429,6 +433,7 @@ Public Class ClsPedidoLicencia
         End Try
 
     End Function
+
     Public Sub Grabar()
 
         Try
@@ -476,8 +481,10 @@ Public Class ClsPedidoLicencia
                 End If
 
             End If
+
         Catch ex As Exception
-            Throw New ArgumentException("NETCoreBLB:clsPedidoLicencia:Grabar" & ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.clsPedidoLicencia:Grabar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Sub
@@ -493,9 +500,10 @@ Public Class ClsPedidoLicencia
             MiAdo.Ejecutar.Borrar("BL_NovedadesPedidos", "IdOcurrenciaPedido = " & Me.Id)
 
         Catch ex As Exception
-            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.Borrar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            ClsLogger.Logueo.Loguear("NETCoreBLB.clsPedidoLicencia.Borrar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
             Throw ex
         End Try
+
     End Sub
 
 End Class

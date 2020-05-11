@@ -16,6 +16,8 @@ Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "NETCoreCrypto", "..\NETCore
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Probador", "Probador.vbproj", "{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NETCoreLog", "..\NETCoreLog\NETCoreLog.vbproj", "{F2DB6F4B-775A-471F-9E0C-9383B18F9097}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30AFFE82-CF4D-48C9-9A1A-D538D3D47566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DB6F4B-775A-471F-9E0C-9383B18F9097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DB6F4B-775A-471F-9E0C-9383B18F9097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DB6F4B-775A-471F-9E0C-9383B18F9097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DB6F4B-775A-471F-9E0C-9383B18F9097}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

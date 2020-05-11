@@ -1,7 +1,6 @@
 Imports System.Data
 Imports NETCoreCrypto
-Imports System.Globalization
-Imports BASCoreLogs.Logger
+Imports NETCoreLOG
 
 Public Class ClsBASLaboro
 
@@ -47,7 +46,7 @@ Public Class ClsBASLaboro
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetDatosPersonales", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
 
         End Try
 
@@ -65,7 +64,7 @@ Public Class ClsBASLaboro
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibos", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
 
         End Try
 
@@ -101,7 +100,7 @@ Public Class ClsBASLaboro
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibosDetalle", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
 
         End Try
 
@@ -121,7 +120,7 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
+            Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP = IsNull(PDF_RutaFTP,PDF_RutaLOC) FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
             Dim ArchivoAlias As String = IO.Path.GetFileName(Archivo)
             Dim Dt As DataTable = GetParametros(Archivo, ArchivoAlias)
             Dim Ds As New DataSet("GetReciboDescarga")
@@ -132,7 +131,7 @@ Public Class ClsBASLaboro
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetReciboDescarga", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
 
         End Try
 
@@ -149,7 +148,7 @@ Public Class ClsBASLaboro
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetBASLaboroVersion", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
 
         End Try
 
@@ -165,6 +164,19 @@ Public Class ClsBASLaboro
             DtRta.Columns.Add("Contrasenia")
             DtRta.Columns.Add("Archivo")
             DtRta.Columns.Add("ArchivoAlias")
+
+            If MiAdo.Ejecutar.GetSQLInteger("Select IsNull(INTVALOR,0) FROM [dbo].[BL_PARAMETROS] where Parametro = 'Autogestion\OpcionFTP' And CodEmp is null") = 0 Then
+
+                Dim DrRta As DataRow = DtRta.Rows.Add
+                DrRta("Servidor") = String.Empty
+                DrRta("Usuario") = String.Empty
+                DrRta("Contrasenia") = String.Empty
+                DrRta("Archivo") = Archivo
+                DrRta("ArchivoAlias") = ArchivoAlias
+                ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros.", ClsLogger.TiposDeLog.LogDetalleNormal, DtRta.DataSet)
+                Return DtRta
+
+            End If
 
             Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT [PARAMETRO],[STRVALOR] FROM [dbo].[BL_PARAMETROS] where Parametro Like 'Autogestion\FTP%'", "Parametros")
             If Dt.Rows.Count > 0 Then
@@ -192,7 +204,7 @@ Public Class ClsBASLaboro
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
 
         End Try
 
@@ -204,7 +216,7 @@ Public Class ClsBASLaboro
             Return PedidoLic.Validar
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ValidarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return False
+            Throw ex
         End Try
     End Function
 
@@ -216,7 +228,7 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EliminarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return False
+            Throw ex
         End Try
     End Function
 
@@ -233,7 +245,7 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.AceptarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return False
+            Throw ex
         End Try
     End Function
 
@@ -250,7 +262,7 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RechazarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return False
+            Throw ex
         End Try
     End Function
 
@@ -261,7 +273,7 @@ Public Class ClsBASLaboro
             Return True
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GrabarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return False
+            Throw ex
         End Try
     End Function
 
@@ -291,7 +303,7 @@ Public Class ClsBASLaboro
             Return DS
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudesLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -311,7 +323,7 @@ Public Class ClsBASLaboro
             Return DS
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -344,7 +356,7 @@ Public Class ClsBASLaboro
             Return DS
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSolicitudesLicenciasManager", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -369,7 +381,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetEmpleadosACargo", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -389,7 +401,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.IsManager", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return False
+            Throw ex
         End Try
 
     End Function
@@ -413,7 +425,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetManagers", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -428,7 +440,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -449,7 +461,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -480,6 +492,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ReciboFirmado", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Sub
@@ -492,6 +505,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.ReciboVisualizado", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Sub
@@ -505,7 +519,7 @@ Public Class ClsBASLaboro
             Return Ds
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -527,7 +541,7 @@ Public Class ClsBASLaboro
             Return DS
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetVacacionesDetalle", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -560,7 +574,7 @@ Public Class ClsBASLaboro
             Return DS
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetCambiosEnUsuarios", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
 
     End Function
@@ -583,6 +597,7 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.OkCambiosUsuarios", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Sub
@@ -598,6 +613,7 @@ Public Class ClsBASLaboro
             ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.BorrarCambiosUsuariosPendientes   IdCambios = {0}", IdCambios))
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.BorrarCambiosUsuariosPendientes", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Sub
@@ -609,6 +625,7 @@ Public Class ClsBASLaboro
             Return MiAdo.Ejecutar.GetSQLInteger("SELECT IdSuceso FROM Bl_Sucesos WHERE EsVacacion = 1 AND HabilitadoAutogestion = 1")
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetSucesoDeVacaciones", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
         End Try
 
     End Function
@@ -620,7 +637,7 @@ Public Class ClsBASLaboro
             Return mNuevoPedidoLic
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetNuevoPedidoLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
     End Function
 
@@ -632,7 +649,7 @@ Public Class ClsBASLaboro
             Return mNuevoPedidoLic
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetNuevoPedidoLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
-            Return Nothing
+            Throw ex
         End Try
     End Function
 
