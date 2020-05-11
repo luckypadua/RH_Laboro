@@ -108,11 +108,18 @@ Public Class ClsBASLaboro
 
     Private Function CampoExcluido(ByVal Campo As String) As Boolean
 
-        Dim CamposExcluidos As String = "Clave,IdLiquidacion,IdLegajo,IdPersona"
-        For Each C As String In CamposExcluidos.Split(",")
-            If C.ToUpper = Campo.ToUpper Then Return True
-        Next
-        Return False
+        Try
+
+            Dim CamposExcluidos As String = "Clave,IdLiquidacion,IdLegajo,IdPersona"
+            For Each C As String In CamposExcluidos.Split(",")
+                If C.ToUpper = Campo.ToUpper Then Return True
+            Next
+            Return False
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.CampoExcluido", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Throw ex
+        End Try
 
     End Function
 
