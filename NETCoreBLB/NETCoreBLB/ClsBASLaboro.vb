@@ -57,7 +57,7 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] Where IdPersona = {0}", IdPersona), "Recibos")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] WHERE FTPUpload IS NOT NULL AND IdPersona = {0}", IdPersona), "Recibos")
             Ds.DataSetName = "Recibos"
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibos", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
