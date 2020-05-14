@@ -174,10 +174,11 @@ Public Class ClsBASLaboro
 
             If MiAdo.Ejecutar.GetSQLInteger("Select IsNull(INTVALOR,0) FROM [dbo].[BL_PARAMETROS] where Parametro = 'Autogestion\OpcionFTP' And CodEmp is null") = 0 Then
 
+                Dim VacioEncriptado As String = ClsCrypto.AES_Encrypt(String.Empty, Semilla)
                 Dim DrRta As DataRow = DtRta.Rows.Add
-                DrRta("Servidor") = String.Empty
-                DrRta("Usuario") = String.Empty
-                DrRta("Contrasenia") = String.Empty
+                DrRta("Servidor") = VacioEncriptado
+                DrRta("Usuario") = VacioEncriptado
+                DrRta("Contrasenia") = VacioEncriptado
                 DrRta("Archivo") = Archivo
                 DrRta("ArchivoAlias") = ArchivoAlias
                 ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros.", ClsLogger.TiposDeLog.LogDetalleNormal, DtRta.DataSet)
