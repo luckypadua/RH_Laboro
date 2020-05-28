@@ -123,13 +123,26 @@ Public Class ClsBASLaboro
 
     End Function
 
+    Private Function PathFileName4ta(ByVal PathFileName As String) As String
+
+        Return PathFileName.Replace(".pdf", "_4ta.pdf")
+
+    End Function
+
     Public Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet Implements ItzBASLaboro.GetReciboDescarga
 
         Try
 
+            Dim PublicoGanancias As Boolean = MiAdo.Ejecutar.GetSQLInteger(String.Format("SELECT Count(*) FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1} And Not [ArchivoGananciasUpload] is Null", IdLiquidacion, IdLegajo)) > 0
             Dim Archivo As String = MiAdo.Ejecutar.GetSQLString(String.Format("SELECT PDF_RutaFTP = IsNull(PDF_RutaFTP,PDF_RutaLOC) FROM vAutogestion_Recibos WHERE IdLiquidacion = {0} And IdLegajo = {1}", IdLiquidacion, IdLegajo))
             Dim ArchivoAlias As String = IO.Path.GetFileName(Archivo)
-            Dim Dt As DataTable = GetParametros(Archivo, ArchivoAlias)
+            Dim Dt As DataTable
+            If PublicoGanancias Then
+                Dt = GetParametros(Archivo, ArchivoAlias, PathFileName4ta(Archivo), PathFileName4ta(ArchivoAlias))
+            Else
+                Dt = GetParametros(Archivo, ArchivoAlias, String.Empty, String.Empty)
+            End If
+
             Dim Ds As New DataSet("GetReciboDescarga")
             Ds.Merge(Dt)
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetReciboDescarga", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
@@ -161,7 +174,10 @@ Public Class ClsBASLaboro
 
     End Function
 
-    Private Function GetParametros(ByVal Archivo As String, ByVal ArchivoAlias As String) As DataTable
+    Private Function GetParametros(ByVal Archivo As String,
+                                   ByVal ArchivoAlias As String,
+                                   ByVal ArchivoGanancias As String,
+                                   ByVal ArchivoAliasGanancias As String) As DataTable
 
         Try
 
@@ -171,6 +187,9 @@ Public Class ClsBASLaboro
             DtRta.Columns.Add("Contrasenia")
             DtRta.Columns.Add("Archivo")
             DtRta.Columns.Add("ArchivoAlias")
+            DtRta.Columns.Add("ArchivoGanancias")
+            DtRta.Columns.Add("ArchivoAliasGanancias")
+
 
             If MiAdo.Ejecutar.GetSQLInteger("Select IsNull(INTVALOR,0) FROM [dbo].[BL_PARAMETROS] where Parametro = 'Autogestion\OpcionFTP' And CodEmp is null") = 0 Then
 
@@ -181,6 +200,9 @@ Public Class ClsBASLaboro
                 DrRta("Contrasenia") = VacioEncriptado
                 DrRta("Archivo") = Archivo
                 DrRta("ArchivoAlias") = ArchivoAlias
+                DrRta("ArchivoGanancias") = ArchivoGanancias
+                DrRta("ArchivoAliasGanancias") = ArchivoAliasGanancias
+
                 ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros.", ClsLogger.TiposDeLog.LogDetalleNormal, DtRta.DataSet)
                 Return DtRta
 
@@ -204,6 +226,8 @@ Public Class ClsBASLaboro
 
                 DrRta("Archivo") = Archivo
                 DrRta("ArchivoAlias") = ArchivoAlias
+                DrRta("ArchivoGanancias") = ArchivoGanancias
+                DrRta("ArchivoAliasGanancias") = ArchivoAliasGanancias
 
             End If
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetParametros.", ClsLogger.TiposDeLog.LogDetalleNormal, DtRta.DataSet)
