@@ -228,7 +228,7 @@ Partial Class FrmProbador
         Me.txtIdLiquidacion.Name = "txtIdLiquidacion"
         Me.txtIdLiquidacion.Size = New System.Drawing.Size(59, 20)
         Me.txtIdLiquidacion.TabIndex = 28
-        Me.txtIdLiquidacion.Text = "1488"
+        Me.txtIdLiquidacion.Text = "835"
         Me.txtIdLiquidacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'GroupBox2
@@ -277,7 +277,7 @@ Partial Class FrmProbador
         '
         Me.cmbIdLegajo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbIdLegajo.FormattingEnabled = True
-        Me.cmbIdLegajo.Items.AddRange(New Object() {"8286", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
+        Me.cmbIdLegajo.Items.AddRange(New Object() {"3237", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
         Me.cmbIdLegajo.Location = New System.Drawing.Point(88, 258)
         Me.cmbIdLegajo.Name = "cmbIdLegajo"
         Me.cmbIdLegajo.Size = New System.Drawing.Size(59, 21)
