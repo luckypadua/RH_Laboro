@@ -798,7 +798,7 @@ Public Class ClsBASLaboro
 
     End Function
 
-    Private Sub RecibosPublicados()
+    Private Function RecibosPublicados() As Boolean
 
         Try
 
@@ -818,19 +818,22 @@ Public Class ClsBASLaboro
 
                 Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(Dr("EmailPersonal").ToString)
-                Dim Ok As Boolean = EnviarMail("BAS Laboro Autogestión: Recibos Publicados", Destinatarios, Contenido)
+                Call EnviarMail("BAS Laboro Autogestión: Recibos Publicados", Destinatarios, Contenido)
 
             Next
 
             Dt.Dispose()
 
+            Return True
+
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RecibosPublicados", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
 
-    End Sub
+    End Function
 
-    Private Sub RecibosPendientesFirmar()
+    Private Function RecibosPendientesFirmar() As Boolean
 
         Try
 
@@ -850,17 +853,20 @@ Public Class ClsBASLaboro
 
                 Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(Dr("EmailPersonal").ToString)
-                Dim Ok As Boolean = EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, Contenido)
+                Call EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, Contenido)
 
             Next
 
             Dt.Dispose()
 
+            Return True
+
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RecibosPendientesFirmar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
         End Try
 
-    End Sub
+    End Function
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' Para detectar llamadas redundantes
