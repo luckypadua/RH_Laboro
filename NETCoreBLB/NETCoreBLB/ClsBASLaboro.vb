@@ -1,11 +1,13 @@
 Imports System.Data
 Imports NETCoreCrypto
 Imports NETCoreLOG
+Imports NETCoreBLB.Extensiones
 
 Public Class ClsBASLaboro
 
     Implements IDisposable, ItzBASLaboro
 
+    Private WithEvents _TimerUnoPorDia_8Hs As New clsTimerEvent
     Private MiAdo As New NETCoreADO.AdoNet
     Const Semilla As String = "tir4n0sAuri0"
 
@@ -24,10 +26,30 @@ Public Class ClsBASLaboro
         MiAdo.Configurar.Database = Database
         MiAdo.Configurar.Uid = Uid
         MiAdo.Configurar.Pwd = Pwd
-
+        Call HorariosMails()
         Dim Ds As DataSet = ClsLogger.Logueo.DatasetOneRow("SQLConexion", "Server", Server, "Database", Database)
-
         ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.New ClsBaslaboro", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+
+    End Sub
+
+    Private Sub HorariosMails()
+
+        With _TimerUnoPorDia_8Hs
+            .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Lunes)
+            .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Martes)
+            .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Miercoles)
+            .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Jueves)
+            .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Viernes)
+            .HoraMinuto = "08:00"
+            .Iniciar()
+        End With
+
+    End Sub
+
+    Private Sub _TimerUnoPorDia_8Hs_EventoCumplido() Handles _TimerUnoPorDia_8Hs.EventoCumplido
+
+        Call RecibosPendientesFirmar()
+        Call RecibosPublicados()
 
     End Sub
 
@@ -56,7 +78,7 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] WHERE FTPUpload IS NOT NULL AND IdPersona = {0}", IdPersona), "Recibos")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Recibos] WHERE FTPUpload IS NOT NULL AND IdPersona = {0} order by Liquidacion_Mes DESC", IdPersona), "Recibos")
             Ds.DataSetName = "Recibos"
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetRecibos", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
@@ -513,6 +535,8 @@ Public Class ClsBASLaboro
                 IdAccion = 6
             End If
 
+            If Not FirmaConforme Then MailReciboNoConforme(IdLegajo, IdLiquidacion, Observacion)
+
             MiAdo.Ejecutar.Parametros.RemoveAll()
             MiAdo.Ejecutar.Parametros.Add("IdLiquidacion", IdLiquidacion, SqlDbType.Int)
             MiAdo.Ejecutar.Parametros.Add("IdLegajo", IdLegajo, SqlDbType.Int)
@@ -528,6 +552,61 @@ Public Class ClsBASLaboro
         End Try
 
     End Sub
+
+    Private Function MailReciboNoConforme(ByVal IdLegajo As Integer,
+                                          ByVal IdLiquidacion As Integer,
+                                          ByVal Observacion As String) As Boolean
+
+        Try
+
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(
+                                  String.Format(" Select " &
+                                                " Legajo = '(' + L.LegajoCodigo + ') - ' + P.NombreCompleto " &
+                                                " ,Liq = R.Liquidacion_Codigo + ' - ' + RTRIM(Month(R.Liquidacion_Mes)) + '/' + RTRIM(Year(R.Liquidacion_Mes)) " &
+                                                " From vAutogestion_Recibos R " &
+                                                " Join vAutogestion_Legajos L  On L.IdLegajo = R.IdLegajo " &
+                                                " Join vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                                                " Where L.IdLegajo = {0} and R.IdLiquidacion = {1}", IdLegajo, IdLiquidacion), "Legajo")
+
+            Dim Legajo As String = String.Empty
+            Dim Liq As String = String.Empty
+            Dim MailNov As String = GetMailNovedades()
+
+            If Dt.Rows.Count > 0 Then
+                Legajo = Dt.Rows(0).Item("Legajo")
+                Liq = Dt.Rows(0).Item("Liq")
+            End If
+
+            If MailNov.Length > 0 Then
+                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica que el legajo {0} firmó en no conformidad el recibo correspondiente a la liquidación {1}." & Environment.NewLine &
+                                                        "Observación : {2}", Legajo, Liq, Observacion)
+                Dim Destinatarios As New List(Of String)
+                Destinatarios.Add(MailNov)
+                Return EnviarMail("BAS Laboro Autogestión: Recibo firmado no conforme.", Destinatarios, Contenido)
+            End If
+
+            Return False
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.MailReciboNoConforme", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Private Function GetMailNovedades() As String
+
+        Try
+
+            Return MiAdo.Ejecutar.GetSQLString("Select StrValor from BL_PARAMETROS Where PARAMETRO = 'Autogestion\MailNovedades' And CodEmp Is Null")
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetMailNovedades", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return String.Empty
+        End Try
+
+    End Function
+
     Public Sub ReciboVisualizado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) Implements ItzBASLaboro.ReciboVisualizado
 
         Try
@@ -685,6 +764,104 @@ Public Class ClsBASLaboro
         End Try
     End Function
 
+    Public Shared Function EnviarMail(ByVal Asunto As String,
+                                      ByVal Destinatarios As List(Of String),
+                                      ByVal ContenidoHTML As String,
+                                      Optional ByRef Resultado As String = "") As Boolean
+
+        If ContenidoHTML.Length = 0 Then Return False
+
+        Try
+
+            Dim Cfg As New MailCfg
+
+            Cfg.Leer()
+
+            Return ClsMail.Enviar(Asunto,
+                                  ContenidoHTML,
+                                  Destinatarios,
+                                  Nothing,
+                                  Nothing,
+                                  Cfg.Remitente,
+                                  Cfg.RemitenteNombre,
+                                  Cfg.Servidor,
+                                  Cfg.Puerto,
+                                  Cfg.Usuario,
+                                  Cfg.Contrasenia,
+                                  Cfg.HabilitarSSL,
+                                  Resultado)
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EnviarMail", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Private Sub RecibosPublicados()
+
+        Try
+
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(" Select Distinct R.LegajoCodigo," &
+                                                               "                 P.NombreCompleto," &
+                                                               "                 P.EmailPersonal" &
+                                                               " From  vAutogestion_Recibos  R" &
+                                                               " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
+                                                               " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                                                               " Where Not R.FTPUpLoad is null and R.Firmado = 0 And DATEDIFF(Hour,R.FTPUpLoad, Getdate()) < 24", "Publicados")
+
+            For Each Dr As DataRow In Dt.Rows
+
+                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos publicados.",
+                                                         Dr("LegajoCodigo"),
+                                                         Dr("NombreCompleto"))
+
+                Dim Destinatarios As New List(Of String)
+                Destinatarios.Add(Dr("EmailPersonal").ToString)
+                Dim Ok As Boolean = EnviarMail("BAS Laboro Autogestión: Recibos Publicados", Destinatarios, Contenido)
+
+            Next
+
+            Dt.Dispose()
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RecibosPublicados", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub RecibosPendientesFirmar()
+
+        Try
+
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(" Select Distinct R.LegajoCodigo," &
+                                                               "                 P.NombreCompleto," &
+                                                               "                 P.EmailPersonal" &
+                                                               " From  vAutogestion_Recibos  R" &
+                                                               " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
+                                                               " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                                                               " Where Not R.FTPUpLoad is null and R.Firmado = 0 And DATEDIFF(day,R.FTPUpLoad, Getdate()) > 15", "Pendientes")
+
+            For Each Dr As DataRow In Dt.Rows
+
+                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos pendientes de firmar.",
+                                                         Dr("LegajoCodigo"),
+                                                         Dr("NombreCompleto"))
+
+                Dim Destinatarios As New List(Of String)
+                Destinatarios.Add(Dr("EmailPersonal").ToString)
+                Dim Ok As Boolean = EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, Contenido)
+
+            Next
+
+            Dt.Dispose()
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RecibosPendientesFirmar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+        End Try
+
+    End Sub
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' Para detectar llamadas redundantes
 
@@ -756,5 +933,55 @@ Public Class ClsCampos
 
     Public Property Nombre As String
     Public Property Valor As String
+
+End Class
+
+Public Class MailCfg
+
+    Const FileName As String = "MailCfg.xml"
+
+    Public Sub New()
+
+
+    End Sub
+
+    Public Sub Leer()
+
+        Try
+
+            If IO.File.Exists(FileName) Then
+
+                Dim s As String = IO.File.ReadAllText(FileName)
+                Dim Cfg As MailCfg = s.Deserializar(Me.GetType)
+                RemitenteNombre = Cfg.RemitenteNombre
+                Remitente = Cfg.Remitente
+                Servidor = Cfg.Servidor
+                Puerto = Cfg.Puerto
+                Usuario = Cfg.Usuario
+                Contrasenia = Cfg.Contrasenia
+                HabilitarSSL = Cfg.HabilitarSSL
+                Cfg = Nothing
+
+            End If
+
+        Catch ex As Exception
+            'Nada
+        End Try
+
+    End Sub
+
+    Public Sub Grabar()
+
+        IO.File.WriteAllText(FileName, Me.Serializar)
+
+    End Sub
+
+    Public Property RemitenteNombre As String = "BASLaboroAlerta"
+    Public Property Remitente As String = "alertasbas@bas.com.ar"
+    Public Property Servidor As String = "mail.bas.com.ar"
+    Public Property Puerto As Integer = 25
+    Public Property Usuario As String = "alertasbas"
+    Public Property Contrasenia As String = "nuncacaduca"
+    Public Property HabilitarSSL As Boolean = True
 
 End Class

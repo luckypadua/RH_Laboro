@@ -189,4 +189,11 @@ Public Class FrmProbador
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
 
+    Private Sub btnMail_Click(sender As Object, e As EventArgs) Handles btnMail.Click
+        Dim Destinatarios As New List(Of String)
+        Destinatarios.Add("aescudero@bas.com.ar")
+        Destinatarios.Add("luchogesell@gmail.com")
+        Dim Ok As Boolean = ClsBASLaboro.EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, "HOLA")
+    End Sub
+
 End Class
