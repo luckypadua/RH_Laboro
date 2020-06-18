@@ -72,6 +72,7 @@ Partial Class FrmProbador
         Me.cmdBorrarCambios = New System.Windows.Forms.Button()
         Me.cmdIsManager = New System.Windows.Forms.Button()
         Me.BtnBASLaboroVersion = New System.Windows.Forms.Button()
+        Me.btnMail = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -228,7 +229,7 @@ Partial Class FrmProbador
         Me.txtIdLiquidacion.Name = "txtIdLiquidacion"
         Me.txtIdLiquidacion.Size = New System.Drawing.Size(59, 20)
         Me.txtIdLiquidacion.TabIndex = 28
-        Me.txtIdLiquidacion.Text = "1488"
+        Me.txtIdLiquidacion.Text = "835"
         Me.txtIdLiquidacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'GroupBox2
@@ -277,7 +278,7 @@ Partial Class FrmProbador
         '
         Me.cmbIdLegajo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbIdLegajo.FormattingEnabled = True
-        Me.cmbIdLegajo.Items.AddRange(New Object() {"8286", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
+        Me.cmbIdLegajo.Items.AddRange(New Object() {"3237", "7726", "7746", "7751", "53034", "76225", "79377", "116080", "117691", "113838", "115682"})
         Me.cmbIdLegajo.Location = New System.Drawing.Point(88, 258)
         Me.cmbIdLegajo.Name = "cmbIdLegajo"
         Me.cmbIdLegajo.Size = New System.Drawing.Size(59, 21)
@@ -589,11 +590,22 @@ Partial Class FrmProbador
         Me.BtnBASLaboroVersion.Text = "BASLaboro Version"
         Me.BtnBASLaboroVersion.UseVisualStyleBackColor = True
         '
+        'btnMail
+        '
+        Me.btnMail.ForeColor = System.Drawing.Color.Red
+        Me.btnMail.Location = New System.Drawing.Point(170, 553)
+        Me.btnMail.Name = "btnMail"
+        Me.btnMail.Size = New System.Drawing.Size(118, 34)
+        Me.btnMail.TabIndex = 50
+        Me.btnMail.Text = "Envío de Mail"
+        Me.btnMail.UseVisualStyleBackColor = True
+        '
         'FrmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.btnMail)
         Me.Controls.Add(Me.BtnBASLaboroVersion)
         Me.Controls.Add(Me.cmdIsManager)
         Me.Controls.Add(Me.cmdBorrarCambios)
@@ -682,4 +694,5 @@ Partial Class FrmProbador
     Friend WithEvents cmdBorrarCambios As Button
     Friend WithEvents cmdIsManager As Button
     Friend WithEvents BtnBASLaboroVersion As Button
+    Friend WithEvents btnMail As Button
 End Class

@@ -68,6 +68,18 @@ Public Class ClsLogger
 
     End Function
 
+    Public Shared Function GetBaseFolder() As String
+
+        Return "C:\Users\Public"
+
+    End Function
+
+    Public Shared Function GetBaseFolderRegisry()
+
+        Return IO.Path.Combine(ClsLogger.GetBaseFolder, Logueo.Configurar.RootFolder)
+
+    End Function
+
 End Class
 
 Public Class Logueo
@@ -385,29 +397,11 @@ Public Class Logueo
 
     End Function
 
-    Public Shared Function GetBaseFolder() As String
-
-        Try
-
-            Return "C:\Users\Public"
-
-        Catch ex As Exception
-            Throw New Exception("Error en GetBaseFolder : " & ex.Message)
-        End Try
-
-    End Function
-
-    Public Function GetBASCoreFolder()
-
-        Return IO.Path.Combine(Logueo.GetBaseFolder, Configurar.RootFolder)
-
-    End Function
-
     Public Function GetLogFolder() As String
 
         Try
 
-            Dim folderROOT As String = GetBASCoreFolder()
+            Dim folderROOT As String = ClsLogger.GetBaseFolderRegisry()
             If Not System.IO.Directory.Exists(folderROOT) Then Call System.IO.Directory.CreateDirectory(folderROOT)
             Dim folderLOG As String = System.IO.Path.Combine(folderROOT, "LOG")
             If Not System.IO.Directory.Exists(folderLOG) Then Call System.IO.Directory.CreateDirectory(folderLOG)

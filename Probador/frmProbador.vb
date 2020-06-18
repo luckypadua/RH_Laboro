@@ -6,11 +6,11 @@ Public Class FrmProbador
     'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
     'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql08r2", "400_Microsules", "sa", "admin1*")
 
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
-    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
+    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
+    'Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
 
-    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql17", "Microsules_400", "sa", "admin1*")
-    'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql17", "Microsules_400", "sa", "admin1*")
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql17", "Microsules_400", "sa", "admin1*")
+    Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql17", "Microsules_400", "sa", "admin1*")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -187,6 +187,13 @@ Public Class FrmProbador
     Private Sub BtnBASLaboroVersion_Click(sender As Object, e As EventArgs) Handles BtnBASLaboroVersion.Click
         Dim Ds As DataSet = RH.GetBASLaboroVersion
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
+    End Sub
+
+    Private Sub btnMail_Click(sender As Object, e As EventArgs) Handles btnMail.Click
+        Dim Destinatarios As New List(Of String)
+        Destinatarios.Add("aescudero@bas.com.ar")
+        Destinatarios.Add("luchogesell@gmail.com")
+        Dim Ok As Boolean = ClsBASLaboro.EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, "HOLA")
     End Sub
 
 End Class
