@@ -295,6 +295,9 @@ Public Class ClsBASLaboro
                 .ObservacionesManager = Observaciones
                 .Grabar()
             End With
+
+            MailSolicitudRespondida(sLic)
+
             ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.AceptarSolicitudLicencia.  IdPedidoLicencia = {0}  IdManager = {1}", IdPedidoLicencia, IdManager))
             Return True
         Catch ex As Exception
@@ -312,6 +315,9 @@ Public Class ClsBASLaboro
                 .ObservacionesManager = Observaciones
                 .Grabar()
             End With
+
+            MailSolicitudRespondida(sLic)
+
             ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.RechazarSolicitudLicencia.  IdPedidoLicencia = {0}  IdManager = {1}", IdPedidoLicencia, IdManager))
             Return True
         Catch ex As Exception
@@ -324,6 +330,7 @@ Public Class ClsBASLaboro
         Try
             ClsLogger.Logueo.Loguear(String.Format("NETCoreBLB.ClsBASLaboro.GrabarSolicitudLicencia.   PedidoLicencia = {0}", PedidoLicencia))
             PedidoLicencia.Grabar()
+            MailNuevaSolicitudLicencia(PedidoLicencia)
             Return True
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GrabarSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
@@ -863,6 +870,86 @@ Public Class ClsBASLaboro
 
         Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.RecibosPendientesFirmar", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Private Function MailNuevaSolicitudLicencia(ByRef pedidoLic As ClsPedidoLicencia) As Boolean
+
+        Try
+
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT DISTINCT l.Legajo," &
+                                                               "                p.NombreCompleto," &
+                                                               "                p.IdPersona," &
+                                                               "                l.CodEmp," &
+                                                               "FROM Bl_Legajos l" &
+                                                               "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                               "WHERE IdLegajo = " & pedidoLic.IdLegajo, "DatosLegajo")
+            Dim Dr As DataRow = Dt.Rows(0)
+
+            Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica que el empleado ({0}) - {1} ha solicitado una licencia." & vbCrLf &
+                                                    "Datos de la Licencia:" & vbCrLf &
+                                                    "Tipo:" & pedidoLic.TipoLic & vbCrLf &
+                                                    "Fecha Desde:" & pedidoLic.FechaDesde & vbCrLf &
+                                                    "Fecha Hasta:" & pedidoLic.FechaHasta & vbCrLf &
+                                                    "Días:" & pedidoLic.CantidadDias & vbCrLf &
+                                                    "Observaciones:" & pedidoLic.Observaciones,
+                                                    Dr("Legajo"),
+                                                    Dr("NombreCompleto"))
+
+            Dim DSManager As DataTable = GetManagers(Dr("IdPersona"), Dr("CodEmp")).Tables(0)
+            Dim Destinatarios As New List(Of String)
+
+            For Each Drm As DataRow In DSManager.Rows
+                Destinatarios.Add(MiAdo.Ejecutar.GetSQLString("SELECT EmailPersonal FROM Bl_Personas WHERE IdPersona = " & Drm("IdPersona")))
+            Next
+
+            Call EnviarMail("BAS Laboro Autogestión: Nueva Solicitud de Licencia", Destinatarios, Contenido)
+
+            Dt.Dispose()
+            DSManager.Dispose()
+
+            Return True
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.MailNuevaSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Private Function MailSolicitudRespondida(ByRef pedidoLic As ClsPedidoLicencia) As Boolean
+
+        Try
+
+            Dim MailDestinatario As String = MiAdo.Ejecutar.GetSQLString("SELECT DISTINCT p.EmailPersonal," &
+                                                                         "FROM Bl_Legajos l" &
+                                                                         "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                         "WHERE IdLegajo = " & pedidoLic.IdLegajo)
+
+            'Dim NombreManager As String = MiAdo.Ejecutar.GetSQLString("SELECT DISTINCT p.NombreCompleto," &
+            '                                                             "FROM Bl_Legajos l" &
+            '                                                             "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+            '                                                             "WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
+
+            Dim Contenido As String = "BAS Laboro autogestión le comunica que la licencia solicitada ha sido " & vbCrLf & pedidoLic.Estado.ToString &
+                                      "Datos de la Licencia:" & vbCrLf &
+                                      "Fecha de Solicitud:" & pedidoLic.FechaDeSolicitud & vbCrLf &
+                                      "Tipo:" & pedidoLic.TipoLic & vbCrLf &
+                                      "Fecha Desde:" & pedidoLic.FechaDesde & vbCrLf &
+                                      "Fecha Hasta:" & pedidoLic.FechaHasta & vbCrLf &
+                                      "Días:" & pedidoLic.CantidadDias & vbCrLf &
+                                      "Observaciones:" & pedidoLic.ObservacionesManager
+
+            Dim Destinatarios As New List(Of String)
+            Destinatarios.Add(MailDestinatario)
+            Call EnviarMail("BAS Laboro Autogestión: Solicitud de Licencia " & pedidoLic.Estado, Destinatarios, Contenido)
+
+            Return True
+
+        Catch ex As Exception
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.MailNuevaSolicitudLicencia", ClsLogger.TiposDeLog.LogDeError, ex.Message)
             Return False
         End Try
 
