@@ -104,7 +104,7 @@ Public Class FrmProbador
         '                                     cmbTipoLicencia.SelectedItem.ToString.Split("-")(0).Trim)
 
         Dim nPedLic As ClsPedidoLicencia
-        nPedLic = RH.GetNuevoPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 2"),
+        nPedLic = RH.GetNuevoPedidoLicencia(MiAdo.Ejecutar.GetSQLInteger("SELECT IdLegajo FROM Bl_Legajos WHERE IdPersona = " & Me.txtIdPersona.Text & " AND CodEmp = 1"),
                                              DTRow("IdSuceso"),
                                              Now,
                                              dtpFecDesde.Text,
@@ -124,7 +124,7 @@ Public Class FrmProbador
     End Sub
 
     Private Sub cmdAceptarLicencia_Click(sender As Object, e As EventArgs) Handles cmdAceptarLicencia.Click
-        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text, 7726, "")
+        RH.AceptarSolicitudLicencia(txtIdSolicitudLicencia.Text, 3237, "")
     End Sub
 
     Private Sub cmdRechazarLicencia_Click(sender As Object, e As EventArgs) Handles cmdRechazarLicencia.Click

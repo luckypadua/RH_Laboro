@@ -89,6 +89,9 @@ Public Class ClsPedidoLicencia
     Private vTipoLic As String = ""
     Public Property TipoLic() As String
         Get
+            If vTipoLic.Length = 0 Then
+                vTipoLic = MiAdo.Ejecutar.GetSQLString("SELECT AliasAutogestion FROM Bl_Sucesos WHERE IdSuceso = " & Me.IdSuceso)
+            End If
             Return vTipoLic
         End Get
         Set(ByVal value As String)

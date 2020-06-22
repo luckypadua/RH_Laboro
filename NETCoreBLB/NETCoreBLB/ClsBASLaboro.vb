@@ -882,27 +882,26 @@ Public Class ClsBASLaboro
             Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT DISTINCT l.Legajo," &
                                                                "                p.NombreCompleto," &
                                                                "                p.IdPersona," &
-                                                               "                l.CodEmp," &
-                                                               "FROM Bl_Legajos l" &
+                                                               "                l.CodEmp " &
+                                                               "FROM Bl_Legajos l " &
                                                                "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
                                                                "WHERE IdLegajo = " & pedidoLic.IdLegajo, "DatosLegajo")
             Dim Dr As DataRow = Dt.Rows(0)
 
-            Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica que el empleado ({0}) - {1} ha solicitado una licencia." & vbCrLf &
-                                                    "Datos de la Licencia:" & vbCrLf &
-                                                    "Tipo:" & pedidoLic.TipoLic & vbCrLf &
-                                                    "Fecha Desde:" & pedidoLic.FechaDesde & vbCrLf &
-                                                    "Fecha Hasta:" & pedidoLic.FechaHasta & vbCrLf &
-                                                    "Días:" & pedidoLic.CantidadDias & vbCrLf &
-                                                    "Observaciones:" & pedidoLic.Observaciones,
-                                                    Dr("Legajo"),
-                                                    Dr("NombreCompleto"))
+            Dim Contenido As String = "BAS Laboro autogestión le comunica que el empleado " & Dr("Legajo").ToString & " - " & Dr("NombreCompleto").ToString & " ha solicitado una licencia.<br>" &
+                                      "Datos de la Licencia:<br>" &
+                                      "Tipo: " & pedidoLic.TipoLic.ToString & ChrW(13) & "<br>" &
+                                      " Fecha Desde: " & pedidoLic.FechaDesde.ToString("dd/MM/yyyy") & "<br>" &
+                                      " Fecha Hasta: " & pedidoLic.FechaHasta.ToString("dd/MM/yyyy") & "<br>" &
+                                      " Días: " & pedidoLic.CantidadDias.ToString & "<br>" &
+                                      " Observaciones: " & pedidoLic.Observaciones.ToString
 
             Dim DSManager As DataTable = GetManagers(Dr("IdPersona"), Dr("CodEmp")).Tables(0)
             Dim Destinatarios As New List(Of String)
 
             For Each Drm As DataRow In DSManager.Rows
-                Destinatarios.Add(MiAdo.Ejecutar.GetSQLString("SELECT EmailPersonal FROM Bl_Personas WHERE IdPersona = " & Drm("IdPersona")))
+                '    Destinatarios.Add(MiAdo.Ejecutar.GetSQLString("SELECT EmailPersonal FROM Bl_Personas WHERE IdPersona = " & Drm("IdPersona")))
+                Destinatarios.Add(MiAdo.Ejecutar.GetSQLString("SELECT EmailPersonal FROM Bl_Personas WHERE IdPersona = " & Drm("IdPersona").ToString))
             Next
 
             Call EnviarMail("BAS Laboro Autogestión: Nueva Solicitud de Licencia", Destinatarios, Contenido)
@@ -923,8 +922,8 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim MailDestinatario As String = MiAdo.Ejecutar.GetSQLString("SELECT DISTINCT p.EmailPersonal," &
-                                                                         "FROM Bl_Legajos l" &
+            Dim MailDestinatario As String = MiAdo.Ejecutar.GetSQLString("SELECT DISTINCT p.EmailPersonal " &
+                                                                         "FROM Bl_Legajos l " &
                                                                          "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
                                                                          "WHERE IdLegajo = " & pedidoLic.IdLegajo)
 
@@ -933,18 +932,18 @@ Public Class ClsBASLaboro
             '                                                             "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
             '                                                             "WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
 
-            Dim Contenido As String = "BAS Laboro autogestión le comunica que la licencia solicitada ha sido " & vbCrLf & pedidoLic.Estado.ToString &
-                                      "Datos de la Licencia:" & vbCrLf &
-                                      "Fecha de Solicitud:" & pedidoLic.FechaDeSolicitud & vbCrLf &
-                                      "Tipo:" & pedidoLic.TipoLic & vbCrLf &
-                                      "Fecha Desde:" & pedidoLic.FechaDesde & vbCrLf &
-                                      "Fecha Hasta:" & pedidoLic.FechaHasta & vbCrLf &
-                                      "Días:" & pedidoLic.CantidadDias & vbCrLf &
-                                      "Observaciones:" & pedidoLic.ObservacionesManager
+            Dim Contenido As String = "BAS Laboro autogestión le comunica que la licencia solicitada ha sido: " & vbCrLf & pedidoLic.Estado.ToString & vbCrLf & "<br>" &
+                                      "Datos de la Licencia:<br>" & vbCrLf &
+                                      "Fecha de Solicitud: " & pedidoLic.FechaDeSolicitud.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
+                                      "Tipo :" & pedidoLic.TipoLic & vbCrLf & "<br>" &
+                                      "Fecha Desde :" & pedidoLic.FechaDesde.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
+                                      "Fecha Hasta :" & pedidoLic.FechaHasta.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
+                                      "Días: " & pedidoLic.CantidadDias & vbCrLf & "<br>" &
+                                      "Observaciones: " & pedidoLic.ObservacionesManager
 
             Dim Destinatarios As New List(Of String)
             Destinatarios.Add(MailDestinatario)
-            Call EnviarMail("BAS Laboro Autogestión: Solicitud de Licencia " & pedidoLic.Estado, Destinatarios, Contenido)
+            Call EnviarMail("BAS Laboro Autogestión: Solicitud de Licencia " & pedidoLic.Estado.ToString, Destinatarios, Contenido)
 
             Return True
 
