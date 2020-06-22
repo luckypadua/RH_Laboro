@@ -585,7 +585,7 @@ Public Class ClsBASLaboro
             End If
 
             If MailNov.Length > 0 Then
-                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica que el legajo {0} firmó en no conformidad el recibo correspondiente a la liquidación {1}." & Environment.NewLine &
+                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica que el legajo {0} firmó en no conformidad el recibo correspondiente a la liquidación {1}.<br>" & Environment.NewLine &
                                                         "Observación : {2}", Legajo, Liq, Observacion)
                 Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(MailNov)
