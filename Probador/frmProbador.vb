@@ -9,8 +9,14 @@ Public Class FrmProbador
     'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
     'Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2014", "BASLaboro_Documentacion", "sa", "sa")
 
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql17", "Microsules_400", "sa", "admin1*")
-    Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql17", "Microsules_400", "sa", "admin1*")
+    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql17", "test400_microsules", "sa", "admin1*")
+    'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql17", "test400_microsules", "sa", "admin1*")
+
+    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql17", "test400_microsules", "sa", "admin1*")
+    'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql17", "test400_microsules", "sa", "admin1*")
+
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2019", "CEBAC400", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2019", "CEBAC400", "sa", "sa")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -18,6 +24,11 @@ Public Class FrmProbador
     End Sub
 
     Private Sub BtnRecibos_Click(sender As Object, e As EventArgs) Handles BtnRecibos.Click
+
+        'Dim Ds1 As DataSet = RH.GetReciboDescarga(1203, 3865)
+        'Me.WebBrowserInput.DocumentStream = GetStream(Ds1.GetXml)
+        'Dim Ds As DataSet = RH.GetRecibos(3830)
+
         Dim Ds As DataSet = RH.GetRecibos(txtIdPersona.Text)
         Me.WebBrowserInput.DocumentStream = GetStream(Ds.GetXml)
     End Sub
