@@ -25,10 +25,4 @@
     <ProjectReference Include="..\..\NETCoreLog\NETCoreLog.vbproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="EASendMail45">
-      <HintPath>..\..\..\BIN\DEBUG\netstandard2.0\EASendMail45.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
