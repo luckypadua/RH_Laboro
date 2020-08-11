@@ -29,7 +29,7 @@ Public Class ClsMail
         Try
 
             ClsLogger.Logueo.Loguear("*****************************************************")
-            ClsLogger.Logueo.Loguear("Entró en enviar")
+            ClsLogger.Logueo.Loguear("Entró en enviar mail")
             ClsLogger.Logueo.Loguear("*****************************************************")
             ClsLogger.Logueo.Loguear("Asunto: " & Asunto)
             ClsLogger.Logueo.Loguear("Mensaje de alerta", ClsLogger.TiposDeLog.LogDeAlerta, "<Mensaje>" & Mensaje & "</Mensaje>")
@@ -79,7 +79,7 @@ Public Class ClsMail
                 Next
             End If
 
-            Email.Subject = Asunto
+            Email.Subject = "(*) " & Asunto
             Email.SubjectEncoding = System.Text.Encoding.UTF8
             Email.Body = Mensaje
             Email.BodyEncoding = System.Text.Encoding.UTF8
@@ -93,6 +93,10 @@ Public Class ClsMail
 
             Resultado = "El email fue enviado."
             ClsLogger.Logueo.Loguear("Resultado: " & Resultado)
+            ClsLogger.Logueo.Loguear("*****************************************************")
+            ClsLogger.Logueo.Loguear("Salió de enviar mail")
+            ClsLogger.Logueo.Loguear("*****************************************************")
+
             Return True
 
         Catch ex As Exception
