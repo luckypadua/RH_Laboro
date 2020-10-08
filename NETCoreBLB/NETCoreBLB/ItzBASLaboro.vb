@@ -31,6 +31,10 @@ Public Interface ItzBASLaboro
     Function GetNuevoPedidoLicencia(ByVal IdPedidoLicencia As Long) As ClsPedidoLicencia
     Function GetNuevoPedidoLicencia(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String) As ClsPedidoLicencia
     Function GetBASLaboroVersion() As DataSet
+
+    'Function EnviarMailConFormato(ByVal Destinatarios As List(Of String),
+    '                              Optional ByRef Resultado As String = "") As Boolean
+
     Sub Dispose()
 
 End Interface

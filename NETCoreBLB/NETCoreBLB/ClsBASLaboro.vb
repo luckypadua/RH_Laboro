@@ -9,7 +9,8 @@ Public Class ClsBASLaboro
 
     Private WithEvents _TimerUnoPorDia_8Hs As New clsTimerEvent
     Private MiAdo As New NETCoreADO.AdoNet
-    Const Semilla As String = "tir4n0sAuri0"
+    Public Const Semilla As String = "tir4n0sAuri0"
+    Private Fmt As ClsFormatoHtml
 
     Public ReadOnly Property Conexion() As NETCoreADO.AdoNet
         Get
@@ -29,6 +30,15 @@ Public Class ClsBASLaboro
         Call HorariosMails()
         Dim Ds As DataSet = ClsLogger.Logueo.DatasetOneRow("SQLConexion", "Server", Server, "Database", Database)
         ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.New ClsBaslaboro", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
+
+        Dim Cfg As New MailCfg
+        Cfg.Leer()
+        Fmt = New ClsFormatoHtml(Cfg.SufijoURL)
+        Cfg = Nothing
+
+        If Not ClsFormatoHtml.ExisteCarpetaFormatos Then
+            ClsLogger.Logueo.Loguear($"NETCoreBLB.ClsBASLaboro.New ATENCION: No existe la carpeta de formatos {ClsFormatoHtml.CarpetaFormatos}")
+        End If
 
     End Sub
 
@@ -822,12 +832,52 @@ Public Class ClsBASLaboro
         End Try
     End Function
 
+    'Public Function EnviarMailConFormato(ByVal Destinatarios As List(Of String),
+    '                                     Optional ByRef Resultado As String = "") As Boolean Implements ItzBASLaboro.EnviarMailConFormato
+
+    '    Try
+
+    '        Dim ContenidoHTML As String
+    '        Dim Asunto As String
+
+    '        Asunto = "Solicitud de licencia"
+    '        ContenidoHTML = Fmt.Fmt_Autorizacion_Licencia("Ricardo Mario", "Luciano Escudero", "Lic. por examen", "10/10/2020", "20/10/2020", "10", "tengo que zafar")
+    '        If Not EnviarMail(Asunto, Destinatarios, ContenidoHTML, Resultado) Then Return False
+
+    '        Asunto = "Aprobación de licencia"
+    '        ContenidoHTML = Fmt.Fmt_Aprobacion_Licencia("Luciano Escudero", "Aprobada", "05/10/2020", "Lic. por examen", "10/10/2020", "20/10/2020", "10", "No tengo problemas")
+    '        If Not EnviarMail(Asunto, Destinatarios, ContenidoHTML, Resultado) Then Return False
+
+    '        Asunto = "Recibos pendientes"
+    '        ContenidoHTML = Fmt.Fmt_Recibos_Pendientes("Luciano Escudero")
+    '        If Not EnviarMail(Asunto, Destinatarios, ContenidoHTML, Resultado) Then Return False
+
+    '        Asunto = "Recibos publicados"
+    '        ContenidoHTML = Fmt.Fmt_Recibos_Publicados("Luciano Escudero")
+    '        If Not EnviarMail(Asunto, Destinatarios, ContenidoHTML, Resultado) Then Return False
+
+    '        Return True
+
+    '    Catch ex As Exception
+
+    '        ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EnviarMailConFormato", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+    '        Return False
+
+    '    End Try
+
+    'End Function
+
     Public Shared Function EnviarMail(ByVal Asunto As String,
                                       ByVal Destinatarios As List(Of String),
                                       ByVal ContenidoHTML As String,
                                       Optional ByRef Resultado As String = "") As Boolean
 
         If ContenidoHTML.Length = 0 Then Return False
+
+        If Not ClsFormatoHtml.ExisteCarpetaFormatos Then
+            ClsLogger.Logueo.Loguear($"NETCoreBLB.ClsBASLaboro.EnviarMail  ATENCION: No existe la carpeta de formatos {ClsFormatoHtml.CarpetaFormatos}")
+            Return False
+        End If
 
         Try
 
@@ -870,9 +920,11 @@ Public Class ClsBASLaboro
 
             For Each Dr As DataRow In Dt.Rows
 
-                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos publicados.",
-                                                         Dr("LegajoCodigo"),
-                                                         Dr("NombreCompleto"))
+                'Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos publicados.",
+                '                                         Dr("LegajoCodigo"),
+                '                                         Dr("NombreCompleto"))
+
+                Dim Contenido As String = Fmt.Fmt_Recibos_Pendientes(Dr("NombreCompleto").ToString)
 
                 Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(Dr("EmailPersonal").ToString)
@@ -905,9 +957,11 @@ Public Class ClsBASLaboro
 
             For Each Dr As DataRow In Dt.Rows
 
-                Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos pendientes de firmar.",
-                                                         Dr("LegajoCodigo"),
-                                                         Dr("NombreCompleto"))
+                'Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos pendientes de firmar.",
+                '                                         Dr("LegajoCodigo"),
+                '                                         Dr("NombreCompleto"))
+                Dim Contenido As String = Fmt.Fmt_Recibos_Pendientes(Dr("NombreCompleto").ToString)
+
 
                 Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(Dr("EmailPersonal").ToString)
@@ -939,13 +993,22 @@ Public Class ClsBASLaboro
                                                                "WHERE IdLegajo = " & pedidoLic.IdLegajo, "DatosLegajo")
             Dim Dr As DataRow = Dt.Rows(0)
 
-            Dim Contenido As String = "BAS Laboro autogestión le comunica que el empleado " & Dr("Legajo").ToString & " - " & Dr("NombreCompleto").ToString & " ha solicitado una licencia.<br>" &
-                                      "Datos de la Licencia:<br>" &
-                                      "Tipo: " & pedidoLic.TipoLic.ToString & ChrW(13) & "<br>" &
-                                      " Fecha Desde: " & pedidoLic.FechaDesde.ToString("dd/MM/yyyy") & "<br>" &
-                                      " Fecha Hasta: " & pedidoLic.FechaHasta.ToString("dd/MM/yyyy") & "<br>" &
-                                      " Días: " & pedidoLic.CantidadDias.ToString & "<br>" &
-                                      " Observaciones: " & pedidoLic.Observaciones.ToString
+            'Dim Contenido As String = "BAS Laboro autogestión le comunica que el empleado " & Dr("Legajo").ToString & " - " & Dr("NombreCompleto").ToString & " ha solicitado una licencia.<br>" &
+            '                          "Datos de la Licencia:<br>" &
+            '                          "Tipo: " & pedidoLic.TipoLic.ToString & ChrW(13) & "<br>" &
+            '                          " Fecha Desde: " & pedidoLic.FechaDesde.ToString("dd/MM/yyyy") & "<br>" &
+            '                          " Fecha Hasta: " & pedidoLic.FechaHasta.ToString("dd/MM/yyyy") & "<br>" &
+            '                          " Días: " & pedidoLic.CantidadDias.ToString & "<br>" &
+            '                          " Observaciones: " & pedidoLic.Observaciones.ToString
+
+            Dim Contenido As String = Fmt.Fmt_Aprobacion_Licencia(Dr("NombreCompleto").ToString,
+                                                                  pedidoLic.Estado.ToString,
+                                                                  pedidoLic.FechaDeSolicitud.ToString("dd/MM/yyyy"),
+                                                                  pedidoLic.TipoLic.ToString,
+                                                                  pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
+                                                                  pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
+                                                                  pedidoLic.CantidadDias.ToString,
+                                                                  pedidoLic.Observaciones.ToString)
 
             Dim DSManager As DataTable = GetManagers(Dr("IdPersona"), Dr("CodEmp")).Tables(0)
             Dim Destinatarios As New List(Of String)
@@ -973,24 +1036,38 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim MailDestinatario As String = MiAdo.Ejecutar.GetSQLString("SELECT DISTINCT p.EmailPersonal " &
-                                                                         "FROM Bl_Legajos l " &
-                                                                         "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
-                                                                         "WHERE IdLegajo = " & pedidoLic.IdLegajo)
+            Dim MailDestinatario As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.EmailPersonal " &
+                                                                         " FROM Bl_Legajos l " &
+                                                                         " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                         " WHERE IdLegajo = " & pedidoLic.IdLegajo)
 
-            'Dim NombreManager As String = MiAdo.Ejecutar.GetSQLString("SELECT DISTINCT p.NombreCompleto," &
-            '                                                             "FROM Bl_Legajos l" &
-            '                                                             "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
-            '                                                             "WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
+            Dim NombreManager As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.NombreCompleto " &
+                                                                      " FROM Bl_Legajos l" &
+                                                                      " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                      " WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
 
-            Dim Contenido As String = "BAS Laboro autogestión le comunica que la licencia solicitada ha sido: " & vbCrLf & pedidoLic.Estado.ToString & vbCrLf & "<br>" &
-                                      "Datos de la Licencia:<br>" & vbCrLf &
-                                      "Fecha de Solicitud: " & pedidoLic.FechaDeSolicitud.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
-                                      "Tipo :" & pedidoLic.TipoLic & vbCrLf & "<br>" &
-                                      "Fecha Desde :" & pedidoLic.FechaDesde.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
-                                      "Fecha Hasta :" & pedidoLic.FechaHasta.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
-                                      "Días: " & pedidoLic.CantidadDias & vbCrLf & "<br>" &
-                                      "Observaciones: " & pedidoLic.ObservacionesManager
+            Dim NombreLegajo As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.NombreCompleto " &
+                                                                     " FROM Bl_Legajos l" &
+                                                                     " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                     " WHERE IdLegajo = " & pedidoLic.IdLegajo)
+
+            'Dim Contenido As String = "BAS Laboro autogestión le comunica que la licencia solicitada ha sido: " & vbCrLf & pedidoLic.Estado.ToString & vbCrLf & "<br>" &
+            '                          "Datos de la Licencia:<br>" & vbCrLf &
+            '                          "Fecha de Solicitud: " & pedidoLic.FechaDeSolicitud.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
+            '                          "Tipo :" & pedidoLic.TipoLic & vbCrLf & "<br>" &
+            '                          "Fecha Desde :" & pedidoLic.FechaDesde.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
+            '                          "Fecha Hasta :" & pedidoLic.FechaHasta.ToString("dd/MM/yyyy") & vbCrLf & "<br>" &
+            '                          "Días: " & pedidoLic.CantidadDias & vbCrLf & "<br>" &
+            '                          "Observaciones: " & pedidoLic.ObservacionesManager
+
+            Dim Contenido As String = Fmt.Fmt_Autorizacion_Licencia(NombreManager,
+                                                                    NombreLegajo,
+                                                                    pedidoLic.TipoLic.ToString,
+                                                                    pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
+                                                                    pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
+                                                                    pedidoLic.CantidadDias.ToString,
+                                                                    pedidoLic.Observaciones.ToString)
+
 
             Dim Destinatarios As New List(Of String)
             Destinatarios.Add(MailDestinatario)
@@ -1081,7 +1158,7 @@ End Class
 
 Public Class MailCfg
 
-    Const FileName As String = "MailCfg.xml"
+    Dim FileName As String = IO.Path.Combine(NETCoreLOG.ClsLogger.GetBaseFolderRegisry, "MailCfg.xml")
 
     Public Sub New()
 
@@ -1101,9 +1178,15 @@ Public Class MailCfg
                 Servidor = Cfg.Servidor
                 Puerto = Cfg.Puerto
                 Usuario = Cfg.Usuario
-                Contrasenia = Cfg.Contrasenia
+                Contrasenia = NETCoreCrypto.ClsCrypto.AES_Decrypt(Cfg.Contrasenia, ClsBASLaboro.Semilla)
                 HabilitarSSL = Cfg.HabilitarSSL
+                SufijoURL = Cfg.SufijoURL
                 Cfg = Nothing
+
+            Else
+
+                Dim Cfg As MailCfg = New MailCfg
+                Cfg.Grabar()
 
             End If
 
@@ -1115,6 +1198,7 @@ Public Class MailCfg
 
     Public Sub Grabar()
 
+        Contrasenia = NETCoreCrypto.ClsCrypto.AES_Encrypt(Contrasenia, ClsBASLaboro.Semilla)
         IO.File.WriteAllText(FileName, Me.Serializar)
 
     End Sub
@@ -1125,6 +1209,7 @@ Public Class MailCfg
     Public Property Puerto As Integer = 25
     Public Property Usuario As String = "alertasbas"
     Public Property Contrasenia As String = "nuncacaduca"
+    Public Property SufijoURL As String = "BAS"
     Public Property HabilitarSSL As Boolean = True
 
 End Class

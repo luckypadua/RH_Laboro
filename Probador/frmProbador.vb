@@ -15,8 +15,11 @@ Public Class FrmProbador
     'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("srvsueldos\sql17", "test400_microsules", "sa", "admin1*")
     'Private MiAdo As New NETCoreADO.AdoNet("srvsueldos\sql17", "test400_microsules", "sa", "admin1*")
 
-    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2019", "CEBAC400", "sa", "sa")
-    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2019", "CEBAC400", "sa", "sa")
+    'Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2019", "CEBAC400", "sa", "sa")
+    'Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2019", "CEBAC400", "sa", "sa")
+
+    Dim RH As NETCoreBLB.ItzBASLaboro = New NETCoreBLB.ClsBASLaboro("servidorblb\sql2017", "400_Demo", "sa", "sa")
+    Private MiAdo As New NETCoreADO.AdoNet("servidorblb\sql2017", "400_Demo", "sa", "sa")
 
     Private Sub BtnDatosPersonales_Click(sender As Object, e As EventArgs) Handles BtnDatosPersonales.Click
         Dim Ds As DataSet = RH.GetDatosPersonales(txtIdPersona.Text)
@@ -203,8 +206,10 @@ Public Class FrmProbador
     Private Sub btnMail_Click(sender As Object, e As EventArgs) Handles btnMail.Click
         Dim Destinatarios As New List(Of String)
         Destinatarios.Add("aescudero@bas.com.ar")
-        ' Destinatarios.Add("luchogesell@gmail.com")
-        Dim Ok As Boolean = ClsBASLaboro.EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, "HOLA")
+        'Destinatarios.Add("luckypadua@hotmail.com")
+        Dim Resultado As String = String.Empty
+        'Dim Ok As Boolean = RH.EnviarMailConFormato(Destinatarios, Resultado)
+        MsgBox(Resultado)
     End Sub
 
 End Class

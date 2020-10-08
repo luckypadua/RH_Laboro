@@ -79,7 +79,7 @@ Public Class ClsMail
                 Next
             End If
 
-            Email.Subject = "(*) " & Asunto
+            Email.Subject = Asunto
             Email.SubjectEncoding = System.Text.Encoding.UTF8
             Email.Body = Mensaje
             Email.BodyEncoding = System.Text.Encoding.UTF8
