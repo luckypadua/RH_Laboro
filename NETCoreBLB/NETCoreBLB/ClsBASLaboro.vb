@@ -984,6 +984,11 @@ Public Class ClsBASLaboro
 
         Try
 
+            Dim NombreManager As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.NombreCompleto " &
+                                                                      " FROM Bl_Legajos l" &
+                                                                      " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                      " WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
+
             Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT DISTINCT l.Legajo," &
                                                                "                p.NombreCompleto," &
                                                                "                p.IdPersona," &
@@ -1001,14 +1006,13 @@ Public Class ClsBASLaboro
             '                          " Días: " & pedidoLic.CantidadDias.ToString & "<br>" &
             '                          " Observaciones: " & pedidoLic.Observaciones.ToString
 
-            Dim Contenido As String = Fmt.Fmt_Aprobacion_Licencia(Dr("NombreCompleto").ToString,
-                                                                  pedidoLic.Estado.ToString,
-                                                                  pedidoLic.FechaDeSolicitud.ToString("dd/MM/yyyy"),
-                                                                  pedidoLic.TipoLic.ToString,
-                                                                  pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
-                                                                  pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
-                                                                  pedidoLic.CantidadDias.ToString,
-                                                                  pedidoLic.Observaciones.ToString)
+            Dim Contenido As String = Fmt.Fmt_Autorizacion_Licencia(NombreManager,
+                                                                    Dr("NombreCompleto").ToString,
+                                                                    pedidoLic.TipoLic.ToString,
+                                                                    pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
+                                                                    pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
+                                                                    pedidoLic.CantidadDias.ToString,
+                                                                    pedidoLic.Observaciones.ToString)
 
             Dim DSManager As DataTable = GetManagers(Dr("IdPersona"), Dr("CodEmp")).Tables(0)
             Dim Destinatarios As New List(Of String)
@@ -1060,14 +1064,15 @@ Public Class ClsBASLaboro
             '                          "Días: " & pedidoLic.CantidadDias & vbCrLf & "<br>" &
             '                          "Observaciones: " & pedidoLic.ObservacionesManager
 
-            Dim Contenido As String = Fmt.Fmt_Autorizacion_Licencia(NombreManager,
-                                                                    NombreLegajo,
-                                                                    pedidoLic.TipoLic.ToString,
-                                                                    pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
-                                                                    pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
-                                                                    pedidoLic.CantidadDias.ToString,
-                                                                    pedidoLic.Observaciones.ToString)
 
+            Dim Contenido As String = Fmt.Fmt_Aprobacion_Licencia(NombreLegajo,
+                                                                  pedidoLic.Estado.ToString,
+                                                                  pedidoLic.FechaDeSolicitud.ToString("dd/MM/yyyy"),
+                                                                  pedidoLic.TipoLic.ToString,
+                                                                  pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
+                                                                  pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
+                                                                  pedidoLic.CantidadDias.ToString,
+                                                                  pedidoLic.ObservacionesManager)
 
             Dim Destinatarios As New List(Of String)
             Destinatarios.Add(MailDestinatario)
@@ -1171,6 +1176,7 @@ Public Class MailCfg
 
             If IO.File.Exists(FileName) Then
 
+                ClsLogger.Logueo.Loguear($"NETCoreBLB.MailCfg.Leer (EXISTE): {FileName}")
                 Dim s As String = IO.File.ReadAllText(FileName)
                 Dim Cfg As MailCfg = s.Deserializar(Me.GetType)
                 RemitenteNombre = Cfg.RemitenteNombre
@@ -1181,11 +1187,14 @@ Public Class MailCfg
                 Contrasenia = NETCoreCrypto.ClsCrypto.AES_Decrypt(Cfg.Contrasenia, ClsBASLaboro.Semilla)
                 HabilitarSSL = Cfg.HabilitarSSL
                 SufijoURL = Cfg.SufijoURL
+                ClsLogger.Logueo.Loguear($"NETCoreBLB.MailCfg.Leer SufijoURL : {Cfg.SufijoURL}")
                 Cfg = Nothing
 
             Else
 
+                ClsLogger.Logueo.Loguear($"NETCoreBLB.MailCfg.Leer (NO EXISTE): {FileName}")
                 Dim Cfg As MailCfg = New MailCfg
+                ClsLogger.Logueo.Loguear($"NETCoreBLB.MailCfg.Leer SufijoURL : {Cfg.SufijoURL}")
                 Cfg.Grabar()
 
             End If
