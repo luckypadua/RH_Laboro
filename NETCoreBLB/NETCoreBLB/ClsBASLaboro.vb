@@ -984,11 +984,6 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim NombreManager As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.NombreCompleto " &
-                                                                      " FROM Bl_Legajos l" &
-                                                                      " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
-                                                                      " WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
-
             Dim Dt As DataTable = MiAdo.Consultar.GetDataTable("SELECT DISTINCT l.Legajo," &
                                                                "                p.NombreCompleto," &
                                                                "                p.IdPersona," &
@@ -1006,23 +1001,26 @@ Public Class ClsBASLaboro
             '                          " Días: " & pedidoLic.CantidadDias.ToString & "<br>" &
             '                          " Observaciones: " & pedidoLic.Observaciones.ToString
 
-            Dim Contenido As String = Fmt.Fmt_Autorizacion_Licencia(NombreManager,
-                                                                    Dr("NombreCompleto").ToString,
-                                                                    pedidoLic.TipoLic.ToString,
-                                                                    pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
-                                                                    pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
-                                                                    pedidoLic.CantidadDias.ToString,
-                                                                    pedidoLic.Observaciones.ToString)
-
             Dim DSManager As DataTable = GetManagers(Dr("IdPersona"), Dr("CodEmp")).Tables(0)
-            Dim Destinatarios As New List(Of String)
 
             For Each Drm As DataRow In DSManager.Rows
-                '    Destinatarios.Add(MiAdo.Ejecutar.GetSQLString("SELECT EmailPersonal FROM Bl_Personas WHERE IdPersona = " & Drm("IdPersona")))
+
+                Dim Contenido As String = Fmt.Fmt_Autorizacion_Licencia(Drm("Nombre"),
+                                                                        Dr("NombreCompleto").ToString,
+                                                                        pedidoLic.TipoLic.ToString,
+                                                                        pedidoLic.FechaDesde.ToString("dd/MM/yyyy"),
+                                                                        pedidoLic.FechaHasta.ToString("dd/MM/yyyy"),
+                                                                        pedidoLic.CantidadDias.ToString,
+                                                                        pedidoLic.Observaciones.ToString)
+
+                Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(MiAdo.Ejecutar.GetSQLString("SELECT EmailPersonal FROM Bl_Personas WHERE IdPersona = " & Drm("IdPersona").ToString))
+                Call EnviarMail("BAS Laboro Autogestión: Nueva Solicitud de Licencia", Destinatarios, Contenido)
+                Destinatarios = Nothing
+
             Next
 
-            Call EnviarMail("BAS Laboro Autogestión: Nueva Solicitud de Licencia", Destinatarios, Contenido)
+
 
             Dt.Dispose()
             DSManager.Dispose()
