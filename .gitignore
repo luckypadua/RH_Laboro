@@ -6,8 +6,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.exe
-*.dll
 *.com
 *.ide-shm
 *.ide-wal
