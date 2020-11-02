@@ -561,7 +561,7 @@ Public Class ClsBASLaboro
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
 
-        Catch ex As Exceptionl
+        Catch ex As Exception
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
             Throw ex
         End Try
