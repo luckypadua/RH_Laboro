@@ -422,7 +422,7 @@ Public Class ClsBASLaboro
 
     End Function
 
-    Public Function GetEmpleadosACargo(ByVal IdPersona As Long) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
+    Public Function GetEmpleadosACargo(ByVal IdPersona As Long, Optional ByVal CodEmp As Integer = -1) As DataSet Implements ItzBASLaboro.GetEmpleadosACargo
 
         Try
             'Dim CodEmp As Long = MiAdo.Ejecutar.GetSQLTinyInt("SELECT CodEmp FROM Bl_Legajos WHERE IdLegajo = " & IdLegajo)
@@ -433,6 +433,7 @@ Public Class ClsBASLaboro
                 .Add("IdCarpeta", DBNull.Value, SqlDbType.Int)
                 .Add("IncluirManagers", 0, SqlDbType.SmallInt)
                 .Add("IncluirEmpleadosACargo", 1, SqlDbType.SmallInt)
+                If CodEmp <> -1 Then .Add("CodEmp", CodEmp, SqlDbType.SmallInt)
                 '.Add("CodEmp", CodEmp, SqlDbType.SmallInt)
             End With
 
@@ -499,7 +500,7 @@ Public Class ClsBASLaboro
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
 
-        Catch ex As Exception
+        Catch ex As Exceptionl
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetTipoLicencias", ClsLogger.TiposDeLog.LogDeError, ex.Message)
             Throw ex
         End Try
