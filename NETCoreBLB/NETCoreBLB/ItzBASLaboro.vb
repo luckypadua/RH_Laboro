@@ -5,6 +5,7 @@ Public Interface ItzBASLaboro
     Function GetRecibos(ByVal IdPersona As Integer) As DataSet
     Function GetRecibosDetalle(ByVal IdPersona As Integer) As String
     Function GetReciboDescarga(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long) As DataSet
+    Function GetDocumentoDescarga(ByVal Clave As String) As DataSet
     Sub ReciboFirmado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long, ByVal FirmaConforme As Boolean, Optional ByVal Observacion As String = "")
     Sub ReciboVisualizado(ByVal IdLiquidacion As Long, ByVal IdLegajo As Long)
     Function GetManagers(ByVal IdPersona As Long, Optional ByVal CodEmp As Integer = -1) As DataSet
@@ -30,6 +31,10 @@ Public Interface ItzBASLaboro
     Function GetNuevoPedidoLicencia(ByVal IdPedidoLicencia As Long) As ClsPedidoLicencia
     Function GetNuevoPedidoLicencia(ByVal IdLegajo As Long, ByVal IdSuceso As Long, ByVal FecSolicitud As DateTime, ByVal FecDesde As DateTime, ByVal FecHasta As DateTime, ByVal CantDias As Integer, ByVal Observaciones As String) As ClsPedidoLicencia
     Function GetBASLaboroVersion() As DataSet
+
+    'Function EnviarMailConFormato(ByVal Destinatarios As List(Of String),
+    '                              Optional ByRef Resultado As String = "") As Boolean
+
     Sub Dispose()
 
 End Interface
