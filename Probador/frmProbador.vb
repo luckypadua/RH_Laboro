@@ -212,4 +212,8 @@ Public Class FrmProbador
         MsgBox(Resultado)
     End Sub
 
+    Private Sub BtnAlertasRecibos_Click(sender As Object, e As EventArgs) Handles BtnAlertasRecibos.Click
+        'RH.EjecutarAccionTimer()
+    End Sub
+
 End Class

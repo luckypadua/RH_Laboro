@@ -58,8 +58,36 @@ Public Class ClsBASLaboro
 
     Private Sub _TimerUnoPorDia_8Hs_EventoCumplido() Handles _TimerUnoPorDia_8Hs.EventoCumplido
 
-        Call RecibosPendientesFirmar()
-        Call RecibosPublicados()
+        Call EjecutarAccionTimer()
+
+    End Sub
+
+    Public Sub EjecutarAccionTimer() ' Implements ItzBASLaboro.EjecutarAccionTimer
+
+        Try
+
+            Dim DiasDeUltEjec As Integer = 0
+            Dim ExisteFechaAlerta As Boolean = MiAdo.Ejecutar.GetSQLInteger("Select Count(*) from BL_PARAMETROS where PARAMETRO = 'Autogestion\FechaAlerta'") = 1
+            If ExisteFechaAlerta Then
+                DiasDeUltEjec = MiAdo.Ejecutar.GetSQLInteger("Select Dias = DATEDIFF(day, datevalor, Convert(date,getdate())) from BL_PARAMETROS where PARAMETRO = 'Autogestion\FechaAlerta'")
+            Else
+                DiasDeUltEjec = 1
+            End If
+
+            If DiasDeUltEjec = 0 Then Exit Sub
+
+            Call RecibosPendientesFirmar()
+            Call RecibosPublicados(DiasDeUltEjec)
+
+            MiAdo.Ejecutar.Instruccion(" if (Select Count (*) From BL_PARAMETROS Where PARAMETRO = 'Autogestion\FechaAlerta') = 1" &
+                                       "    Update BL_PARAMETROS Set datevalor = Convert(date,getdate()) Where PARAMETRO = 'Autogestion\FechaAlerta'" &
+                                       "  Else " &
+                                       "    Insert into BL_PARAMETROS (PARAMETRO,datevalor,CodEmp) Values ('Autogestion\FechaAlerta', Convert(date,getdate()),null)")
+        Catch ex As Exception
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EjecutarAccionTimer", ClsLogger.TiposDeLog.LogDeError, ex.Message)
+
+        End Try
 
     End Sub
 
@@ -907,23 +935,21 @@ Public Class ClsBASLaboro
 
     End Function
 
-    Private Function RecibosPublicados() As Boolean
+    Private Function RecibosPublicados(ByVal DiasDeUltEjec As Integer) As Boolean
 
         Try
 
-            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(" Select Distinct R.LegajoCodigo," &
-                                                               "                 P.NombreCompleto," &
-                                                               "                 P.EmailPersonal" &
-                                                               " From  vAutogestion_Recibos  R" &
-                                                               " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
-                                                               " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
-                                                               " Where Not R.FTPUpLoad is null and R.Firmado = 0 And DATEDIFF(Hour,R.FTPUpLoad, Getdate()) < 24", "Publicados")
+            Dim SQL As String = " Select Distinct R.LegajoCodigo," &
+                                "                 P.NombreCompleto," &
+                                "                 P.EmailPersonal" &
+                                " From  vAutogestion_Recibos  R" &
+                                " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
+                                " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                               $" Where Not R.FTPUpLoad is null and R.Firmado = 0 And DATEDIFF(Hour,R.FTPUpLoad, Getdate()) < {DiasDeUltEjec * 24}"
+
+            Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(SQL, "Publicados")
 
             For Each Dr As DataRow In Dt.Rows
-
-                'Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos publicados.",
-                '                                         Dr("LegajoCodigo"),
-                '                                         Dr("NombreCompleto"))
 
                 Dim Contenido As String = Fmt.Fmt_Recibos_Publicados(Dr("NombreCompleto").ToString)
 
@@ -958,9 +984,6 @@ Public Class ClsBASLaboro
 
             For Each Dr As DataRow In Dt.Rows
 
-                'Dim Contenido As String = String.Format("BAS Laboro autogestión le comunica al legajo ({0}) - {1} que existen recibos pendientes de firmar.",
-                '                                         Dr("LegajoCodigo"),
-                '                                         Dr("NombreCompleto"))
                 Dim Contenido As String = Fmt.Fmt_Recibos_Pendientes(Dr("NombreCompleto").ToString)
 
 
