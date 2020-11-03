@@ -925,7 +925,7 @@ Public Class ClsBASLaboro
                 '                                         Dr("LegajoCodigo"),
                 '                                         Dr("NombreCompleto"))
 
-                Dim Contenido As String = Fmt.Fmt_Recibos_Pendientes(Dr("NombreCompleto").ToString)
+                Dim Contenido As String = Fmt.Fmt_Recibos_Publicados(Dr("NombreCompleto").ToString)
 
                 Dim Destinatarios As New List(Of String)
                 Destinatarios.Add(Dr("EmailPersonal").ToString)
