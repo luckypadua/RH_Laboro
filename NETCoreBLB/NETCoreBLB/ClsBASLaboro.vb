@@ -18,6 +18,8 @@ Public Class ClsBASLaboro
         End Get
     End Property
 
+    Public Property URLSufijo As String Implements ItzBASLaboro.URLSufijo
+
     Public Sub New(ByVal Server As String,
                    ByVal Database As String,
                    Optional ByVal Uid As String = "",
