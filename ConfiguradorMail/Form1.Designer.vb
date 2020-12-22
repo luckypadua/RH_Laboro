@@ -191,8 +191,9 @@ Partial Class Form1
         'txtPuerto
         '
         Me.txtPuerto.Location = New System.Drawing.Point(144, 139)
+        Me.txtPuerto.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
         Me.txtPuerto.Name = "txtPuerto"
-        Me.txtPuerto.Size = New System.Drawing.Size(49, 20)
+        Me.txtPuerto.Size = New System.Drawing.Size(78, 20)
         Me.txtPuerto.TabIndex = 4
         Me.txtPuerto.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
