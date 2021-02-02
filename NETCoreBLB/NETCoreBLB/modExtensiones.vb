@@ -3,7 +3,6 @@ Imports System.Runtime.CompilerServices
 
 Public Module Extensiones
 
-
     ''' <summary>
     ''' Serializa un objeto a un string XML 
     ''' </summary>

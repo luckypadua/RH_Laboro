@@ -68,6 +68,8 @@ Public Class ClsBASLaboro
 
         Try
 
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EjecutarAccionTimer *** Entró a EjecutarAccionTimer ***", ClsLogger.TiposDeLog.LogDetalleNormal)
+
             Dim DiasDeUltEjec As Integer = 0
             Dim ExisteFechaAlerta As Boolean = MiAdo.Ejecutar.GetSQLInteger("Select Count(*) from BL_PARAMETROS where PARAMETRO = 'Autogestion\FechaAlerta'") = 1
             If ExisteFechaAlerta Then
@@ -78,13 +80,16 @@ Public Class ClsBASLaboro
 
             If DiasDeUltEjec = 0 Then Exit Sub
 
-            Call RecibosPendientesFirmar()
-            Call RecibosPublicados(DiasDeUltEjec)
-
             MiAdo.Ejecutar.Instruccion(" if (Select Count (*) From BL_PARAMETROS Where PARAMETRO = 'Autogestion\FechaAlerta') = 1" &
                                        "    Update BL_PARAMETROS Set datevalor = Convert(date,getdate()) Where PARAMETRO = 'Autogestion\FechaAlerta'" &
                                        "  Else " &
                                        "    Insert into BL_PARAMETROS (PARAMETRO,datevalor,CodEmp) Values ('Autogestion\FechaAlerta', Convert(date,getdate()),null)")
+
+            Call RecibosPendientesFirmar()
+            Call RecibosPublicados(DiasDeUltEjec)
+
+            ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EjecutarAccionTimer *** Salió de EjecutarAccionTimer ***", ClsLogger.TiposDeLog.LogDetalleNormal)
+
         Catch ex As Exception
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EjecutarAccionTimer", ClsLogger.TiposDeLog.LogDeError, ex.Message)
@@ -990,8 +995,11 @@ Public Class ClsBASLaboro
 
 
                 Dim Destinatarios As New List(Of String)
-                Destinatarios.Add(Dr("EmailPersonal").ToString)
-                Call EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, Contenido)
+                If Not String.IsNullOrEmpty(Dr("EmailPersonal").ToString) Then
+                    Destinatarios.Add(Dr("EmailPersonal").ToString)
+                    Call EnviarMail("BAS Laboro Autogestión: Recibos Pendientes de Firmar", Destinatarios, Contenido)
+                End If
+
 
             Next
 
