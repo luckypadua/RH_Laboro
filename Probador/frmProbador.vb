@@ -205,8 +205,8 @@ Public Class FrmProbador
 
     Private Sub btnMail_Click(sender As Object, e As EventArgs) Handles btnMail.Click
         Dim Destinatarios As New List(Of String)
-        Destinatarios.Add("aescudero@bas.com.ar")
-        'Destinatarios.Add("luckypadua@hotmail.com")
+        'Destinatarios.Add("aescudero@bas.com.ar")
+        Destinatarios.Add("luckypadua@hotmail.com")
         Dim Resultado As String = String.Empty
         'Dim Ok As Boolean = RH.EnviarMailConFormato(Destinatarios, Resultado)
         MsgBox(Resultado)
