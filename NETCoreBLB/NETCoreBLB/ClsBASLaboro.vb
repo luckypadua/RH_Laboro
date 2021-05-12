@@ -64,26 +64,24 @@ Public Class ClsBASLaboro
 
     End Sub
 
-    Public Sub EjecutarAccionTimer() ' Implements ItzBASLaboro.EjecutarAccionTimer
+    Public Sub EjecutarAccionTimer() 'Implements ItzBASLaboro.EjecutarAccionTimer
 
         Try
 
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.EjecutarAccionTimer *** Entró a EjecutarAccionTimer ***", ClsLogger.TiposDeLog.LogDetalleNormal)
 
-            Dim DiasDeUltEjec As Integer = 0
-            Dim ExisteFechaAlerta As Boolean = MiAdo.Ejecutar.GetSQLInteger("Select Count(*) from BL_PARAMETROS where PARAMETRO = 'Autogestion\FechaAlerta'") = 1
-            If ExisteFechaAlerta Then
-                DiasDeUltEjec = MiAdo.Ejecutar.GetSQLInteger("Select Dias = DATEDIFF(day, datevalor, Convert(date,getdate())) from BL_PARAMETROS where PARAMETRO = 'Autogestion\FechaAlerta'")
-            Else
-                DiasDeUltEjec = 1
-            End If
+            With MiAdo.Ejecutar.Parametros
+                .RemoveAll()
+                .Add("DiasDeUltEjec", 0, SqlDbType.Int, ParameterDirection.Output)
+            End With
+
+            MiAdo.Ejecutar.Procedimiento("EXECMAILAG", NETCoreADO.AdoNet.TipoDeRetornoEjecutar.NotReturn)
+
+            Dim DiasDeUltEjec As Integer = MiAdo.Ejecutar.Parametros("DiasDeUltEjec").Valor
 
             If DiasDeUltEjec = 0 Then Exit Sub
 
-            MiAdo.Ejecutar.Instruccion(" if (Select Count (*) From BL_PARAMETROS Where PARAMETRO = 'Autogestion\FechaAlerta') = 1" &
-                                       "    Update BL_PARAMETROS Set datevalor = Convert(date,getdate()) Where PARAMETRO = 'Autogestion\FechaAlerta'" &
-                                       "  Else " &
-                                       "    Insert into BL_PARAMETROS (PARAMETRO,datevalor,CodEmp) Values ('Autogestion\FechaAlerta', Convert(date,getdate()),null)")
+            ClsLogger.Logueo.Loguear($"NETCoreBLB.ClsBASLaboro.DiasDeUltEjec = {DiasDeUltEjec}", ClsLogger.TiposDeLog.LogDetalleNormal)
 
             Call RecibosPendientesFirmar()
             Call RecibosPublicados(DiasDeUltEjec)
