@@ -64,7 +64,7 @@ Public Class ClsBASLaboro
 
     End Sub
 
-    Public Sub EjecutarAccionTimer() 'Implements ItzBASLaboro.EjecutarAccionTimer
+    Public Sub EjecutarAccionTimer() ' Implements ItzBASLaboro.EjecutarAccionTimer
 
         Try
 
@@ -985,7 +985,7 @@ Public Class ClsBASLaboro
                                                                " From  vAutogestion_Recibos  R" &
                                                                " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
                                                                " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
-                                                               " Where Not R.FTPUpLoad is null and R.Firmado = 0 And DATEDIFF(day,R.FTPUpLoad, Getdate()) > 15", "Pendientes")
+                                                               " Where Not R.FTPUpLoad is null And R.Firmado = 0 And Not EmailPersonal is null And DATEDIFF(day,R.FTPUpLoad, Getdate()) > 15", "Pendientes")
 
             For Each Dr As DataRow In Dt.Rows
 
