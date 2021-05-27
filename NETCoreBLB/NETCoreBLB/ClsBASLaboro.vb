@@ -52,7 +52,7 @@ Public Class ClsBASLaboro
             .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Miercoles)
             .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Jueves)
             .AddDiaSemana(clsTimerEvent.teDiasSemana.te_Viernes)
-            .HoraMinuto = "08:00"
+            .HoraMinuto = "09:00"
             .Iniciar()
         End With
 
