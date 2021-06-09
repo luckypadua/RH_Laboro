@@ -353,7 +353,11 @@ Public Class ClsPedidoLicencia
                 Dim DiasGoz As Integer
                 Dim DiasLiq As Integer
 
-                Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT SUM(DiasAsig) AS Asignados, SUM(DiasGozados) AS Gozados, SUM(DiasLiq) AS Liquidados FROM BL_LEGAJOSVACS WHERE IdLegajo=" & Me.IdLegajo, "DiasVacs")
+                Dim Ds As DataSet = MiAdo.Consultar.GetDataset("SELECT IsNull(SUM(DiasAsig),0) AS Asignados, IsNull(SUM(DiasGozados),0) AS Gozados, IsNull(SUM(DiasLiq),0) AS Liquidados FROM BL_LEGAJOSVACS WHERE IdLegajo=" & Me.IdLegajo, "DiasVacs")
+
+                If Ds.Tables(0).Rows.Count = 0 Then
+                    Throw New Exception("@La cantidad de días solicitados supera la cantidad de días de vacaciones disponibles")
+                End If
 
                 DiasGoz = CInt(Ds.Tables(0).Rows(0)("Asignados")) - CInt(Ds.Tables(0).Rows(0)("Gozados"))
                 DiasLiq = CInt(Ds.Tables(0).Rows(0)("Asignados")) - CInt(Ds.Tables(0).Rows(0)("Liquidados"))
