@@ -216,4 +216,12 @@ Public Class FrmProbador
         'RH.EjecutarAccionTimer()
     End Sub
 
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        NETCoreMail.Mail.Enviar("D:\GIT CORE2\RH_Laboro\BIN\DEBUG\netstandard2.0\MailServer.json",
+                                "Autogestión",
+                                "aescudero@bas.com.ar",
+                                "Mail de Autogestión",
+                                "Hola que tal")
+    End Sub
+
 End Class

@@ -167,6 +167,10 @@
       <Project>{6e69a228-902c-4104-97b8-fffc018a4a02}</Project>
       <Name>NETCoreBLB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NETCoreMail\NETCoreMail.vbproj">
+      <Project>{e0591dbd-627f-4286-8937-a76f8b3a7834}</Project>
+      <Name>NETCoreMail</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

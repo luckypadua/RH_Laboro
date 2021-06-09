@@ -74,6 +74,7 @@ Partial Class FrmProbador
         Me.BtnBASLaboroVersion = New System.Windows.Forms.Button()
         Me.btnMail = New System.Windows.Forms.Button()
         Me.BtnAlertasRecibos = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -611,11 +612,22 @@ Partial Class FrmProbador
         Me.BtnAlertasRecibos.Text = "Alertas Recibos"
         Me.BtnAlertasRecibos.UseVisualStyleBackColor = True
         '
+        'Button1
+        '
+        Me.Button1.ForeColor = System.Drawing.Color.Red
+        Me.Button1.Location = New System.Drawing.Point(294, 553)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(118, 34)
+        Me.Button1.TabIndex = 52
+        Me.Button1.Text = "Envío de Mail"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'FrmProbador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1103, 638)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.BtnAlertasRecibos)
         Me.Controls.Add(Me.btnMail)
         Me.Controls.Add(Me.BtnBASLaboroVersion)
@@ -708,4 +720,5 @@ Partial Class FrmProbador
     Friend WithEvents BtnBASLaboroVersion As Button
     Friend WithEvents btnMail As Button
     Friend WithEvents BtnAlertasRecibos As Button
+    Friend WithEvents Button1 As Button
 End Class
