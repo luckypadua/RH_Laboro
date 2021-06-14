@@ -100,11 +100,11 @@ Public Class ClsBASLaboro
 
         Try
 
-            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Personas] Where IdPersona = {0}", IdPersona), "Persona")
+            Dim Ds As DataSet = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Personas2] Where IdPersona = {0}", IdPersona), "Persona")
             Ds.DataSetName = "DatosPersonales"
-            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Legajos] Where IdPersona = {0}", IdPersona), "Legajo", Ds)
+            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Legajos2] Where IdPersona = {0}", IdPersona), "Legajo", Ds)
             Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Puestos] Where IdPersona = {0}", IdPersona), "Puestos", Ds)
-            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Familiares] Where IdPersona = {0}", IdPersona), "Familiares", Ds)
+            Ds = MiAdo.Consultar.GetDataset(String.Format("Select * from [vAutogestion_Familiares2] Where IdPersona = {0}", IdPersona), "Familiares", Ds)
             ClsLogger.Logueo.Loguear("NETCoreBLB.ClsBASLaboro.GetDatosPersonales", ClsLogger.TiposDeLog.LogDetalleNormal, Ds)
             Return Ds
 
@@ -666,8 +666,8 @@ Public Class ClsBASLaboro
                                                 " Legajo = '(' + L.LegajoCodigo + ') - ' + P.NombreCompleto " &
                                                 " ,Liq = R.Liquidacion_Codigo + ' - ' + RTRIM(Month(R.Liquidacion_Mes)) + '/' + RTRIM(Year(R.Liquidacion_Mes)) " &
                                                 " From vAutogestion_Recibos R " &
-                                                " Join vAutogestion_Legajos L  On L.IdLegajo = R.IdLegajo " &
-                                                " Join vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                                                " Join vAutogestion_Legajos2 L  On L.IdLegajo = R.IdLegajo " &
+                                                " Join vAutogestion_Personas2 P On P.IdPersona = L.IdPersona " &
                                                 " Where L.IdLegajo = {0} and R.IdLiquidacion = {1}", IdLegajo, IdLiquidacion), "Legajo")
 
             Dim Legajo As String = String.Empty
@@ -948,8 +948,8 @@ Public Class ClsBASLaboro
                                 "                 P.NombreCompleto," &
                                 "                 P.EmailPersonal" &
                                 " From  vAutogestion_Recibos  R" &
-                                " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
-                                " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                                " Join  vAutogestion_Legajos2  L On L.IdLegajo = R.IdLegajo" &
+                                " Join  vAutogestion_Personas2 P On P.IdPersona = L.IdPersona " &
                                $" Where Not R.FTPUpLoad is null and R.Firmado = 0 And DATEDIFF(Hour,R.FTPUpLoad, Getdate()) < {DiasDeUltEjec * 24}"
 
             Dim Dt As DataTable = MiAdo.Consultar.GetDataTable(SQL, "Publicados")
@@ -983,8 +983,8 @@ Public Class ClsBASLaboro
                                                                "                 P.NombreCompleto," &
                                                                "                 P.EmailPersonal" &
                                                                " From  vAutogestion_Recibos  R" &
-                                                               " Join  vAutogestion_Legajos  L On L.IdLegajo = R.IdLegajo" &
-                                                               " Join  vAutogestion_Personas P On P.IdPersona = L.IdPersona " &
+                                                               " Join  vAutogestion_Legajos2  L On L.IdLegajo = R.IdLegajo" &
+                                                               " Join  vAutogestion_Personas2 P On P.IdPersona = L.IdPersona " &
                                                                " Where Not R.FTPUpLoad is null And R.Firmado = 0 And Not EmailPersonal is null And DATEDIFF(day,R.FTPUpLoad, Getdate()) > 15", "Pendientes")
 
             For Each Dr As DataRow In Dt.Rows
@@ -1021,7 +1021,7 @@ Public Class ClsBASLaboro
                                                                "                p.IdPersona," &
                                                                "                l.CodEmp " &
                                                                "FROM Bl_Legajos l " &
-                                                               "JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                               "JOIN vAutogestion_Personas2 p ON p.IdPersona = l.IdPersona " &
                                                                "WHERE IdLegajo = " & pedidoLic.IdLegajo, "DatosLegajo")
             Dim Dr As DataRow = Dt.Rows(0)
 
@@ -1072,17 +1072,17 @@ Public Class ClsBASLaboro
 
             Dim MailDestinatario As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.EmailPersonal " &
                                                                          " FROM Bl_Legajos l " &
-                                                                         " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                         " JOIN vAutogestion_Personas2 p ON p.IdPersona = l.IdPersona " &
                                                                          " WHERE IdLegajo = " & pedidoLic.IdLegajo)
 
             Dim NombreManager As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.NombreCompleto " &
                                                                       " FROM Bl_Legajos l" &
-                                                                      " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                      " JOIN vAutogestion_Personas2 p ON p.IdPersona = l.IdPersona " &
                                                                       " WHERE IdLegajo = " & pedidoLic.IdAutorizadoPor)
 
             Dim NombreLegajo As String = MiAdo.Ejecutar.GetSQLString(" SELECT DISTINCT p.NombreCompleto " &
                                                                      " FROM Bl_Legajos l" &
-                                                                     " JOIN vAutogestion_Personas p ON p.IdPersona = l.IdPersona " &
+                                                                     " JOIN vAutogestion_Personas2 p ON p.IdPersona = l.IdPersona " &
                                                                      " WHERE IdLegajo = " & pedidoLic.IdLegajo)
 
             'Dim Contenido As String = "BAS Laboro autogestión le comunica que la licencia solicitada ha sido: " & vbCrLf & pedidoLic.Estado.ToString & vbCrLf & "<br>" &
